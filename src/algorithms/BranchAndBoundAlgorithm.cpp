@@ -13,13 +13,13 @@ void BranchAndBoundAlgorithm::Branch(const BoundAndBranchBinaryClusteringVector 
   if (num_clustered != graph_->Size()) {
     auto v = clustering.Choose();
     auto right_clustering = clustering.copy();
-    right_clustering.SetupLabelForVertex(v, 0);
+    right_clustering.SetupLabelForVertex(v, FIRST_CLUSTER);
     auto bound = right_clustering.Bound(record_);
     if (bound < int(record_)) {
       Branch(right_clustering);
     }
     auto left_clustering = clustering.copy();
-    left_clustering.SetupLabelForVertex(v, 1);
+    left_clustering.SetupLabelForVertex(v, SECOND_CLUSTER);
     bound = left_clustering.Bound(record_);
     if (bound < int(record_)) {
       Branch(left_clustering);

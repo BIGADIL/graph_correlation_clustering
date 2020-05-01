@@ -1,29 +1,31 @@
 #include <stdexcept>
 #include "../../include/clustering/BinaryClusteringVector.hpp"
 
-void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex, const unsigned label) {
+void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) {
   switch (label) {
-    case 0:
+    case FIRST_CLUSTER:
       num_vertices_in_first_cluster_++;
       break;
-    case 1:
+    case SECOND_CLUSTER:
       num_vertices_in_second_cluster_++;
       break;
-    default:auto message = "Expected label 0 or 1, actual label = " + std::to_string(label);
+    default:
+      auto message = "Expected label 0 or 1, actual label = " + std::to_string(label);
       throw std::invalid_argument(message);
   }
   auto cur_label = labels_[vertex];
   switch (cur_label) {
-    case -1:
+    case NON_CLUSTERED:
       num_non_clustered_vertices_--;
       break;
-    case 0:
+    case FIRST_CLUSTER:
       num_vertices_in_first_cluster_--;
       break;
-    case 1:
+    case SECOND_CLUSTER:
       num_vertices_in_second_cluster_--;
       break;
-    default:throw std::invalid_argument("undefined cur label=" + std::to_string(cur_label));
+    default:
+      throw std::invalid_argument("undefined cur label=" + std::to_string(cur_label));
   }
   labels_[vertex] = label;
 }
@@ -46,25 +48,30 @@ unsigned BinaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
 }
 
 BinaryClusteringVector::BinaryClusteringVector(const unsigned size) {
-  labels_ = std::vector<int>(size, -1);
+  labels_ = std::vector<ClusterLabels>(size, NON_CLUSTERED);
   num_non_clustered_vertices_ = size;
   num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = 0;
 }
+
 std::shared_ptr<IClustering> BinaryClusteringVector::GetCopy() const {
   return std::shared_ptr<IClustering>(new BinaryClusteringVector(*this));
 }
-int BinaryClusteringVector::GetLabel(const unsigned vertex) const {
+
+ClusterLabels BinaryClusteringVector::GetLabel(const unsigned vertex) const {
   return labels_[vertex];
 }
+
 bool BinaryClusteringVector::IsNonClustered(const unsigned vertex) const {
-  return labels_[vertex] == -1;
+  return labels_[vertex] == NON_CLUSTERED;
 }
+
 bool BinaryClusteringVector::IsSameClustered(const unsigned i, const unsigned j) const {
   return labels_[i] == labels_[j];
 }
 unsigned BinaryClusteringVector::GetNumNonClusteredVertices() const {
   return num_non_clustered_vertices_;
 }
+
 unsigned int BinaryClusteringVector::GetNumVerticesByLabel(const unsigned label) const {
   if (label == 0) {
     return num_vertices_in_first_cluster_;

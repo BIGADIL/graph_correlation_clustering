@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "../../include/algorithms/LocalSearchAlgorithm.hpp"
+
 LocalSearchAlgorithm::LocalSearchAlgorithm(std::shared_ptr<IClusteringFactory> clustering_factory)
     : clustering_factory_(std::move(clustering_factory)) {
 
@@ -23,9 +24,9 @@ IClusteringPointer LocalSearchAlgorithm::ComputeLocalOptimum(const IGraph &graph
       break;
     }
     if (result->GetLabel(candidate) == 0) {
-      result->SetupLabelForVertex(candidate, 1);
+      result->SetupLabelForVertex(candidate, SECOND_CLUSTER);
     } else {
-      result->SetupLabelForVertex(candidate, 0);
+      result->SetupLabelForVertex(candidate, FIRST_CLUSTER);
     }
   }
 

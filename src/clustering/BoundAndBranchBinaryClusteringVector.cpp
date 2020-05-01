@@ -19,7 +19,7 @@ BoundAndBranchBinaryClusteringVector::BoundAndBranchBinaryClusteringVector(const
   }
 }
 
-void BoundAndBranchBinaryClusteringVector::SetupLabelForVertex(const unsigned vertex, const unsigned label) {
+void BoundAndBranchBinaryClusteringVector::SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) {
   BinaryClusteringVector::SetupLabelForVertex(vertex, label);
   obj_func_value_increase_relatively_to_first_cluster_[vertex] =
   obj_func_value_increase_relatively_to_second_cluster_[vertex] = number_of_neighbours_in_graph_[vertex] = 0;
@@ -28,16 +28,16 @@ void BoundAndBranchBinaryClusteringVector::SetupLabelForVertex(const unsigned ve
     if (i == vertex) continue;
     auto i_label = labels_[i];
     auto is_joined = graph_->IsJoined(vertex, i);
-    if (i_label != -1) {
-      if ((i_label == int(label) && !is_joined) || (i_label != int(label) && is_joined)) {
+    if (i_label != NON_CLUSTERED) {
+      if ((i_label == label && !is_joined) || (i_label != label && is_joined)) {
         obj_func_value_on_partially_built_clustering_++;
       }
     }
-    if (i_label == -1) {
-      if ((is_joined && label == 1) || (!is_joined && label == 0)) {
+    if (i_label == NON_CLUSTERED) {
+      if ((is_joined && label == SECOND_CLUSTER) || (!is_joined && label == FIRST_CLUSTER)) {
         obj_func_value_increase_relatively_to_first_cluster_[i]++;
       }
-      if ((is_joined && label == 0) || (!is_joined && label == 1)) {
+      if ((is_joined && label == FIRST_CLUSTER) || (!is_joined && label == SECOND_CLUSTER)) {
         obj_func_value_increase_relatively_to_second_cluster_[i]++;
       }
       if (is_joined) {
@@ -52,7 +52,7 @@ unsigned BoundAndBranchBinaryClusteringVector::Choose() const {
   unsigned candidate = UINT_MAX;
   int best_dist = INT_MIN;
   for (unsigned long i = 0; i < labels_.size(); i++) {
-    if (labels_[i] != -1) continue;
+    if (labels_[i] != NON_CLUSTERED) continue;
     auto tmp_dist = std::min(obj_func_value_increase_relatively_to_first_cluster_[i],
                              obj_func_value_increase_relatively_to_second_cluster_[i])
         + number_of_neighbours_in_graph_[i];

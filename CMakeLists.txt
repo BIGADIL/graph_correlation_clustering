@@ -37,6 +37,11 @@ add_executable(Graph_correlation_clustering
         src/algorithms/NeighborSplitter.cpp
         include/algorithms/NeighborSplitter.hpp
         src/algorithms/LocalSearchAlgorithm.cpp
-        include/algorithms/LocalSearchAlgorithm.hpp src/algorithms/BranchAndBoundAlgorithm.cpp include/algorithms/BranchAndBoundAlgorithm.hpp src/clustering/BoundAndBranchBinaryClusteringVector.cpp include/clustering/BoundAndBranchBinaryClusteringVector.hpp)
+        include/algorithms/LocalSearchAlgorithm.hpp
+        src/algorithms/BranchAndBoundAlgorithm.cpp
+        include/algorithms/BranchAndBoundAlgorithm.hpp
+        src/clustering/BoundAndBranchBinaryClusteringVector.cpp
+        include/clustering/BoundAndBranchBinaryClusteringVector.hpp
+        include/common/CLusteringLabels.hpp)
 
 target_link_libraries( Graph_correlation_clustering ${CMAKE_THREAD_LIBS_INIT} )

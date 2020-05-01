@@ -21,7 +21,7 @@ class BoundAndBranchBinaryClusteringVector : public BinaryClusteringVector {
 
  public:
   BoundAndBranchBinaryClusteringVector(const unsigned size, const std::shared_ptr<IGraph> &graph);
-  void SetupLabelForVertex(const unsigned vertex, const unsigned label) override;
+  void SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) override;
   unsigned Choose() const;
   int Bound(const unsigned record) const;
 

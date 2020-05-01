@@ -7,9 +7,9 @@ IClusteringPointer NeighborSplitter::SplitGraphByVertex(const IGraph &graph, con
   IClusteringPointer split_clustering = clustering_factory_->CreateClustering(graph.Size());
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (i == vertex || graph.IsJoined(i, vertex)) {
-      split_clustering->SetupLabelForVertex(i, 0);
+      split_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
     } else {
-      split_clustering->SetupLabelForVertex(i, 1);
+      split_clustering->SetupLabelForVertex(i, SECOND_CLUSTER);
     }
   }
   return split_clustering;
