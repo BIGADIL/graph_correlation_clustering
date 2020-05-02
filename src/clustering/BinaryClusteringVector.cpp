@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <sstream>
 #include "../../include/clustering/BinaryClusteringVector.hpp"
 
 void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) {
@@ -77,4 +78,19 @@ unsigned int BinaryClusteringVector::GetNumVerticesByLabel(const unsigned label)
     return num_vertices_in_first_cluster_;
   }
   return num_vertices_in_second_cluster_;
+}
+
+std::string BinaryClusteringVector::ToJson() const {
+  std::stringstream ss;
+  ss << "\"binary clustering vector \": [";
+  unsigned row_idx = 0;
+  for (const auto& label: labels_) {
+    row_idx++;
+    if (row_idx == labels_.size()) {
+      ss << label << "]";
+    } else {
+      ss << label << ",";
+    }
+  }
+  return ss.str();
 }

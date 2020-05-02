@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.8)
 project(Graph_correlation_clustering)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
@@ -14,7 +14,7 @@ endif ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -lstdc++fs")
 
 find_package( Threads )
 
@@ -42,6 +42,8 @@ add_executable(Graph_correlation_clustering
         include/algorithms/BranchAndBoundAlgorithm.hpp
         src/clustering/BoundAndBranchBinaryClusteringVector.cpp
         include/clustering/BoundAndBranchBinaryClusteringVector.hpp
-        include/common/CLusteringLabels.hpp)
+        include/common/CLusteringLabels.hpp src/graphs/AdjacencyMatrixGraph.cpp)
 
 target_link_libraries( Graph_correlation_clustering ${CMAKE_THREAD_LIBS_INIT} )
+
+target_compile_features(Graph_correlation_clustering PUBLIC cxx_std_17)

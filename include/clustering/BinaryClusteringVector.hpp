@@ -18,7 +18,7 @@ class BinaryClusteringVector : public IClustering {
   BinaryClusteringVector() = delete;
   BinaryClusteringVector(const BinaryClusteringVector &) = default;
   BinaryClusteringVector(const BinaryClusteringVector &&) = delete;
-  BinaryClusteringVector &operator=(const BinaryClusteringVector &) = delete;
+  BinaryClusteringVector &operator=(const BinaryClusteringVector &) = default;
   BinaryClusteringVector &operator=(const BinaryClusteringVector &&) = delete;
 
   BinaryClusteringVector(const unsigned size);
@@ -32,6 +32,7 @@ class BinaryClusteringVector : public IClustering {
   bool IsSameClustered(const unsigned i, const unsigned j) const override;
   unsigned GetNumNonClusteredVertices() const override;
   unsigned int GetNumVerticesByLabel(const unsigned label) const override;
+  std::string ToJson() const override;
 
   friend class BinaryClusteringFactory;
 };

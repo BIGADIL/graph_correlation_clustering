@@ -13,6 +13,7 @@ class IClustering {
   virtual bool IsSameClustered(const unsigned i, const unsigned j) const = 0;
   virtual unsigned GetNumNonClusteredVertices() const = 0;
   virtual unsigned GetNumVerticesByLabel(const unsigned label) const = 0;
+  virtual std::string ToJson() const = 0;
 };
 
 

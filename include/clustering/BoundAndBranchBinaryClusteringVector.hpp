@@ -14,12 +14,13 @@ class BoundAndBranchBinaryClusteringVector : public BinaryClusteringVector {
 
  protected:
   BoundAndBranchBinaryClusteringVector() = delete;
-  BoundAndBranchBinaryClusteringVector(const BoundAndBranchBinaryClusteringVector &) = default;
   BoundAndBranchBinaryClusteringVector(const BoundAndBranchBinaryClusteringVector &&) = delete;
-  BoundAndBranchBinaryClusteringVector &operator=(const BoundAndBranchBinaryClusteringVector &) = delete;
   BoundAndBranchBinaryClusteringVector &operator=(const BoundAndBranchBinaryClusteringVector &&) = delete;
 
  public:
+  BoundAndBranchBinaryClusteringVector(const BoundAndBranchBinaryClusteringVector &) = default;
+  BoundAndBranchBinaryClusteringVector &operator=(const BoundAndBranchBinaryClusteringVector &) = default;
+
   BoundAndBranchBinaryClusteringVector(const unsigned size, const std::shared_ptr<IGraph> &graph);
   void SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) override;
   unsigned Choose() const;

@@ -2,7 +2,8 @@
 
 #include "../../include/clustering/BoundAndBranchBinaryClusteringVector.hpp"
 
-BoundAndBranchBinaryClusteringVector::BoundAndBranchBinaryClusteringVector(const unsigned size, const std::shared_ptr<IGraph> &graph)
+BoundAndBranchBinaryClusteringVector::BoundAndBranchBinaryClusteringVector(const unsigned size,
+                                                                           const std::shared_ptr<IGraph> &graph)
     : BinaryClusteringVector(size), graph_(graph) {
   obj_func_value_increase_relatively_to_first_cluster_ = std::vector<int>(size);
   obj_func_value_increase_relatively_to_second_cluster_ = std::vector<int>(size);

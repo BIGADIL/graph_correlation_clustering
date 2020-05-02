@@ -7,12 +7,13 @@ class BranchAndBoundAlgorithm {
  private:
   std::shared_ptr<IGraph> graph_;
   unsigned record_{0};
+  std::shared_ptr<IClustering> best_clustering_ = nullptr;
 
-  void Branch(const BoundAndBranchBinaryClusteringVector &clustering);
+  void Branch(BoundAndBranchBinaryClusteringVector &clustering);
 
  public:
   explicit BranchAndBoundAlgorithm() = default;
-  unsigned GetBestClustering(const std::shared_ptr<IGraph>& graph, int record);
+  std::shared_ptr<IClustering> GetBestClustering(const std::shared_ptr<IGraph>& graph, const std::shared_ptr<IClustering> &clustering_record);
 };
 
 
