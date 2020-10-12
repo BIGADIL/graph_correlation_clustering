@@ -2,6 +2,12 @@
 
 #include <memory>
 #include "../IClustering.hpp"
+
+/**
+ * Base interface.
+ *
+ * Factory could create new clustering.
+ */
 class IClusteringFactory {
  private:
   IClusteringFactory(const IClusteringFactory&) = delete;
@@ -11,8 +17,12 @@ class IClusteringFactory {
 
  public:
   IClusteringFactory() = default;
-  virtual std::shared_ptr<IClustering> CreateClustering(const unsigned size) const = 0;
+  /**
+   * Create new clustering.
+   * @param size size of new clustering.
+   * @return new clustering.
+   */
+  virtual IClustPtr CreateClustering(const unsigned size) const = 0;
 };
 
-
-
+using IClustFactoryPtr = std::shared_ptr<IClusteringFactory>;

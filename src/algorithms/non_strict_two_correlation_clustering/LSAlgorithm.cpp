@@ -1,18 +1,14 @@
 #include <climits>
 #include <iostream>
 
-#include "../../include/algorithms/LocalSearchAlgorithm.hpp"
+#include "../../../include/algorithms/non_strict_two_correlation_clustering/LSAlgorithm.hpp"
 
-LocalSearchAlgorithm::LocalSearchAlgorithm(std::shared_ptr<IClusteringFactory> clustering_factory)
-    : clustering_factory_(std::move(clustering_factory)) {
-
-}
-IClusteringPointer LocalSearchAlgorithm::ComputeLocalOptimum(const IGraph &graph,
-                                                             const IClusteringPointer &cur_clustering) const {
+IClustPtr LSAlgorithm::ComputeLocalOptimum(const IGraph &graph,
+                                           const IClustPtr &cur_clustering) {
   auto result = cur_clustering->GetCopy();
   while (true) {
     int local_improvement = INT_MIN;
-    int candidate = -1;
+    unsigned candidate = UINT_MAX;
     for (unsigned i = 0; i < graph.Size(); i++) {
       auto tmp_local_improvement = ComputeLocalImprovement(graph, result, i);
       if (tmp_local_improvement > local_improvement) {
@@ -32,9 +28,10 @@ IClusteringPointer LocalSearchAlgorithm::ComputeLocalOptimum(const IGraph &graph
 
   return result;
 }
-int LocalSearchAlgorithm::ComputeLocalImprovement(const IGraph &graph,
-                                                  const IClusteringPointer &cur_clustering,
-                                                  const unsigned vertex) const {
+
+int LSAlgorithm::ComputeLocalImprovement(const IGraph &graph,
+                                         const IClustPtr &cur_clustering,
+                                         const unsigned vertex) {
   int local_improvement = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (i == vertex) {
@@ -43,17 +40,9 @@ int LocalSearchAlgorithm::ComputeLocalImprovement(const IGraph &graph,
     bool is_same_clustered = cur_clustering->IsSameClustered(i, vertex);
     bool is_joined = graph.IsJoined(i, vertex);
     if (is_same_clustered) {
-      if (is_joined) {
-        local_improvement--;
-      } else {
-        local_improvement++;
-      }
+      local_improvement += is_joined ? -1 : 1;
     } else {
-      if (is_joined) {
-        local_improvement++;
-      } else {
-        local_improvement--;
-      }
+      local_improvement += is_joined ? 1 : -1;
     }
   }
   return local_improvement;

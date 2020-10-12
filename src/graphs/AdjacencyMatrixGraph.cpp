@@ -1,5 +1,3 @@
-
-
 #include <string>
 #include <sstream>
 #include "../../include/graphs/AdjacencyMatrixGraph.hpp"
@@ -12,7 +10,7 @@ std::string AdjacencyMatrixGraph::ToJson() const {
     row_idx++;
     ss << "[";
     unsigned elem_idx = 0;
-    for (const auto &elem: row) {
+    for (const auto elem: row) {
       elem_idx++;
       ss << elem;
       if (elem_idx != row.size()) {
@@ -29,4 +27,3 @@ std::string AdjacencyMatrixGraph::ToJson() const {
   ss << "]";
   return ss.str();
 }
-

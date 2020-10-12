@@ -1,10 +1,11 @@
 #pragma once
 
 #include "IClusteringFactory.hpp"
+
+/**
+ * Factory of binary clustering.
+ */
 class BinaryClusteringFactory : public IClusteringFactory {
  public:
-  std::shared_ptr<IClustering> CreateClustering(const unsigned size) const override;
+  IClustPtr CreateClustering(const unsigned size) const override;
 };
-
-
-

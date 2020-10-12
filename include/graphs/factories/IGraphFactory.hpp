@@ -3,10 +3,15 @@
 #include <memory>
 #include "../IGraph.hpp"
 
+/**
+ * Base factory for graphs.
+ */
 class IGraphFactory {
  public:
-  virtual std::shared_ptr<IGraph> CreateGraph(const unsigned size) = 0;
+  /**
+   * Create new graph.
+   * @param size size of graph.
+   * @return new graph.
+   */
+  virtual IGraphPtr CreateGraph(const unsigned size) = 0;
 };
-
-
-

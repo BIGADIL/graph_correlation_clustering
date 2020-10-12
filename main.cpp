@@ -1,14 +1,13 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include <utility>
 #include <fstream>
 #include <filesystem>
 
-#include "include/algorithms/NeighborhoodAlgorithm.hpp"
+#include "include/algorithms/non_strict_two_correlation_clustering/NWithLSAlgorithm.hpp"
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
-#include "include/algorithms/BranchAndBoundAlgorithm.hpp"
+#include "include/algorithms/non_strict_two_correlation_clustering/BBAlgorithm.hpp"
 
 struct ClusteringInfo {
   std::string name;
@@ -78,7 +77,7 @@ int main(int argc, char *argv[]) {
 
   for (unsigned i = 0; i < num_graphs; ++i) {
     auto graph = graphs_factory.CreateGraph(graph_size);
-    NeighborhoodAlgorithm neighborhood_algorithm(num_threads, factory);
+    NWithLSAlgorithm neighborhood_algorithm(num_threads, factory);
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     auto best_clustering = neighborhood_algorithm.getBestNeighborhoodClustering(*graph);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -90,9 +89,9 @@ int main(int argc, char *argv[]) {
         std::chrono::duration_cast<std::chrono::seconds>(end - begin)
     );
 
-    BranchAndBoundAlgorithm branch_and_bound_algorithm;
+    BBAlgorithm bb_algorithm;
     begin = std::chrono::steady_clock::now();
-    auto bbm_record = branch_and_bound_algorithm.GetBestClustering(graph, best_clustering);
+    auto bbm_record = bb_algorithm.GetBestClustering(graph, best_clustering);
     end = std::chrono::steady_clock::now();
 
     ClusteringInfo branch_bounds_clustering_info(

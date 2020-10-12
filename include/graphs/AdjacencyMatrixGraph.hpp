@@ -9,7 +9,8 @@ class AdjacencyMatrixGraph : public IGraph {
  public:
   AdjacencyMatrixGraph() = delete;
   AdjacencyMatrixGraph(const std::vector<std::vector<bool>> &adjacency_matrix) : adjacency_matrix_(adjacency_matrix) {}
-  bool IsJoined(const unsigned i, const unsigned j) const override { return adjacency_matrix_[i][j];}
-  unsigned Size() const override { return adjacency_matrix_.size();}
+  bool IsJoined(const unsigned i,
+                const unsigned j) const override { return adjacency_matrix_[i][j]; }
+  unsigned Size() const override { return adjacency_matrix_.size(); }
   std::string ToJson() const override;
 };
