@@ -9,7 +9,7 @@
  *
  * It works only with ::BBBinaryClusteringVector.
  */
-class BBAlgorithm {
+class BBAlgorithmForNS2CC {
  private:
   /**
    * The source graph to be clustered.
@@ -34,7 +34,7 @@ class BBAlgorithm {
   void Branch(BBBinaryClusteringVector &clustering);
 
  public:
-  explicit BBAlgorithm() = default;
+  explicit BBAlgorithmForNS2CC() = default;
   /**
    * Get optimal solution for source graph.
    * @param graph source graph.

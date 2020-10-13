@@ -1,10 +1,10 @@
 #include <climits>
 #include <iostream>
 
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/LSAlgorithm.hpp"
+#include "../../../include/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.hpp"
 
-IClustPtr LSAlgorithm::ComputeLocalOptimum(const IGraph &graph,
-                                           const IClustPtr &cur_clustering) {
+IClustPtr LSAlgorithmForNS2CC::ComputeLocalOptimum(const IGraph &graph,
+                                                   const IClustPtr &cur_clustering) {
   auto result = cur_clustering->GetCopy();
   while (true) {
     int local_improvement = INT_MIN;
@@ -28,9 +28,9 @@ IClustPtr LSAlgorithm::ComputeLocalOptimum(const IGraph &graph,
   return result;
 }
 
-int LSAlgorithm::ComputeLocalImprovement(const IGraph &graph,
-                                         const IClustPtr &cur_clustering,
-                                         const unsigned vertex) {
+int LSAlgorithmForNS2CC::ComputeLocalImprovement(const IGraph &graph,
+                                                 const IClustPtr &cur_clustering,
+                                                 const unsigned vertex) {
   int local_improvement = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (i == vertex) {

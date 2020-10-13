@@ -7,7 +7,7 @@
  * Local search for NS2CC.
  * @see Coleman, Saunderson and Wirth. A Local-Search 2-Approximation for 2-Correlation-Clustering.
  */
-class LSAlgorithm {
+class LSAlgorithmForS2CC {
 
  private:
   /**
@@ -31,5 +31,7 @@ class LSAlgorithm {
    * @return local optimal clustering.
    */
   static IClustPtr ComputeLocalOptimum(const IGraph &graph,
-                                       const IClustPtr &cur_clustering);
+                                       const IClustPtr &cur_clustering,
+                                       const unsigned vertex,
+                                       const unsigned opposite_vertex);
 };

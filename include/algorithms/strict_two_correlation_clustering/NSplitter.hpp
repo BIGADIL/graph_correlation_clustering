@@ -1,13 +1,14 @@
 #pragma once
 
 #include <memory>
+
 #include "../../clustering/factories/IClusteringFactory.hpp"
 
 /**
  * Graph splitter by neighbor.
  * @see Bansal, Blum & Chawla. Correlation Clustering.
  */
-class NSplitter {
+class NSplitterForS2CC {
  private:
   /**
   * Factory that create new clustering.
@@ -15,7 +16,7 @@ class NSplitter {
   IClustFactoryPtr clustering_factory_;
 
  public:
-  NSplitter(IClustFactoryPtr clustering_factory);
+  NSplitterForS2CC(IClustFactoryPtr clustering_factory);
   /**
    * Split source graph by vertex based on its neighborhood.
    *
@@ -24,5 +25,8 @@ class NSplitter {
    * @return clustering based on vertex neighborhood.
    */
   IClustPtr SplitGraphByVertex(const IGraph &graph,
-                               const unsigned vertex) const;
+                               const unsigned vertex,
+                               const unsigned opposite_vertex) const;
 };
+
+

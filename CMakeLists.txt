@@ -5,7 +5,7 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
     message(" ")
     message("CMAKE IN DEBUG MODE")
     message(" ")
-elseif(CMAKE_BUILD_TYPE MATCHES Release)
+elseif (CMAKE_BUILD_TYPE MATCHES Release)
     message(" ")
     message("CMAKE IN RELEASE MODE")
     message(" ")
@@ -16,38 +16,65 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -lstdc++fs")
 
-find_package( Threads )
+find_package(Threads)
 
-add_executable(Graph_correlation_clustering
-        main.cpp
+set(COMMON_SRC
         include/graphs/IGraph.hpp
         include/graphs/AdjacencyMatrixGraph.hpp
-        src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
+        include/graphs/factories/IGraphFactory.hpp
         include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp
         include/clustering/IClustering.hpp
         include/clustering/BinaryClusteringVector.hpp
-        src/clustering/BinaryClusteringVector.cpp
-        src/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithm.hpp
         include/clustering/factories/IClusteringFactory.hpp
-        src/clustering/factories/BinaryClusteringFactory.cpp
         include/clustering/factories/BinaryClusteringFactory.hpp
-        include/graphs/factories/IGraphFactory.hpp
-        src/algorithms/non_strict_two_correlation_clustering/NSplitter.cpp
-        include/algorithms/non_strict_two_correlation_clustering/NSplitter.hpp
-        src/algorithms/non_strict_two_correlation_clustering/LSAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/LSAlgorithm.hpp
-        src/algorithms/non_strict_two_correlation_clustering/BBAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/BBAlgorithm.hpp
-        src/clustering/BBBinaryClusteringVector.cpp
         include/clustering/BBBinaryClusteringVector.hpp
-        include/common/CLusteringLabels.hpp
+        include/common/ClusteringLabels.hpp
+
         src/graphs/AdjacencyMatrixGraph.cpp
-        src/algorithms/non_strict_two_correlation_clustering/N1LsAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/N1LsAlgorithm.hpp
-        src/algorithms/non_strict_two_correlation_clustering/NAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/NAlgorithm.hpp)
+        src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
+        src/clustering/BinaryClusteringVector.cpp
+        src/clustering/factories/BinaryClusteringFactory.cpp
+        src/clustering/BBBinaryClusteringVector.cpp
+        )
 
-target_link_libraries( Graph_correlation_clustering ${CMAKE_THREAD_LIBS_INIT} )
+set(NS2CC_SRC
+        include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithmForNS2CC.hpp
+        include/algorithms/non_strict_two_correlation_clustering/NSplitterForNS2CC.hpp
+        include/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.hpp
+        include/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.hpp
+        include/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.hpp
+        include/algorithms/non_strict_two_correlation_clustering/NAlgorithmForNS2CC.hpp
 
-target_compile_features(Graph_correlation_clustering PUBLIC cxx_std_17)
+        src/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithmForNS2CC.cpp
+        src/algorithms/non_strict_two_correlation_clustering/NSplitterForNS2CC.cpp
+        src/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.cpp
+        src/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.cpp
+        src/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.cpp
+        src/algorithms/non_strict_two_correlation_clustering/NAlgorithmForNS2CC.cpp
+        )
+
+set(S2CC_SCR
+        include/algorithms/strict_two_correlation_clustering/NSplitter.hpp
+        include/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp
+        include/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp
+
+        src/algorithms/strict_two_correlation_clustering/NSplitter.cpp
+        src/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.cpp
+        src/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.cpp
+)
+
+add_executable(NS2CCExperiment
+        NS2CCExperiment.cpp
+        ${COMMON_SRC}
+        ${NS2CC_SRC}
+        )
+target_link_libraries(NS2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(NS2CCExperiment PUBLIC cxx_std_17)
+
+add_executable(S2CCExperiment
+        S2CCExperiment.cpp
+        ${COMMON_SRC}
+        ${S2CC_SCR}
+        )
+target_link_libraries(S2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(S2CCExperiment PUBLIC cxx_std_17)

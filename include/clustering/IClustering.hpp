@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../graphs/IGraph.hpp"
-#include "../common/CLusteringLabels.hpp"
+#include "../common/ClusteringLabels.hpp"
 
 /**
  * Base interface of clustering.

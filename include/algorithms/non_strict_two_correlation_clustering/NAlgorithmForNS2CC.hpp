@@ -1,24 +1,14 @@
 #pragma once
 
-#include <memory>
-#include <mutex>
-
-#include "../../clustering/IClustering.hpp"
 #include "../../clustering/factories/IClusteringFactory.hpp"
-#include "NSplitter.hpp"
-#include "LSAlgorithm.hpp"
+#include "NSplitterForNS2CC.hpp"
 
-/**
- * Neighborhood algorithm with local search for NS2CC.
- *
- * @warning use multithreading.
- */
-class NNLSAlgorithm {
+class NAlgorithmForNS2CC {
  public:
-  NNLSAlgorithm() = delete;
-  NNLSAlgorithm(const NNLSAlgorithm &&) = delete;
-  NNLSAlgorithm &operator=(const NNLSAlgorithm &) = delete;
-  NNLSAlgorithm &operator=(const NNLSAlgorithm &&) = delete;
+  NAlgorithmForNS2CC() = delete;
+  NAlgorithmForNS2CC(const NAlgorithmForNS2CC &&) = delete;
+  NAlgorithmForNS2CC &operator=(const NAlgorithmForNS2CC &) = delete;
+  NAlgorithmForNS2CC &operator=(const NAlgorithmForNS2CC &&) = delete;
 
  private:
   /**
@@ -32,7 +22,7 @@ class NNLSAlgorithm {
   /**
    * Neighborhood splitter.
    */
-  NSplitter neighbor_splitter_;
+  NSplitterForNS2CC neighbor_splitter_;
 
  private:
   void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
@@ -40,8 +30,8 @@ class NNLSAlgorithm {
                                               IClustPtr &local_best_clustering) const;
 
  public:
-  NNLSAlgorithm(unsigned num_threads,
-                const IClustFactoryPtr &clustering_factory);
+  NAlgorithmForNS2CC(unsigned num_threads,
+                     const IClustFactoryPtr &clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.
@@ -49,3 +39,5 @@ class NNLSAlgorithm {
    */
   [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
 };
+
+

@@ -1,9 +1,9 @@
 #include <vector>
 #include <thread>
 #include <climits>
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/NAlgorithm.hpp"
+#include "../../../include/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp"
 
-IClustPtr NAlgorithm::getBestNeighborhoodClustering(const IGraph &graph) const {
+IClustPtr NAlgorithmForS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<IClustPtr> local_best_clustering_vector;
   for (unsigned i = 0; i < num_threads_; i++) {
     auto instance = clustering_factory_->CreateClustering(graph.Size());
@@ -12,7 +12,7 @@ IClustPtr NAlgorithm::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
     thread_vector[i] = std::thread(
-        &NAlgorithm::BestNeighborhoodClusteringThreadWorker,
+        &NAlgorithmForS2CC::BestNeighborhoodClusteringThreadWorker,
         this,
         std::ref(graph),
         i,
@@ -34,23 +34,26 @@ IClustPtr NAlgorithm::getBestNeighborhoodClustering(const IGraph &graph) const {
   return best_neighborhood_clustering;
 }
 
-void NAlgorithm::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                           const unsigned threadId,
-                                                           IClustPtr &local_best_clustering) const {
+void NAlgorithmForS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
+                                                                const unsigned threadId,
+                                                                IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
-    auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i);
-    unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
-      best_distance = tmp_distance;
-      local_best_clustering = std::move(tmp_neighborhood_clustering);
+    for (unsigned j = 0; j < graph.Size(); j++) {
+      if (i == j) continue;
+      auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i, j);
+      unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
+      if (tmp_distance < best_distance) {
+        best_distance = tmp_distance;
+        local_best_clustering = std::move(tmp_neighborhood_clustering);
+      }
     }
   }
 }
 
-NAlgorithm::NAlgorithm(const unsigned num_threads,
-                             const IClustFactoryPtr &clustering_factory)
+NAlgorithmForS2CC::NAlgorithmForS2CC(const unsigned num_threads,
+                                       const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
-      neighbor_splitter_(NSplitter(clustering_factory)) {
+      neighbor_splitter_(NSplitterForS2CC(clustering_factory)) {
 }
