@@ -54,11 +54,11 @@ set(NS2CC_SRC
         )
 
 set(S2CC_SCR
-        include/algorithms/strict_two_correlation_clustering/NSplitter.hpp
+        include/algorithms/strict_two_correlation_clustering/NSplitterFor2CC.hpp
         include/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp
         include/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp
 
-        src/algorithms/strict_two_correlation_clustering/NSplitter.cpp
+        src/algorithms/strict_two_correlation_clustering/NSplitterFor2CC.cpp
         src/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.cpp
         src/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.cpp
 )

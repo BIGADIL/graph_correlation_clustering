@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../../clustering/factories/IClusteringFactory.hpp"
-#include "NSplitter.hpp"
+#include "NSplitterFor2CC.hpp"
+
 class NAlgorithmForS2CC {
  public:
   NAlgorithmForS2CC() = delete;
