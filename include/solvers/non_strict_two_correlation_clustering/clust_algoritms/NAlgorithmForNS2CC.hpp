@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../clustering/factories/IClusteringFactory.hpp"
-#include "NSplitterForNS2CC.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
+#include "../common_functions/NSplitterForNS2CC.hpp"
 
 namespace ns2cc {
 

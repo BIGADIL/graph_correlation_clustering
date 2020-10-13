@@ -4,12 +4,12 @@
 #include <fstream>
 #include <filesystem>
 
-#include "include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithmForNS2CC.hpp"
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
-#include "include/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.hpp"
-#include "include/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.hpp"
-#include "include/algorithms/non_strict_two_correlation_clustering/NAlgorithmForNS2CC.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NAlgorithmForNS2CC.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/clust_algoritms/N1LSAlgorithmForNS2CC.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NNLSAlgorithmForNS2CC.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BBAlgorithmForNS2CC.hpp"
 
 struct ClusteringInfo {
   std::string name;

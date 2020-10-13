@@ -1,16 +1,15 @@
 #include <climits>
-#include "../../../include/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp"
+#include <iostream>
 
-IClustPtr LSAlgorithmForS2CC::ComputeLocalOptimum(const IGraph &graph,
-                                                   const IClustPtr &cur_clustering,
-                                                   const unsigned vertex,
-                                                   const unsigned opposite_vertex) {
+#include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/LSAlgorithmForNS2CC.hpp"
+
+IClustPtr ns2cc::LSAlgorithmForNS2CC::ComputeLocalOptimum(const IGraph &graph,
+                                                          const IClustPtr &cur_clustering) {
   auto result = cur_clustering->GetCopy();
   while (true) {
     int local_improvement = INT_MIN;
     unsigned candidate = UINT_MAX;
     for (unsigned i = 0; i < graph.Size(); i++) {
-      if (i == vertex || i == opposite_vertex) continue;
       auto tmp_local_improvement = ComputeLocalImprovement(graph, result, i);
       if (tmp_local_improvement > local_improvement) {
         local_improvement = tmp_local_improvement;
@@ -29,9 +28,9 @@ IClustPtr LSAlgorithmForS2CC::ComputeLocalOptimum(const IGraph &graph,
   return result;
 }
 
-int LSAlgorithmForS2CC::ComputeLocalImprovement(const IGraph &graph,
-                                                 const IClustPtr &cur_clustering,
-                                                 const unsigned vertex) {
+int ns2cc::LSAlgorithmForNS2CC::ComputeLocalImprovement(const IGraph &graph,
+                                                        const IClustPtr &cur_clustering,
+                                                        const unsigned vertex) {
   int local_improvement = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (i == vertex) {

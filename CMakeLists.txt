@@ -38,30 +38,30 @@ set(COMMON_SRC
         )
 
 set(NS2CC_SRC
-        include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithmForNS2CC.hpp
-        include/algorithms/non_strict_two_correlation_clustering/NSplitterForNS2CC.hpp
-        include/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.hpp
-        include/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.hpp
-        include/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.hpp
-        include/algorithms/non_strict_two_correlation_clustering/NAlgorithmForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NNLSAlgorithmForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/common_functions/NSplitterForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/common_functions/LSAlgorithmForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BBAlgorithmForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/N1LSAlgorithmForNS2CC.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NAlgorithmForNS2CC.hpp
 
-        src/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithmForNS2CC.cpp
-        src/algorithms/non_strict_two_correlation_clustering/NSplitterForNS2CC.cpp
-        src/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.cpp
-        src/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.cpp
-        src/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.cpp
-        src/algorithms/non_strict_two_correlation_clustering/NAlgorithmForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NNLSAlgorithmForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/common_functions/NSplitterForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/common_functions/LSAlgorithmForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BBAlgorithmForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/N1LSAlgorithmForNS2CC.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NAlgorithmForNS2CC.cpp
         )
 
 set(S2CC_SCR
-        include/algorithms/strict_two_correlation_clustering/NSplitterFor2CC.hpp
-        include/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp
-        include/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp
+        include/solvers/strict_two_correlation_clustering/NSplitterFor2CC.hpp
+        include/solvers/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp
+        include/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp
 
-        src/algorithms/strict_two_correlation_clustering/NSplitterFor2CC.cpp
-        src/algorithms/strict_two_correlation_clustering/LSAlgorithmForS2CC.cpp
-        src/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.cpp
-)
+        src/solvers/strict_two_correlation_clustering/NSplitterFor2CC.cpp
+        src/solvers/strict_two_correlation_clustering/LSAlgorithmForS2CC.cpp
+        src/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.cpp
+        )
 
 add_executable(NS2CCExperiment
         NS2CCExperiment.cpp

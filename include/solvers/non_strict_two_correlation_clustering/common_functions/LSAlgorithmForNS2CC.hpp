@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../../clustering/factories/IClusteringFactory.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
 
 namespace ns2cc {
 

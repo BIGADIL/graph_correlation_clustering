@@ -1,4 +1,4 @@
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/NSplitterForNS2CC.hpp"
+#include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/NSplitterForNS2CC.hpp"
 
 ns2cc::NSplitterForNS2CC::NSplitterForNS2CC(IClustFactoryPtr clustering_factory) :
     clustering_factory_(std::move(clustering_factory)) {

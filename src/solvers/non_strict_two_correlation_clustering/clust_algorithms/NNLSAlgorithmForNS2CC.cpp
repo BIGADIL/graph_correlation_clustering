@@ -1,11 +1,10 @@
-#include <vector>
-#include <thread>
 #include <climits>
+#include <thread>
 
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.hpp"
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.hpp"
+#include "../../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NNLSAlgorithmForNS2CC.hpp"
+#include "../../../../include/clustering/BinaryClusteringVector.hpp"
 
-IClustPtr ns2cc::N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
+IClustPtr ns2cc::NNLSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<IClustPtr> local_best_clustering_vector;
   for (unsigned i = 0; i < num_threads_; i++) {
     auto instance = clustering_factory_->CreateClustering(graph.Size());
@@ -14,7 +13,7 @@ IClustPtr ns2cc::N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGra
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
     thread_vector[i] = std::thread(
-        &N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker,
+        &NNLSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker,
         this,
         std::ref(graph),
         i,
@@ -33,15 +32,16 @@ IClustPtr ns2cc::N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGra
       best_neighborhood_clustering = it;
     }
   }
-  return LSAlgorithmForNS2CC::ComputeLocalOptimum(graph, best_neighborhood_clustering);
+  return best_neighborhood_clustering;
 }
 
-void ns2cc::N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
+void ns2cc::NNLSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                                                           const unsigned threadId,
                                                                           IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i);
+    tmp_neighborhood_clustering = LSAlgorithmForNS2CC::ComputeLocalOptimum(graph, tmp_neighborhood_clustering);
     unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
     if (tmp_distance < best_distance) {
       best_distance = tmp_distance;
@@ -50,7 +50,7 @@ void ns2cc::N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const 
   }
 }
 
-ns2cc::N1LSAlgorithmForNS2CC::N1LSAlgorithmForNS2CC(const unsigned num_threads,
+ns2cc::NNLSAlgorithmForNS2CC::NNLSAlgorithmForNS2CC(const unsigned num_threads,
                                                     const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),

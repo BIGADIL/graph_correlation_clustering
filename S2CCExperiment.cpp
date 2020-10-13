@@ -6,7 +6,7 @@
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
-#include "include/algorithms/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp"
+#include "include/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp"
 
 struct ClusteringInfo {
   std::string name;

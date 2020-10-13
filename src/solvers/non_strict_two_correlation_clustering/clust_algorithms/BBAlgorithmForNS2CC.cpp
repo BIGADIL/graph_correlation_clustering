@@ -1,4 +1,4 @@
-#include "../../../include/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.hpp"
+#include "../../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BBAlgorithmForNS2CC.hpp"
 
 IClustPtr ns2cc::BBAlgorithmForNS2CC::GetBestClustering(const IGraphPtr &graph,
                                                         const IClustPtr &initial_clustering) {

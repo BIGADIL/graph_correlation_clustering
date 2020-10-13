@@ -1,8 +1,12 @@
 #pragma once
 
-#include "../../graphs/IGraph.hpp"
-#include "../../clustering/IClustering.hpp"
-#include "NSplitterForNS2CC.hpp"
+#include <memory>
+#include <mutex>
+
+#include "../../../clustering/IClustering.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
+#include "../common_functions/NSplitterForNS2CC.hpp"
+#include "../common_functions/LSAlgorithmForNS2CC.hpp"
 
 namespace ns2cc {
 
@@ -11,12 +15,12 @@ namespace ns2cc {
    *
    * @warning use multithreading.
    */
-  class N1LSAlgorithmForNS2CC {
+  class NNLSAlgorithmForNS2CC {
    public:
-    N1LSAlgorithmForNS2CC() = delete;
-    N1LSAlgorithmForNS2CC(const N1LSAlgorithmForNS2CC &&) = delete;
-    N1LSAlgorithmForNS2CC &operator=(const N1LSAlgorithmForNS2CC &) = delete;
-    N1LSAlgorithmForNS2CC &operator=(const N1LSAlgorithmForNS2CC &&) = delete;
+    NNLSAlgorithmForNS2CC() = delete;
+    NNLSAlgorithmForNS2CC(const NNLSAlgorithmForNS2CC &&) = delete;
+    NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &) = delete;
+    NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &&) = delete;
 
    private:
     /**
@@ -38,7 +42,7 @@ namespace ns2cc {
                                                 IClustPtr &local_best_clustering) const;
 
    public:
-    N1LSAlgorithmForNS2CC(unsigned num_threads,
+    NNLSAlgorithmForNS2CC(unsigned num_threads,
                           const IClustFactoryPtr &clustering_factory);
     /**
      * Calc best clustering.
@@ -46,5 +50,5 @@ namespace ns2cc {
      * @return best clustering.
      */
     [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
-};
+  };
 }
