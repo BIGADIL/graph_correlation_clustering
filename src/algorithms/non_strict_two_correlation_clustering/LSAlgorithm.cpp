@@ -25,7 +25,6 @@ IClustPtr LSAlgorithm::ComputeLocalOptimum(const IGraph &graph,
       result->SetupLabelForVertex(candidate, FIRST_CLUSTER);
     }
   }
-
   return result;
 }
 

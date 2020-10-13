@@ -4,10 +4,12 @@
 #include <fstream>
 #include <filesystem>
 
-#include "include/algorithms/non_strict_two_correlation_clustering/NWithLSAlgorithm.hpp"
+#include "include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithm.hpp"
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
 #include "include/algorithms/non_strict_two_correlation_clustering/BBAlgorithm.hpp"
+#include "include/algorithms/non_strict_two_correlation_clustering/N1LsAlgorithm.hpp"
+#include "include/algorithms/non_strict_two_correlation_clustering/NAlgorithm.hpp"
 
 struct ClusteringInfo {
   std::string name;
@@ -77,35 +79,55 @@ int main(int argc, char *argv[]) {
 
   for (unsigned i = 0; i < num_graphs; ++i) {
     auto graph = graphs_factory.CreateGraph(graph_size);
-    NWithLSAlgorithm neighborhood_algorithm(num_threads, factory);
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    auto best_clustering = neighborhood_algorithm.getBestNeighborhoodClustering(*graph);
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::vector<ClusteringInfo> infos;
 
-    ClusteringInfo approximate_clustering_info(
-        "2-clustering-neighborhood-plus-local-search",
-        best_clustering,
-        best_clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(end - begin)
+    // NNLS algorithm
+    NNLSAlgorithm nnls_algoritm(num_threads, factory);
+    auto nnls_start_time = std::chrono::steady_clock::now();
+    auto nnls_clustering = nnls_algoritm.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back(
+        "NNLS",
+        nnls_clustering,
+        nnls_clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - nnls_start_time)
     );
 
-    BBAlgorithm bb_algorithm;
-    begin = std::chrono::steady_clock::now();
-    auto bbm_record = bb_algorithm.GetBestClustering(graph, best_clustering);
-    end = std::chrono::steady_clock::now();
+    //N1LS
+    N1LSAlgorithm n1ls_algorithm(num_threads, factory);
+    auto n1ls_start_time = std::chrono::steady_clock::now();
+    auto nn1s_clustering = n1ls_algorithm.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back(
+        "N1LS",
+        nn1s_clustering,
+        nn1s_clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - n1ls_start_time)
+    );
 
-    ClusteringInfo branch_bounds_clustering_info(
-        "2-clustering-brands-and-bounds",
+    NAlgorithm n_algorithm(num_threads, factory);
+    auto n_start_time = std::chrono::steady_clock::now();
+    auto n_clustering = n_algorithm.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back(
+        "N",
+        n_clustering,
+        n_clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - n_start_time)
+    );
+
+    //BB algorithm
+    BBAlgorithm bb_algorithm;
+    auto bb_start_time = std::chrono::steady_clock::now();
+    auto bbm_record = bb_algorithm.GetBestClustering(graph, nnls_clustering);
+    infos.emplace_back(
+        "BB",
         bbm_record,
         bbm_record->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(end - begin)
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - bb_start_time)
     );
-    std::vector<ClusteringInfo> infos{approximate_clustering_info, branch_bounds_clustering_info};
     std::string result = FormatComputationToJson(*graph, infos, graph_size, density);
 
     std::ofstream out;
     std::stringstream name;
-    name << dir_name << "n-" << graph_size <<"-p-" << density << "-" << dis_(gen_) << ".json";
+    name << dir_name << "n-" << graph_size << "-p-" << density << "-" << dis_(gen_) << ".json";
     out.open(name.str());
     out << result;
     out.close();

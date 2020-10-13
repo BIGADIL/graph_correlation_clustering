@@ -27,8 +27,8 @@ add_executable(Graph_correlation_clustering
         include/clustering/IClustering.hpp
         include/clustering/BinaryClusteringVector.hpp
         src/clustering/BinaryClusteringVector.cpp
-        src/algorithms/non_strict_two_correlation_clustering/NWithLSAlgorithm.cpp
-        include/algorithms/non_strict_two_correlation_clustering/NWithLSAlgorithm.hpp
+        src/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithm.cpp
+        include/algorithms/non_strict_two_correlation_clustering/NNLSAlgorithm.hpp
         include/clustering/factories/IClusteringFactory.hpp
         src/clustering/factories/BinaryClusteringFactory.cpp
         include/clustering/factories/BinaryClusteringFactory.hpp
@@ -41,7 +41,12 @@ add_executable(Graph_correlation_clustering
         include/algorithms/non_strict_two_correlation_clustering/BBAlgorithm.hpp
         src/clustering/BBBinaryClusteringVector.cpp
         include/clustering/BBBinaryClusteringVector.hpp
-        include/common/CLusteringLabels.hpp src/graphs/AdjacencyMatrixGraph.cpp)
+        include/common/CLusteringLabels.hpp
+        src/graphs/AdjacencyMatrixGraph.cpp
+        src/algorithms/non_strict_two_correlation_clustering/N1LsAlgorithm.cpp
+        include/algorithms/non_strict_two_correlation_clustering/N1LsAlgorithm.hpp
+        src/algorithms/non_strict_two_correlation_clustering/NAlgorithm.cpp
+        include/algorithms/non_strict_two_correlation_clustering/NAlgorithm.hpp)
 
 target_link_libraries( Graph_correlation_clustering ${CMAKE_THREAD_LIBS_INIT} )
 
