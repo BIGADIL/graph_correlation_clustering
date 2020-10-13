@@ -1,7 +1,7 @@
 #include "../../../include/algorithms/non_strict_two_correlation_clustering/BBAlgorithmForNS2CC.hpp"
 
-IClustPtr BBAlgorithmForNS2CC::GetBestClustering(const IGraphPtr &graph,
-                                                 const IClustPtr &initial_clustering) {
+IClustPtr ns2cc::BBAlgorithmForNS2CC::GetBestClustering(const IGraphPtr &graph,
+                                                        const IClustPtr &initial_clustering) {
   graph_ = graph;
   auto clustering = BBBinaryClusteringVector(graph->Size(), graph);
   record_ = initial_clustering->GetDistanceToGraph(*graph);
@@ -10,7 +10,7 @@ IClustPtr BBAlgorithmForNS2CC::GetBestClustering(const IGraphPtr &graph,
   return best_clustering_;
 }
 
-void BBAlgorithmForNS2CC::Branch(BBBinaryClusteringVector &clustering) {
+void ns2cc::BBAlgorithmForNS2CC::Branch(BBBinaryClusteringVector &clustering) {
   auto num_clustered = graph_->Size() - clustering.GetNumNonClusteredVertices();
   if (num_clustered != graph_->Size()) {
     auto v = clustering.Choose();

@@ -5,7 +5,7 @@
 #include "../../../include/algorithms/non_strict_two_correlation_clustering/N1LSAlgorithmForNS2CC.hpp"
 #include "../../../include/algorithms/non_strict_two_correlation_clustering/LSAlgorithmForNS2CC.hpp"
 
-IClustPtr N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
+IClustPtr ns2cc::N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<IClustPtr> local_best_clustering_vector;
   for (unsigned i = 0; i < num_threads_; i++) {
     auto instance = clustering_factory_->CreateClustering(graph.Size());
@@ -36,9 +36,9 @@ IClustPtr N1LSAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &gra
   return LSAlgorithmForNS2CC::ComputeLocalOptimum(graph, best_neighborhood_clustering);
 }
 
-void N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                                   const unsigned threadId,
-                                                                   IClustPtr &local_best_clustering) const {
+void ns2cc::N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
+                                                                          const unsigned threadId,
+                                                                          IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i);
@@ -50,8 +50,8 @@ void N1LSAlgorithmForNS2CC::BestNeighborhoodClusteringThreadWorker(const IGraph 
   }
 }
 
-N1LSAlgorithmForNS2CC::N1LSAlgorithmForNS2CC(const unsigned num_threads,
-                                             const IClustFactoryPtr &clustering_factory)
+ns2cc::N1LSAlgorithmForNS2CC::N1LSAlgorithmForNS2CC(const unsigned num_threads,
+                                                    const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
       neighbor_splitter_(NSplitterForNS2CC(clustering_factory)) {

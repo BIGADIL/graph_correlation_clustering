@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     std::vector<ClusteringInfo> infos;
 
     // NNLS algorithm
-    NNLSAlgorithmForNS2CC nnls_algoritm(num_threads, factory);
+    ns2cc::NNLSAlgorithmForNS2CC nnls_algoritm(num_threads, factory);
     auto nnls_start_time = std::chrono::steady_clock::now();
     auto nnls_clustering = nnls_algoritm.getBestNeighborhoodClustering(*graph);
     infos.emplace_back(
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     );
 
     //N1LS
-    N1LSAlgorithmForNS2CC n1ls_algorithm(num_threads, factory);
+    ns2cc::N1LSAlgorithmForNS2CC n1ls_algorithm(num_threads, factory);
     auto n1ls_start_time = std::chrono::steady_clock::now();
     auto nn1s_clustering = n1ls_algorithm.getBestNeighborhoodClustering(*graph);
     infos.emplace_back(
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - n1ls_start_time)
     );
 
-    NAlgorithmForNS2CC n_algorithm(num_threads, factory);
+    ns2cc::NAlgorithmForNS2CC n_algorithm(num_threads, factory);
     auto n_start_time = std::chrono::steady_clock::now();
     auto n_clustering = n_algorithm.getBestNeighborhoodClustering(*graph);
     infos.emplace_back(
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     );
 
     //BB algorithm
-    BBAlgorithmForNS2CC bb_algorithm;
+    ns2cc::BBAlgorithmForNS2CC bb_algorithm;
     auto bb_start_time = std::chrono::steady_clock::now();
     auto bbm_record = bb_algorithm.GetBestClustering(graph, nnls_clustering);
     infos.emplace_back(

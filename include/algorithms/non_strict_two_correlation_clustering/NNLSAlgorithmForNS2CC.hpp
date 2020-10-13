@@ -8,44 +8,47 @@
 #include "NSplitterForNS2CC.hpp"
 #include "LSAlgorithmForNS2CC.hpp"
 
-/**
- * Neighborhood algorithm with local search for NS2CC.
- *
- * @warning use multithreading.
- */
-class NNLSAlgorithmForNS2CC {
- public:
-  NNLSAlgorithmForNS2CC() = delete;
-  NNLSAlgorithmForNS2CC(const NNLSAlgorithmForNS2CC &&) = delete;
-  NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &) = delete;
-  NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &&) = delete;
+namespace ns2cc {
 
- private:
   /**
-   * How many threads used by solver.
+   * Neighborhood algorithm with local search for NS2CC.
+   *
+   * @warning use multithreading.
    */
-  unsigned num_threads_;
-  /**
-  * Factory that create new clustering.
-  */
-  IClustFactoryPtr clustering_factory_;
-  /**
-   * Neighborhood splitter.
-   */
-  NSplitterForNS2CC neighbor_splitter_;
+  class NNLSAlgorithmForNS2CC {
+   public:
+    NNLSAlgorithmForNS2CC() = delete;
+    NNLSAlgorithmForNS2CC(const NNLSAlgorithmForNS2CC &&) = delete;
+    NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &) = delete;
+    NNLSAlgorithmForNS2CC &operator=(const NNLSAlgorithmForNS2CC &&) = delete;
 
- private:
-  void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                              unsigned threadId,
-                                              IClustPtr &local_best_clustering) const;
+   private:
+    /**
+     * How many threads used by solver.
+     */
+    unsigned num_threads_;
+    /**
+    * Factory that create new clustering.
+    */
+    IClustFactoryPtr clustering_factory_;
+    /**
+     * Neighborhood splitter.
+     */
+    NSplitterForNS2CC neighbor_splitter_;
 
- public:
-  NNLSAlgorithmForNS2CC(unsigned num_threads,
-                        const IClustFactoryPtr &clustering_factory);
-  /**
-   * Calc best clustering.
-   * @param graph source graph.
-   * @return best clustering.
-   */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
-};
+   private:
+    void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
+                                                unsigned threadId,
+                                                IClustPtr &local_best_clustering) const;
+
+   public:
+    NNLSAlgorithmForNS2CC(unsigned num_threads,
+                          const IClustFactoryPtr &clustering_factory);
+    /**
+     * Calc best clustering.
+     * @param graph source graph.
+     * @return best clustering.
+     */
+    [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
+  };
+}
