@@ -51,7 +51,7 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BBAlgorithmForNS2CC.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/N1LSAlgorithmForNS2CC.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NAlgorithmForNS2CC.cpp
-        )
+        include/solvers/non_strict_two_correlation_clustering/NS2CCSolver.cpp include/solvers/non_strict_two_correlation_clustering/NS2CCSolver.hpp)
 
 set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/NSplitterFor2CC.hpp
