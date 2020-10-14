@@ -1,17 +1,16 @@
 #include <climits>
+#include "../../../../include/solvers/two_semi_supervised_correlation_clustering/common_functions/LSAlgorithmFor2SCC.hpp"
 
-#include "../../../../include/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.hpp"
-
-IClustPtr LSAlgorithmForS2CC::ComputeLocalOptimum(const IGraph &graph,
-                                                   const IClustPtr &cur_clustering,
-                                                   const unsigned vertex,
-                                                   const unsigned opposite_vertex) {
+IClustPtr LSAlgorithmFor2SCC::ComputeLocalOptimum(const IGraph &graph,
+                                                  const IClustPtr &cur_clustering,
+                                                  const unsigned first_cluster_vertex,
+                                                  const unsigned second_cluster_vertex) {
   auto result = cur_clustering->GetCopy();
   while (true) {
     int local_improvement = INT_MIN;
     unsigned candidate = UINT_MAX;
     for (unsigned i = 0; i < graph.Size(); i++) {
-      if (i == vertex || i == opposite_vertex) continue;
+      if (i == first_cluster_vertex || i == second_cluster_vertex) continue;
       auto tmp_local_improvement = ComputeLocalImprovement(graph, result, i);
       if (tmp_local_improvement > local_improvement) {
         local_improvement = tmp_local_improvement;
@@ -30,9 +29,9 @@ IClustPtr LSAlgorithmForS2CC::ComputeLocalOptimum(const IGraph &graph,
   return result;
 }
 
-int LSAlgorithmForS2CC::ComputeLocalImprovement(const IGraph &graph,
-                                                 const IClustPtr &cur_clustering,
-                                                 const unsigned vertex) {
+int LSAlgorithmFor2SCC::ComputeLocalImprovement(const IGraph &graph,
+                                                const IClustPtr &cur_clustering,
+                                                const unsigned vertex) {
   int local_improvement = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (i == vertex) {

@@ -25,8 +25,8 @@ class NSplitterForS2CC {
    * @return clustering based on vertex neighborhood.
    */
   [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph &graph,
-                               unsigned vertex,
-                               unsigned opposite_vertex) const;
+                                             unsigned vertex,
+                                             unsigned opposite_vertex) const;
 };
 
 

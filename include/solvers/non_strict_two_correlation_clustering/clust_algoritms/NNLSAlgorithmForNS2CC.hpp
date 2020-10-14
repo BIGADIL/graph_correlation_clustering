@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <mutex>
 
 #include "../../../clustering/IClustering.hpp"
 #include "../../../clustering/factories/IClusteringFactory.hpp"

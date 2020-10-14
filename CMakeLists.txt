@@ -75,6 +75,24 @@ set(S2CC_SCR
         src/solvers/strict_two_correlation_clustering/S2CCSolver.cpp
         )
 
+set(2SCC_SRC
+        include/solvers/two_semi_supervised_correlation_clustering/common_functions/NSplitterFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/common_functions/LSAlgorithmFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NAlgorithmFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/N1LSAlgorithmFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NNLSAlgorithmFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BBAlgorithmFor2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/Solver2SCC.hpp
+
+        src/solvers/two_semi_supervised_correlation_clustering/common_functions/NSplitterFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/common_functions/LSAlgorithmFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NAlgorithmFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/N1LSAlgorithmFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NNLSAlgorithmFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BBAlgorithmFor2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/Solver2SCC.cpp
+        )
+
 add_executable(NS2CCExperiment
         NS2CCExperiment.cpp
         ${COMMON_SRC}
@@ -90,3 +108,11 @@ add_executable(S2CCExperiment
         )
 target_link_libraries(S2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(S2CCExperiment PUBLIC cxx_std_17)
+
+add_executable(2SCCExperiment
+        2SCCExperiment.cpp
+        ${COMMON_SRC}
+        ${2SCC_SRC}
+        )
+target_link_libraries(2SCCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(2SCCExperiment PUBLIC cxx_std_17)
