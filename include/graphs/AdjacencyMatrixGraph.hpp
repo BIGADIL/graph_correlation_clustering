@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
+
 #include "IGraph.hpp"
+
 class AdjacencyMatrixGraph : public IGraph {
  private:
   std::vector<std::vector<bool>> adjacency_matrix_;

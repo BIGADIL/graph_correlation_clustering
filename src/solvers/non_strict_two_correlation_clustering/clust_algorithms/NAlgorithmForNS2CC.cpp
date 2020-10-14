@@ -1,6 +1,7 @@
 #include <vector>
 #include <thread>
 #include <climits>
+
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NAlgorithmForNS2CC.hpp"
 
 IClustPtr ns2cc::NAlgorithmForNS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {

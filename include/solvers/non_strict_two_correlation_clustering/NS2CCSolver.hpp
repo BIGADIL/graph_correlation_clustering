@@ -39,24 +39,24 @@ class NS2CCSolver {
  private:
   const std::vector<std::string> allowed_algorithms{"NNLS", "N1LS", "N", "BB"};
 
-  int num_threads_;
+  unsigned num_threads_;
 
   IClustFactoryPtr factory_;
 
  private:
 
-  std::string FormatComputationToJson(const IGraph &graph,
-                                      const std::vector<ClusteringInfo> &computation_results,
-                                      const unsigned size,
-                                      const double density) const;
+  static std::string FormatComputationToJson(const IGraph &graph,
+                                             const std::vector<ClusteringInfo> &computation_results,
+                                             unsigned size,
+                                             double density);
 
  public:
-  NS2CCSolver(const int num_threads,
-              const IClustFactoryPtr &factory);
+  NS2CCSolver(unsigned num_threads,
+              IClustFactoryPtr factory);
 
-  std::string solve(const IGraphPtr &graph,
-                    const double density,
-                    const std::vector<std::string> used_algorithms) const;
+  [[nodiscard]] std::string solve(const IGraphPtr &graph,
+                                  double density,
+                                  std::vector<std::string> used_algorithms) const;
 };
 
 

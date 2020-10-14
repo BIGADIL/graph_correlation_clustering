@@ -1,10 +1,11 @@
 #include <algorithm>
+#include <utility>
 
-#include "NS2CCSolver.hpp"
-#include "clust_algoritms/NNLSAlgorithmForNS2CC.hpp"
-#include "clust_algoritms/N1LSAlgorithmForNS2CC.hpp"
-#include "clust_algoritms/NAlgorithmForNS2CC.hpp"
-#include "clust_algoritms/BBAlgorithmForNS2CC.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/NS2CCSolver.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NNLSAlgorithmForNS2CC.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/N1LSAlgorithmForNS2CC.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NAlgorithmForNS2CC.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BBAlgorithmForNS2CC.hpp"
 
 std::string NS2CCSolver::solve(const IGraphPtr &graph,
                                const double density,
@@ -59,15 +60,15 @@ std::string NS2CCSolver::solve(const IGraphPtr &graph,
   return FormatComputationToJson(*graph, infos, graph->Size(), density);
 }
 
-NS2CCSolver::NS2CCSolver(const int num_threads,
-                         const IClustFactoryPtr &factory) : num_threads_(num_threads), factory_(factory) {
+NS2CCSolver::NS2CCSolver(const unsigned num_threads,
+                         IClustFactoryPtr factory) : num_threads_(num_threads), factory_(std::move(factory)) {
 
 }
 
 std::string NS2CCSolver::FormatComputationToJson(const IGraph &graph,
                                                  const std::vector<ClusteringInfo> &computation_results,
                                                  const unsigned int size,
-                                                 const double density) const {
+                                                 const double density) {
   std::stringstream ss;
   ss << "{ " << std::endl;
   ss << "\"size\": " << size << "," << std::endl;

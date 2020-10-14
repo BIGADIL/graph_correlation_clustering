@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+
 #include "../../include/graphs/AdjacencyMatrixGraph.hpp"
 
 std::string AdjacencyMatrixGraph::ToJson() const {

@@ -1,6 +1,7 @@
 #include <vector>
 #include <thread>
 #include <climits>
+
 #include "../../../include/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp"
 
 IClustPtr NAlgorithmForS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
