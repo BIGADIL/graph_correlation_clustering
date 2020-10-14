@@ -38,81 +38,79 @@ set(COMMON_SRC
         )
 
 set(NS2CC_SRC
-        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NNLSAlgorithmForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/common_functions/NSplitterForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/common_functions/LSAlgorithmForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BBAlgorithmForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/N1LSAlgorithmForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NAlgorithmForNS2CC.hpp
-        include/solvers/non_strict_two_correlation_clustering/NS2CCSolver.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithManyLocalSearches.hpp
+        include/solvers/non_strict_two_correlation_clustering/common_functions/NeighborSplitter.hpp
+        include/solvers/non_strict_two_correlation_clustering/common_functions/LocalSearch.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BranchAndBounds.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithOneLocalSearch.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp
+        include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp
 
-
-        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NNLSAlgorithmForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/common_functions/NSplitterForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/common_functions/LSAlgorithmForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BBAlgorithmForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/N1LSAlgorithmForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NAlgorithmForNS2CC.cpp
-        src/solvers/non_strict_two_correlation_clustering/NS2CCSolver.cpp
-
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
+        src/solvers/non_strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
+        src/solvers/non_strict_two_correlation_clustering/common_functions/LocalSearch.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
+        src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
         )
 
 set(S2CC_SCR
-        include/solvers/strict_two_correlation_clustering/common_functions/NSplitterFor2CC.hpp
-        include/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.hpp
-        include/solvers/strict_two_correlation_clustering/clust_algorithms/NAlgorithmForS2CС.hpp
-        include/solvers/strict_two_correlation_clustering/clust_algorithms/N1LSAlgorithmForS2CC.hpp
-        include/solvers/strict_two_correlation_clustering/clust_algorithms/NNLSAlgorithmForS2CC.hpp
-        include/solvers/strict_two_correlation_clustering/clust_algorithms/BBAlgorithmForS2CC.hpp
-        include/solvers/strict_two_correlation_clustering/S2CCSolver.hpp
+        include/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.hpp
+        include/solvers/strict_two_correlation_clustering/common_functions/LocalSearch.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/Neighborhood.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
+        include/solvers/strict_two_correlation_clustering/Strict2CCSolver.hpp
 
-        src/solvers/strict_two_correlation_clustering/common_functions/NSplitterFor2CC.cpp
-        src/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.cpp
-        src/solvers/strict_two_correlation_clustering/clust_algorithms/NAlgorithmForS2CС.cpp
-        src/solvers/strict_two_correlation_clustering/clust_algorithms/N1LSAlgorithmForS2CC.cpp
-        src/solvers/strict_two_correlation_clustering/clust_algorithms/NNLSAlgorithmForS2CC.cpp
-        src/solvers/strict_two_correlation_clustering/clust_algorithms/BBAlgorithmForS2CC.cpp
-        src/solvers/strict_two_correlation_clustering/S2CCSolver.cpp
+        src/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
+        src/solvers/strict_two_correlation_clustering/common_functions/LocalSearch.cpp
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
+        src/solvers/strict_two_correlation_clustering/Strict2CCSolver.cpp
         )
 
 set(2SCC_SRC
-        include/solvers/two_semi_supervised_correlation_clustering/common_functions/NSplitterFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/common_functions/LSAlgorithmFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NAlgorithmFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/N1LSAlgorithmFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NNLSAlgorithmFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BBAlgorithmFor2SCC.hpp
-        include/solvers/two_semi_supervised_correlation_clustering/Solver2SCC.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/common_functions/LocalSearch.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/Neighborhood.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.hpp
 
-        src/solvers/two_semi_supervised_correlation_clustering/common_functions/NSplitterFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/common_functions/LSAlgorithmFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NAlgorithmFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/N1LSAlgorithmFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NNLSAlgorithmFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BBAlgorithmFor2SCC.cpp
-        src/solvers/two_semi_supervised_correlation_clustering/Solver2SCC.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/common_functions/LocalSearch.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/Neighborhood.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.cpp
         )
 
-add_executable(NS2CCExperiment
-        NS2CCExperiment.cpp
+add_executable(NonStrict2CCExperiment
+        NonStrict2CCExperiment.cpp
         ${COMMON_SRC}
         ${NS2CC_SRC}
         )
-target_link_libraries(NS2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(NS2CCExperiment PUBLIC cxx_std_17)
+target_link_libraries(NonStrict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_17)
 
-add_executable(S2CCExperiment
-        S2CCExperiment.cpp
+add_executable(Strict2CCExperiment
+        Strict2CCExperiment.cpp
         ${COMMON_SRC}
         ${S2CC_SCR}
         )
-target_link_libraries(S2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(S2CCExperiment PUBLIC cxx_std_17)
+target_link_libraries(Strict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(Strict2CCExperiment PUBLIC cxx_std_17)
 
-add_executable(2SCCExperiment
-        2SCCExperiment.cpp
+add_executable(SemiSupervised2CCExperiment
+        SemiSupervised2CCExperiment.cpp
         ${COMMON_SRC}
         ${2SCC_SRC}
         )
-target_link_libraries(2SCCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(2SCCExperiment PUBLIC cxx_std_17)
+target_link_libraries(SemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(SemiSupervised2CCExperiment PUBLIC cxx_std_17)
