@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../clustering/factories/IClusteringFactory.hpp"
-#include "common_functions/NSplitterFor2CC.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
+#include "../common_functions/NSplitterFor2CC.hpp"
 
 class NAlgorithmForS2CC {
  public:

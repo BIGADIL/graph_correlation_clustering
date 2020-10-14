@@ -58,11 +58,11 @@ set(NS2CC_SRC
 set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/common_functions/NSplitterFor2CC.hpp
         include/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.hpp
-        include/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/NAlgorithmForS2CС.hpp
 
-        src/solvers/strict_two_correlation_clustering/NSplitterFor2CC.cpp
-        src/solvers/strict_two_correlation_clustering/LSAlgorithmForS2CC.cpp
-        src/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.cpp
+        src/solvers/strict_two_correlation_clustering/common_functions/NSplitterFor2CC.cpp
+        src/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.cpp
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/NAlgorithmForS2CС.cpp
         )
 
 add_executable(NS2CCExperiment

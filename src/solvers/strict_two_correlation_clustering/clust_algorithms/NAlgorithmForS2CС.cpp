@@ -2,7 +2,7 @@
 #include <thread>
 #include <climits>
 
-#include "../../../include/solvers/strict_two_correlation_clustering/NAlgorithmForS2CС.hpp"
+#include "../../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/NAlgorithmForS2CС.hpp"
 
 IClustPtr NAlgorithmForS2CC::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<IClustPtr> local_best_clustering_vector;
