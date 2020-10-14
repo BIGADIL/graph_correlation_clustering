@@ -23,6 +23,10 @@ int main(int argc, char *argv[]) {
   std::default_random_engine gen_{rd_()};
   std::uniform_int_distribution<> dis_;
 
+  std::filesystem::create_directory("ns2cc");
+  auto path = std::filesystem::current_path();
+  path.append("ns2cc");
+  std::filesystem::current_path(path);
   const auto dir_name = "n-" + std::to_string(graph_size) + "-p-" + std::to_string(density) + "/";
   std::filesystem::create_directory(dir_name);
 

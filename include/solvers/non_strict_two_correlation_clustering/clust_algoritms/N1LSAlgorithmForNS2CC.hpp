@@ -46,5 +46,5 @@ namespace ns2cc {
      * @return best clustering.
      */
     [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
-};
+  };
 }

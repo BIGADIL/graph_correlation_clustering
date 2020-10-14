@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <chrono>
-#include <iostream>
 #include <sstream>
 
 #include "../../graphs/IGraph.hpp"
@@ -35,7 +34,7 @@ struct ClusteringInfo {
   }
 };
 
-class NS2CCSolver {
+class S2CCSolver {
  private:
   const std::vector<std::string> allowed_algorithms{"NNLS", "N1LS", "N", "BB"};
   unsigned num_threads_;
@@ -48,8 +47,8 @@ class NS2CCSolver {
                                              double density);
 
  public:
-  NS2CCSolver(unsigned num_threads,
-              IClustFactoryPtr factory);
+  S2CCSolver(unsigned num_threads,
+             IClustFactoryPtr factory);
 
   [[nodiscard]] std::string solve(const IGraphPtr &graph,
                                   double density,
