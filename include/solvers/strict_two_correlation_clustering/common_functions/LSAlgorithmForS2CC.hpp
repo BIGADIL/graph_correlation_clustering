@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../../clustering/factories/IClusteringFactory.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
 
 /**
  * Local search for NS2CC.
@@ -20,7 +20,7 @@ class LSAlgorithmForS2CC {
    */
   static int ComputeLocalImprovement(const IGraph &graph,
                                      const IClustPtr &cur_clustering,
-                                     const unsigned vertex);
+                                     unsigned vertex);
 
  public:
   /**
@@ -32,6 +32,6 @@ class LSAlgorithmForS2CC {
    */
   static IClustPtr ComputeLocalOptimum(const IGraph &graph,
                                        const IClustPtr &cur_clustering,
-                                       const unsigned vertex,
-                                       const unsigned opposite_vertex);
+                                       unsigned vertex,
+                                       unsigned opposite_vertex);
 };

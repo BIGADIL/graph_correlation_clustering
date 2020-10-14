@@ -1,5 +1,5 @@
 #include <climits>
-#include "../../../include/solvers/strict_two_correlation_clustering/LSAlgorithmForS2CC.hpp"
+#include "../../../include/solvers/strict_two_correlation_clustering/common_functions/LSAlgorithmForS2CC.hpp"
 
 IClustPtr LSAlgorithmForS2CC::ComputeLocalOptimum(const IGraph &graph,
                                                    const IClustPtr &cur_clustering,

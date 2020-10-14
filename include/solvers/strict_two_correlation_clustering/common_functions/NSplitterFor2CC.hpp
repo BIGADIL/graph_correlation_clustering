@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../../clustering/factories/IClusteringFactory.hpp"
+#include "../../../clustering/factories/IClusteringFactory.hpp"
 
 /**
  * Graph splitter by neighbor.
@@ -16,7 +16,7 @@ class NSplitterForS2CC {
   IClustFactoryPtr clustering_factory_;
 
  public:
-  NSplitterForS2CC(IClustFactoryPtr clustering_factory);
+  explicit NSplitterForS2CC(IClustFactoryPtr clustering_factory);
   /**
    * Split source graph by vertex based on its neighborhood.
    *
@@ -24,9 +24,9 @@ class NSplitterForS2CC {
    * @param vertex source vertex.
    * @return clustering based on vertex neighborhood.
    */
-  IClustPtr SplitGraphByVertex(const IGraph &graph,
-                               const unsigned vertex,
-                               const unsigned opposite_vertex) const;
+  [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph &graph,
+                               unsigned vertex,
+                               unsigned opposite_vertex) const;
 };
 
 
