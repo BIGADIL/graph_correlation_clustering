@@ -64,7 +64,7 @@ class IClustering {
    * @param label source label.
    * @return number of vertices of specific label.
    */
-  virtual unsigned GetNumVerticesByLabel(const unsigned label) const = 0;
+  virtual unsigned GetNumVerticesByLabel(const ClusterLabels label) const = 0;
   /**
    * Sent object to json-string.
    * @return json-string.

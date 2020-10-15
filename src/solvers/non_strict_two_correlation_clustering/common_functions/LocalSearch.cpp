@@ -19,7 +19,7 @@ IClustPtr non_strict_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
     if (local_improvement <= 0) {
       break;
     }
-    if (result->GetLabel(candidate) == 0) {
+    if (result->GetLabel(candidate) == FIRST_CLUSTER) {
       result->SetupLabelForVertex(candidate, SECOND_CLUSTER);
     } else {
       result->SetupLabelForVertex(candidate, FIRST_CLUSTER);

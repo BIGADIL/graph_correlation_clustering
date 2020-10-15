@@ -1,16 +1,9 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-
 #include "IClustering.hpp"
 
-/**
- * Binary clustering vector contains label (0 or 1) for each vertex.
- *
- * Vector may contain label -1 for non-clustered vertex.
- */
-class BinaryClusteringVector : public IClustering {
+class TernaryClusteringVector : public IClustering {
  protected:
   /**
    * Vector of labels.
@@ -28,15 +21,19 @@ class BinaryClusteringVector : public IClustering {
    * Number of vertices from second cluster.
    */
   unsigned num_vertices_in_second_cluster_;
+  /**
+   * Number of vertices from third cluster.
+   */
+  unsigned num_vertices_in_third_cluster_;
 
  protected:
-  BinaryClusteringVector() = delete;
-  BinaryClusteringVector(const BinaryClusteringVector &) = default;
-  BinaryClusteringVector(const BinaryClusteringVector &&) = delete;
-  BinaryClusteringVector &operator=(const BinaryClusteringVector &) = default;
-  BinaryClusteringVector &operator=(const BinaryClusteringVector &&) = delete;
+  TernaryClusteringVector() = delete;
+  TernaryClusteringVector(const TernaryClusteringVector &) = default;
+  TernaryClusteringVector(const TernaryClusteringVector &&) = delete;
+  TernaryClusteringVector &operator=(const TernaryClusteringVector &) = default;
+  TernaryClusteringVector &operator=(const TernaryClusteringVector &&) = delete;
 
-  BinaryClusteringVector(const unsigned size);
+  TernaryClusteringVector(const unsigned size);
 
  public:
   void SetupLabelForVertex(const unsigned vertex,
@@ -51,5 +48,8 @@ class BinaryClusteringVector : public IClustering {
   unsigned int GetNumVerticesByLabel(const ClusterLabels label) const override;
   std::string ToJson() const override;
 
-  friend class BinaryClusteringFactory;
+  friend class TernaryClusteringFactory;
 };
+
+
+

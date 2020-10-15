@@ -29,12 +29,17 @@ set(COMMON_SRC
         include/clustering/factories/BinaryClusteringFactory.hpp
         include/clustering/BBBinaryClusteringVector.hpp
         include/common/ClusteringLabels.hpp
+        include/clustering/TernaryClusteringVector.hpp
+        include/clustering/factories/TernaryClusteringFactory.hpp
 
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
         src/clustering/BinaryClusteringVector.cpp
         src/clustering/factories/BinaryClusteringFactory.cpp
         src/clustering/BBBinaryClusteringVector.cpp
+        src/clustering/TernaryClusteringVector.cpp
+        src/clustering/factories/TernaryClusteringFactory.cpp
+
         )
 
 set(NS2CC_SRC
@@ -91,6 +96,18 @@ set(2SCC_SRC
         src/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.cpp
         )
 
+set(NS3CC_SRC
+        include/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.hpp
+        include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.hpp
+        include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp
+
+        src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
+        src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.cpp
+        src/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.cpp
+       )
+
 add_executable(NonStrict2CCExperiment
         NonStrict2CCExperiment.cpp
         ${COMMON_SRC}
@@ -114,3 +131,11 @@ add_executable(SemiSupervised2CCExperiment
         )
 target_link_libraries(SemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(SemiSupervised2CCExperiment PUBLIC cxx_std_17)
+
+add_executable(NonStrict3CCExperiment
+        NonStrict3CCExperiment.cpp
+        ${COMMON_SRC}
+        ${NS3CC_SRC}
+        )
+target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_17)

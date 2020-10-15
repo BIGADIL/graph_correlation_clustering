@@ -1,13 +1,14 @@
-#include <stdexcept>
 #include <sstream>
-#include "../../include/clustering/BinaryClusteringVector.hpp"
+#include "../../include/clustering/TernaryClusteringVector.hpp"
 
-void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
-                                                 const ClusterLabels label) {
+void TernaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
+                                                  const ClusterLabels label) {
   switch (label) {
     case FIRST_CLUSTER:num_vertices_in_first_cluster_++;
       break;
     case SECOND_CLUSTER:num_vertices_in_second_cluster_++;
+      break;
+    case THIRD_CLUSTER:num_vertices_in_third_cluster_++;
       break;
     default:auto message = "Expected label 0 or 1, actual label = " + std::to_string(label);
       throw std::invalid_argument(message);
@@ -20,12 +21,14 @@ void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
       break;
     case SECOND_CLUSTER:num_vertices_in_second_cluster_--;
       break;
+    case THIRD_CLUSTER:num_vertices_in_third_cluster_--;
+      break;
     default:throw std::invalid_argument("undefined cur label=" + std::to_string(cur_label));
   }
   labels_[vertex] = label;
 }
 
-unsigned BinaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
+unsigned TernaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
   if (graph.Size() != labels_.size()) {
     auto message = "Graph size must be equal to labels length. Graph size = " + std::to_string(graph.Size())
         + "; labels length = " + std::to_string(labels_.size());
@@ -42,40 +45,46 @@ unsigned BinaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
   return distance;
 }
 
-BinaryClusteringVector::BinaryClusteringVector(const unsigned size) {
+TernaryClusteringVector::TernaryClusteringVector(const unsigned size) {
   labels_ = std::vector<ClusterLabels>(size, NON_CLUSTERED);
   num_non_clustered_vertices_ = size;
-  num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = 0;
+  num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = num_vertices_in_third_cluster_ = 0;
 }
 
-IClustPtr BinaryClusteringVector::GetCopy() const {
-  return std::shared_ptr<IClustering>(new BinaryClusteringVector(*this));
+IClustPtr TernaryClusteringVector::GetCopy() const {
+  return std::shared_ptr<IClustering>(new TernaryClusteringVector(*this));
 }
 
-ClusterLabels BinaryClusteringVector::GetLabel(const unsigned vertex) const {
+ClusterLabels TernaryClusteringVector::GetLabel(const unsigned vertex) const {
   return labels_[vertex];
 }
 
-bool BinaryClusteringVector::IsNonClustered(const unsigned vertex) const {
+bool TernaryClusteringVector::IsNonClustered(const unsigned vertex) const {
   return labels_[vertex] == NON_CLUSTERED;
 }
 
-bool BinaryClusteringVector::IsSameClustered(const unsigned i,
-                                             const unsigned j) const {
+bool TernaryClusteringVector::IsSameClustered(const unsigned i,
+                                              const unsigned j) const {
   return labels_[i] == labels_[j];
 }
-unsigned BinaryClusteringVector::GetNumNonClusteredVertices() const {
+unsigned TernaryClusteringVector::GetNumNonClusteredVertices() const {
   return num_non_clustered_vertices_;
 }
 
-unsigned int BinaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels label) const {
-  if (label == ClusterLabels::FIRST_CLUSTER) {
-    return num_vertices_in_first_cluster_;
+unsigned int TernaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels label) const {
+  switch (label) {
+    case FIRST_CLUSTER:
+      return num_vertices_in_first_cluster_;
+    case SECOND_CLUSTER:
+      return num_vertices_in_second_cluster_;
+    case THIRD_CLUSTER:
+      return num_vertices_in_third_cluster_;
+    default:
+      throw std::invalid_argument("undefined cur label=" + std::to_string(label));
   }
-  return num_vertices_in_second_cluster_;
 }
 
-std::string BinaryClusteringVector::ToJson() const {
+std::string TernaryClusteringVector::ToJson() const {
   std::stringstream ss;
   ss << "\"binary clustering vector \": [";
   unsigned row_idx = 0;
