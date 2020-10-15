@@ -106,7 +106,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.cpp
         src/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.cpp
-       )
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.cpp include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.cpp include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp)
 
 add_executable(NonStrict2CCExperiment
         NonStrict2CCExperiment.cpp

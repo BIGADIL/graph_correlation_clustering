@@ -2,6 +2,8 @@
 
 #include "../../../include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.hpp"
+#include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp"
+#include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
 
 std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(const IGraph &graph,
                                                                         const std::vector<ClusteringInfo> &computation_results,
@@ -48,5 +50,30 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  return FormatComputationToJson(*graph, infos, graph->Size(), density);
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "TwoVerticesNeighborhood")
+      != used_algorithms.end()) {
+    TwoVerticesNeighborhood twn(num_threads_, factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = twn.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back(
+        "TwoVerticesNeighborhood",
+        clustering,
+        clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+    );
+  }
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "TwoVerticesNeighborhoodWithLocalSearch")
+      != used_algorithms.end()) {
+    TwoVerticesNeighborhoodWithLocalSearch twnls(num_threads_, factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = twnls.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back(
+        "TwoVerticesNeighborhoodWithLocalSearch",
+        clustering,
+        clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+    );
+
+    return FormatComputationToJson(*graph, infos, graph->Size(), density);
+  }
 }

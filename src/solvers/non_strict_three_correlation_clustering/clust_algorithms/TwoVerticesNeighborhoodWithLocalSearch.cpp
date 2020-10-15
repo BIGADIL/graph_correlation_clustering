@@ -1,23 +1,16 @@
 #include <climits>
 #include <thread>
-
-#include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
-void non_strict_3cc::NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                                                         unsigned threadId,
-                                                                                         IClustPtr &local_best_clustering) const {
+void non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
+                                                                                                    unsigned threadId,
+                                                                                                    IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
-    auto part_clustering = neighbor_splitter_.BuildFirstCluster(graph, i);
     for (unsigned j = 0; j < graph.Size(); ++j) {
-      if (!part_clustering->IsNonClustered(j)) continue;
-      auto tmp_clustering = neighbor_splitter_.BuildSecondAndThirdClusters(graph, part_clustering, j);
-      tmp_clustering = LocalSearch::ComputeLocalOptimum(
-          graph,
-          tmp_clustering,
-          SECOND_CLUSTER,
-          THIRD_CLUSTER);
+      if (i == j) continue;
+      auto tmp_clustering = neighbor_splitter_.SplitGraphByTwoVertices(graph, i, j);
       auto tmp_distance = tmp_clustering->GetDistanceToGraph(graph);
       if (tmp_distance < best_distance) {
         best_distance = tmp_distance;
@@ -27,15 +20,16 @@ void non_strict_3cc::NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThre
   }
 }
 
-non_strict_3cc::NeighborhoodWithLocalSearch::NeighborhoodWithLocalSearch(unsigned num_threads,
-                                                                         const IClustFactoryPtr& clustering_factory) :
+non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch::TwoVerticesNeighborhoodWithLocalSearch(unsigned num_threads,
+                                                                                               const IClustFactoryPtr &clustering_factory)
+    :
     num_threads_(num_threads),
     clustering_factory_(clustering_factory),
     neighbor_splitter_(non_strict_3cc::NeighborSplitter(clustering_factory)) {
 
 }
 
-IClustPtr non_strict_3cc::NeighborhoodWithLocalSearch::getBestNeighborhoodClustering(const IGraph &graph) const {
+IClustPtr non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch::getBestNeighborhoodClustering(const IGraph &graph) const {
   std::vector<IClustPtr> local_best_clustering_vector;
   for (unsigned i = 0; i < num_threads_; i++) {
     auto instance = clustering_factory_->CreateClustering(graph.Size());
@@ -44,7 +38,7 @@ IClustPtr non_strict_3cc::NeighborhoodWithLocalSearch::getBestNeighborhoodCluste
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
     thread_vector[i] = std::thread(
-        &NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThreadWorker,
+        &TwoVerticesNeighborhoodWithLocalSearch::BestNeighborhoodClusteringThreadWorker,
         this,
         std::ref(graph),
         i,
@@ -63,5 +57,5 @@ IClustPtr non_strict_3cc::NeighborhoodWithLocalSearch::getBestNeighborhoodCluste
       best_neighborhood_clustering = it;
     }
   }
-  return best_neighborhood_clustering;
+  return LocalSearch::ComputeLocalOptimum(graph, best_neighborhood_clustering);
 }

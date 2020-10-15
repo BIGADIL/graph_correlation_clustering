@@ -33,7 +33,9 @@ int main(int argc, char *argv[]) {
         graph,
         density,
         {
-            "NeighborhoodWithLocalSearch"}
+            "NeighborhoodWithLocalSearch",
+            "TwoVerticesNeighborhood",
+            "TwoVerticesNeighborhoodWithLocalSearch",}
     );
 
     std::ofstream out;

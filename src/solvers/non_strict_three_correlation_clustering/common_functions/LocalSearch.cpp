@@ -83,7 +83,7 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
                                                            const IClustPtr &cur_clustering) {
   auto result = cur_clustering->GetCopy();
   while (true) {
-    int local_improvement = INT_MAX;
+    int local_improvement = INT_MIN;
     unsigned candidate = UINT_MAX;
     ClusterLabels label = NON_CLUSTERED;
     for (unsigned i = 0; i < graph.Size(); ++i) {
@@ -126,8 +126,3 @@ ClusterLabels non_strict_3cc::LocalSearch::GetLabelByIdx(const unsigned idx) {
     default:throw std::logic_error("unsupported idx");
   }
 }
-
-
-
-
-
