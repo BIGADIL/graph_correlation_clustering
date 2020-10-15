@@ -58,6 +58,7 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
         src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
+
         )
 
 set(S2CC_SCR
@@ -76,6 +77,7 @@ set(S2CC_SCR
         src/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/strict_two_correlation_clustering/Strict2CCSolver.cpp
+
         )
 
 set(2SCC_SRC
@@ -94,6 +96,7 @@ set(2SCC_SRC
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.cpp
+
         )
 
 set(NS3CC_SRC
@@ -101,12 +104,17 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.hpp
         include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.cpp
         src/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.cpp
-        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.cpp include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.cpp include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp)
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.cpp
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.cpp
+
+        )
 
 add_executable(NonStrict2CCExperiment
         NonStrict2CCExperiment.cpp
