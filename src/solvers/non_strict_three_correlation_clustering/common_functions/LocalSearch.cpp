@@ -55,7 +55,7 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
     unsigned candidate = UINT_MAX;
     for (unsigned i = 0; i < graph.Size(); i++) {
       auto label = result->GetLabel(i);
-      if (label != first_label || label != second_label) continue;
+      if (label != first_label && label != second_label) continue;
       auto tmp_local_improvement = ComputeLocalImprovement(
           graph,
           result,
