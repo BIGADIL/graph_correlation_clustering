@@ -32,6 +32,7 @@ set(COMMON_SRC
         include/clustering/TernaryClusteringVector.hpp
         include/clustering/factories/TernaryClusteringFactory.hpp
 
+        include/clustering/BBTernaryClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
         src/clustering/BinaryClusteringVector.cpp
@@ -39,6 +40,7 @@ set(COMMON_SRC
         src/clustering/BBBinaryClusteringVector.cpp
         src/clustering/TernaryClusteringVector.cpp
         src/clustering/factories/TernaryClusteringFactory.cpp
+        include/clustering/BBTernaryClusteringVector.cpp
 
         )
 
@@ -106,6 +108,7 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
@@ -113,7 +116,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.cpp
-
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         )
 
 add_executable(NonStrict2CCExperiment
