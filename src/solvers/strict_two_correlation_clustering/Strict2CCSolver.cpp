@@ -5,6 +5,7 @@
 #include "../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.hpp"
 #include "../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/Neighborhood.hpp"
 #include "../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
+#include "../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/BrutForce.hpp"
 
 std::string strict_2cc::Strict2CCSolver::solve(const IGraphPtr &graph,
                                                const double density,
@@ -51,6 +52,16 @@ std::string strict_2cc::Strict2CCSolver::solve(const IGraphPtr &graph,
     auto clustering = bb.GetBestClustering(graph, approximate_clustering);
     infos.emplace_back(
         "BranchAndBounds",
+        clustering,
+        clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+    );
+  }
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "BrutForce") != used_algorithms.end()) {
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = BrutForce::GetBestClustering(graph);
+    infos.emplace_back(
+        "BrutForce",
         clustering,
         clustering->GetDistanceToGraph(*graph),
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)

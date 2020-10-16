@@ -41,7 +41,9 @@ int main(int argc, char *argv[]) {
             "NeighborhoodWithManyLocalSearches",
             "NeighborhoodWithOneLocalSearch",
             "Neighborhood",
-            "BranchAndBounds"}
+            "BranchAndBounds",
+            "BrutForce",
+        }
     );
 
     std::ofstream out;

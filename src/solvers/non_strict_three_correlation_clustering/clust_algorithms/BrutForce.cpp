@@ -1,0 +1,20 @@
+#include <climits>
+
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp"
+#include "../../../../include/clustering/BFTernaryClusteringVector.hpp"
+
+IClustPtr non_strict_3cc::BrutForce::GetBestClustering(const IGraphPtr &graph) {
+  BFTernaryClusteringVector tmp_clustering(graph->Size());
+  IClustPtr best_clustering = nullptr;
+  unsigned best_distance = UINT_MAX;
+  auto next_clustering = tmp_clustering.getNextClustering();
+  while (next_clustering != nullptr) {
+    auto tmp_distance = next_clustering->GetDistanceToGraph(*graph);
+    if (tmp_distance < best_distance) {
+      best_distance = tmp_distance;
+      best_clustering = next_clustering;
+    }
+    next_clustering = tmp_clustering.getNextClustering();
+  }
+  return best_clustering;
+}

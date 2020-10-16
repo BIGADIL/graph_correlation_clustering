@@ -86,7 +86,7 @@ unsigned int TernaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels 
 
 std::string TernaryClusteringVector::ToJson() const {
   std::stringstream ss;
-  ss << "\"binary clustering vector \": [";
+  ss << "\"ternary clustering vector \": [";
   unsigned row_idx = 0;
   for (const auto &label: labels_) {
     row_idx++;

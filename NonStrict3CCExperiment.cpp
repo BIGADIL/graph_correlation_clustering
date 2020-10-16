@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
             "TwoVerticesNeighborhood",
             "TwoVerticesNeighborhoodWithLocalSearch",
             "BranchAndBounds",
-            }
+            "BrutForce",
+        }
     );
 
     std::ofstream out;

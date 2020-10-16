@@ -31,6 +31,8 @@ set(COMMON_SRC
         include/common/ClusteringLabels.hpp
         include/clustering/TernaryClusteringVector.hpp
         include/clustering/factories/TernaryClusteringFactory.hpp
+        include/clustering/BFBinaryClusteringVector.hpp
+        include/clustering/BFTernaryClusteringVector.hpp
 
         include/clustering/BBTernaryClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
@@ -40,8 +42,10 @@ set(COMMON_SRC
         src/clustering/BBBinaryClusteringVector.cpp
         src/clustering/TernaryClusteringVector.cpp
         src/clustering/factories/TernaryClusteringFactory.cpp
-        include/clustering/BBTernaryClusteringVector.cpp
+        src/clustering/BBTernaryClusteringVector.cpp
 
+        src/clustering/BFBinaryClusteringVector.cpp
+        src/clustering/BFTernaryClusteringVector.cpp
         )
 
 set(NS2CC_SRC
@@ -52,6 +56,7 @@ set(NS2CC_SRC
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithOneLocalSearch.hpp
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp
         include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp
+        include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BrutForce.hpp
 
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/non_strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
@@ -60,7 +65,7 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
         src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
-
+        src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BrutForce.cpp
         )
 
 set(S2CC_SCR
@@ -71,6 +76,7 @@ set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.hpp
         include/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/strict_two_correlation_clustering/Strict2CCSolver.hpp
+        include/solvers/strict_two_correlation_clustering/clust_algorithms/BrutForce.hpp
 
         src/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/strict_two_correlation_clustering/common_functions/LocalSearch.cpp
@@ -79,7 +85,7 @@ set(S2CC_SCR
         src/solvers/strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/strict_two_correlation_clustering/Strict2CCSolver.cpp
-
+        src/solvers/strict_two_correlation_clustering/clust_algorithms/BrutForce.cpp
         )
 
 set(2SCC_SRC
@@ -90,6 +96,7 @@ set(2SCC_SRC
         include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.hpp
         include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.hpp
 
         src/solvers/two_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/two_semi_supervised_correlation_clustering/common_functions/LocalSearch.cpp
@@ -98,7 +105,7 @@ set(2SCC_SRC
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.cpp
-
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.cpp
         )
 
 set(NS3CC_SRC
@@ -109,6 +116,7 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
@@ -117,6 +125,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.cpp
         )
 
 add_executable(NonStrict2CCExperiment

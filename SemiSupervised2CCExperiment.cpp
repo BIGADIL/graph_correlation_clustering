@@ -55,7 +55,9 @@ int main(int argc, char *argv[]) {
             "NeighborhoodWithManyLocalSearches",
             "NeighborhoodWithOneLocalSearch",
             "Neighborhood",
-            "BranchAndBounds"},
+            "BranchAndBounds",
+            "BrutForce",
+        },
         pre_clustered_vertices.first,
         pre_clustered_vertices.second
     );

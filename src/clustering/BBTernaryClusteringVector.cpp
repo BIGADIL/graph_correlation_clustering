@@ -1,5 +1,5 @@
 #include <climits>
-#include "BBTernaryClusteringVector.hpp"
+#include "../../include/clustering/BBTernaryClusteringVector.hpp"
 
 BBTernaryClusteringVector::BBTernaryClusteringVector(const unsigned size,
                                                      const std::shared_ptr<IGraph> &graph)
