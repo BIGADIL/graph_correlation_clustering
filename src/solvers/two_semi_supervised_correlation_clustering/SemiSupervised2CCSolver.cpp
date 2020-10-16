@@ -78,8 +78,9 @@ std::string semi_supervised_2cc::SemiSupervised2CCSolver::solve(const IGraphPtr 
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BrutForce") != used_algorithms.end()) {
+    BrutForce bf(factory_);
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = BrutForce::GetBestClustering(graph, first_cluster_vertex, second_cluster_vertex);
+    auto clustering = bf.GetBestClustering(graph, first_cluster_vertex, second_cluster_vertex);
     infos.emplace_back(
         "BrutForce",
         clustering,

@@ -10,7 +10,8 @@ IClustPtr non_strict_3cc::BranchAndBounds::GetBestClustering(const IGraphPtr &gr
   Branch(
       clustering,
       std::vector<ClusterLabels>({FIRST_CLUSTER}),
-      std::vector<ClusterLabels>(SECOND_CLUSTER, THIRD_CLUSTER));
+      std::vector<ClusterLabels>({SECOND_CLUSTER, THIRD_CLUSTER})
+      );
   return best_clustering_;
 }
 

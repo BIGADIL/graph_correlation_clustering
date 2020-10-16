@@ -61,8 +61,9 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BrutForce") != used_algorithms.end()) {
+    BrutForce bf(factory_);
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = non_strict_2cc::BrutForce::GetBestClustering(graph);
+    auto clustering = bf.GetBestClustering(graph);
     infos.emplace_back(
         "BrutForce",
         clustering,

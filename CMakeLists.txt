@@ -31,8 +31,6 @@ set(COMMON_SRC
         include/common/ClusteringLabels.hpp
         include/clustering/TernaryClusteringVector.hpp
         include/clustering/factories/TernaryClusteringFactory.hpp
-        include/clustering/BFBinaryClusteringVector.hpp
-        include/clustering/BFTernaryClusteringVector.hpp
 
         include/clustering/BBTernaryClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
@@ -44,8 +42,6 @@ set(COMMON_SRC
         src/clustering/factories/TernaryClusteringFactory.cpp
         src/clustering/BBTernaryClusteringVector.cpp
 
-        src/clustering/BFBinaryClusteringVector.cpp
-        src/clustering/BFTernaryClusteringVector.cpp
         )
 
 set(NS2CC_SRC
