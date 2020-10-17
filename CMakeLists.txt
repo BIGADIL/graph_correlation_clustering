@@ -18,6 +18,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -lstdc++fs")
 
 find_package(Threads)
 
+include(ExternalProject)
+include("${CMAKE_SOURCE_DIR}/vendor/rapidjson.cmake")
+include_directories(${RAPIDJSON_INCLUDE_DIR})
+
 set(COMMON_SRC
         include/graphs/IGraph.hpp
         include/graphs/AdjacencyMatrixGraph.hpp
@@ -31,6 +35,7 @@ set(COMMON_SRC
         include/common/ClusteringLabels.hpp
         include/clustering/TernaryClusteringVector.hpp
         include/clustering/factories/TernaryClusteringFactory.hpp
+        include/common/ExperimentParameters.hpp
 
         include/clustering/BBTernaryClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
@@ -41,7 +46,7 @@ set(COMMON_SRC
         src/clustering/TernaryClusteringVector.cpp
         src/clustering/factories/TernaryClusteringFactory.cpp
         src/clustering/BBTernaryClusteringVector.cpp
-
+        src/common/ExperimentParameters.cpp
         )
 
 set(NS2CC_SRC
@@ -131,6 +136,7 @@ add_executable(NonStrict2CCExperiment
         )
 target_link_libraries(NonStrict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_17)
+add_dependencies(NonStrict2CCExperiment rapidjson)
 
 add_executable(Strict2CCExperiment
         Strict2CCExperiment.cpp
@@ -139,6 +145,7 @@ add_executable(Strict2CCExperiment
         )
 target_link_libraries(Strict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(Strict2CCExperiment PUBLIC cxx_std_17)
+add_dependencies(Strict2CCExperiment rapidjson)
 
 add_executable(SemiSupervised2CCExperiment
         SemiSupervised2CCExperiment.cpp
@@ -147,6 +154,7 @@ add_executable(SemiSupervised2CCExperiment
         )
 target_link_libraries(SemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(SemiSupervised2CCExperiment PUBLIC cxx_std_17)
+add_dependencies(SemiSupervised2CCExperiment rapidjson)
 
 add_executable(NonStrict3CCExperiment
         NonStrict3CCExperiment.cpp
@@ -155,3 +163,4 @@ add_executable(NonStrict3CCExperiment
         )
 target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_17)
+add_dependencies(NonStrict3CCExperiment rapidjson)
