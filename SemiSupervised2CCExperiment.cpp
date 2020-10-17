@@ -11,7 +11,7 @@ std::pair<unsigned, unsigned> getTwoRandomVertices(const IGraph &graph) {
   auto size = graph.Size();
   std::random_device rd_;
   std::default_random_engine gen_{rd_()};
-  std::uniform_int_distribution<> dis_(0, size);
+  std::uniform_int_distribution<> dis_(0, size - 1);
   unsigned x, y;
   do {
     x = dis_(gen_);

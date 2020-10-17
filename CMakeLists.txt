@@ -129,6 +129,26 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.cpp
         )
 
+set(2SSCC_SRC
+        include/solvers/two_set_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/common_functions/LocalSearch.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/Neighborhood.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/SetSemiSupervised2CCSolver.hpp
+        include/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.hpp
+
+        src/solvers/two_set_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/common_functions/LocalSearch.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/Neighborhood.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodWithOneLocalSearch.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/SetSemiSupervised2CCSolver.cpp
+        src/solvers/two_set_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.cpp
+        )
+
 add_executable(NonStrict2CCExperiment
         NonStrict2CCExperiment.cpp
         ${COMMON_SRC}
@@ -164,3 +184,12 @@ add_executable(NonStrict3CCExperiment
 target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_17)
 add_dependencies(NonStrict3CCExperiment rapidjson)
+
+add_executable(SetSemiSupervised2CCExperiment
+        SetSemiSupervised2CCExperiment.cpp
+        ${COMMON_SRC}
+        ${2SSCC_SRC}
+        )
+target_link_libraries(SetSemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(SetSemiSupervised2CCExperiment PUBLIC cxx_std_17)
+add_dependencies(SetSemiSupervised2CCExperiment rapidjson)

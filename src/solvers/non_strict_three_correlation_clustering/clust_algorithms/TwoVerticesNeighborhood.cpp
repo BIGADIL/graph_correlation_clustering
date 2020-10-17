@@ -1,6 +1,7 @@
 #include <climits>
 #include <vector>
 #include <thread>
+
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp"
 
 void non_strict_3cc::TwoVerticesNeighborhood::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,

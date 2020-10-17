@@ -1,17 +1,18 @@
 #include "../../include/common/ExperimentParameters.hpp"
 
 #include "rapidjson/document.h"
-#include "rapidjson/reader.h"
 #include "rapidjson/istreamwrapper.h"
 
 ExperimentParameters::ExperimentParameters(std::vector<unsigned> graph_size_vector,
                                            std::vector<double> density_vector,
                                            std::vector<std::string> algorithms_vector,
+                                           std::vector<double> parts,
                                            unsigned num_threads,
                                            unsigned num_graphs) :
     graph_size_vector_(std::move(graph_size_vector)),
     density_vector_(std::move(density_vector)),
     algorithms_vector_(std::move(algorithms_vector)),
+    parts_(std::move(parts)),
     num_threads_(num_threads),
     num_graphs_(num_graphs) {
 
@@ -54,10 +55,18 @@ ExperimentParameters ExperimentParameters::readFromConfig(const std::string &pat
   for (unsigned i = 0; i < algorithms_array.Size(); i++) {
     algorithms_vector.emplace_back(algorithms_array[i].GetString());
   }
+  std::vector<double> parts;
+  if (doc.HasMember("parts") && doc["parts"].IsArray()) {
+    const auto &parts_array = doc["parts"];
+    for (unsigned i = 0; i < parts_array.Size(); i++) {
+      parts.push_back(parts_array[i].GetDouble());
+    }
+  }
   return ExperimentParameters(
       graph_size_vector,
       density_vector,
       algorithms_vector,
+      parts,
       doc["num_threads"].GetUint(),
       doc["num_graphs"].GetUint());
 }
@@ -80,4 +89,7 @@ const std::vector<double> &ExperimentParameters::GetDensity() const {
 
 const std::vector<std::string> &ExperimentParameters::GetAlgorithms() const {
   return algorithms_vector_;
+}
+const std::vector<double> &ExperimentParameters::GetParts() const {
+  return parts_;
 }

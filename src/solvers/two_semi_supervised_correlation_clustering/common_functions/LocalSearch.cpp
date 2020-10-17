@@ -1,4 +1,5 @@
 #include <climits>
+
 #include "../../../../include/solvers/two_semi_supervised_correlation_clustering/common_functions/LocalSearch.hpp"
 
 IClustPtr semi_supervised_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
