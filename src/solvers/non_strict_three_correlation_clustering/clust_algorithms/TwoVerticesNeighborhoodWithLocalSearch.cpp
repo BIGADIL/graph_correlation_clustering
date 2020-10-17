@@ -48,7 +48,10 @@ IClustPtr non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch::getBestNeighbo
   for (auto &it: thread_vector) {
     it.join();
   }
-  IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
+  IClustPtr best_neighborhood_clustering = clustering_factory_->CreateClustering(graph.Size());
+  for (unsigned i = 0; i < graph.Size(); ++i) {
+    best_neighborhood_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
+  }
   unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
   for (auto &it: local_best_clustering_vector) {
     auto tmp_distance = it->GetDistanceToGraph(graph);
