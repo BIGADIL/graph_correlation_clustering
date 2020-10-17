@@ -9,9 +9,8 @@ int non_strict_3cc::LocalSearch::ComputeLocalImprovement(const IGraph &graph,
   int local_improvement = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     auto label = cur_clustering->GetLabel(i);
-    if (i == vertex || label != first_label || label != second_label) {
-      continue;
-    }
+    if (label != first_label && label != second_label) continue;
+    if (i == vertex) continue;
     bool is_same_clustered = cur_clustering->IsSameClustered(i, vertex);
     bool is_joined = graph.IsJoined(i, vertex);
     if (is_same_clustered) {
