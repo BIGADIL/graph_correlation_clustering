@@ -98,6 +98,7 @@ set(2SCC_SRC
         include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.hpp
         include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.hpp
+        include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodOfPreClusteringVertices.hpp
 
         src/solvers/two_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/two_semi_supervised_correlation_clustering/common_functions/LocalSearch.cpp
@@ -107,6 +108,7 @@ set(2SCC_SRC
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.cpp
         src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.cpp
+        src/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodOfPreClusteringVertices.cpp
         )
 
 set(NS3CC_SRC

@@ -6,6 +6,7 @@
 #include "../../../include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/Neighborhood.hpp"
 #include "../../../include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
 #include "../../../include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BrutForce.hpp"
+#include "../../../include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/NeighborhoodOfPreClusteringVertices.hpp"
 
 std::string semi_supervised_2cc::SemiSupervised2CCSolver::solve(const IGraphPtr &graph,
                                                                 const double density,
@@ -52,6 +53,20 @@ std::string semi_supervised_2cc::SemiSupervised2CCSolver::solve(const IGraphPtr 
         second_cluster_vertex);
     infos.emplace_back(
         "Neighborhood",
+        clustering,
+        clustering->GetDistanceToGraph(*graph),
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+    );
+  }
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodOfPreClusteringVertices") != used_algorithms.end()) {
+    NeighborhoodOfPreClusteringVertices npcv(factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = npcv.getBestNeighborhoodClustering(
+        *graph,
+        first_cluster_vertex,
+        second_cluster_vertex);
+    infos.emplace_back(
+        "NeighborhoodOfPreClusteringVertices",
         clustering,
         clustering->GetDistanceToGraph(*graph),
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
