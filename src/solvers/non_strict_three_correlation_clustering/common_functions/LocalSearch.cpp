@@ -1,25 +1,72 @@
 #include <climits>
+#include <stdexcept>
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
-int non_strict_3cc::LocalSearch::ComputeLocalImprovement(const IGraph &graph,
-                                                         const IClustPtr &cur_clustering,
-                                                         const unsigned vertex,
-                                                         const ClusterLabels first_label,
-                                                         const ClusterLabels second_label) {
-  int local_improvement = 0;
+std::vector<int> non_strict_3cc::LocalSearch::InitLocalImprovements(const IGraph &graph,
+                                                                    const IClustPtr &cur_clustering,
+                                                                    ClusterLabels first_label,
+                                                                    ClusterLabels second_label) {
+  std::vector<int> local_improvement_list(graph.Size());
   for (unsigned i = 0; i < graph.Size(); i++) {
     auto label = cur_clustering->GetLabel(i);
     if (label != first_label && label != second_label) continue;
-    if (i == vertex) continue;
-    bool is_same_clustered = cur_clustering->IsSameClustered(i, vertex);
-    bool is_joined = graph.IsJoined(i, vertex);
-    if (is_same_clustered) {
-      local_improvement += is_joined ? -1 : 1;
-    } else {
-      local_improvement += is_joined ? 1 : -1;
+    for (unsigned j = i + 1; j < graph.Size(); ++j) {
+      auto labelJ = cur_clustering->GetLabel(j);
+      if (labelJ != first_label && labelJ != second_label) continue;
+      bool is_same_clustered = cur_clustering->IsSameClustered(i, j);
+      bool is_joined = graph.IsJoined(i, j);
+      if (is_same_clustered) {
+        local_improvement_list[i] += is_joined ? -1 : 1;
+        local_improvement_list[j] += is_joined ? -1 : 1;
+      } else {
+        local_improvement_list[i] += is_joined ? 1 : -1;
+        local_improvement_list[j] += is_joined ? 1 : -1;
+      }
     }
   }
-  return local_improvement;
+  return local_improvement_list;
+}
+
+non_strict_3cc::LocalSearch::LocalSearchCandidate non_strict_3cc::LocalSearch::FindCandidate(const IGraph &graph,
+                                                                                             const std::vector<int> &local_improvement_list,
+                                                                                             const IClustPtr &cur_clustering,
+                                                                                             ClusterLabels first_label,
+                                                                                             ClusterLabels second_label) {
+  int local_improvement = INT_MIN;
+  unsigned candidate = UINT_MAX;
+  for (unsigned i = 0; i < graph.Size(); ++i) {
+    auto label = cur_clustering->GetLabel(i);
+    if (label != first_label && label != second_label) continue;
+    if (local_improvement_list[i] > local_improvement) {
+      local_improvement = local_improvement_list[i];
+      candidate = i;
+    }
+  }
+  return LocalSearchCandidate(candidate, local_improvement);
+}
+
+std::vector<int> non_strict_3cc::LocalSearch::UpdateLocalImprovements(const IGraph &graph,
+                                                                      const IClustPtr &cur_clustering,
+                                                                      std::vector<int> &local_improvement_list,
+                                                                      const unsigned int vertex,
+                                                                      ClusterLabels first_label,
+                                                                      ClusterLabels second_label) {
+  local_improvement_list[vertex] = 0;
+  for (unsigned i = 0; i < graph.Size(); ++i) {
+    auto label = cur_clustering->GetLabel(i);
+    if (i == vertex || (label != first_label && label != second_label)) {
+      continue;
+    }
+    if ((graph.IsJoined(i, vertex) && cur_clustering->IsSameClustered(i, vertex))
+        || (!graph.IsJoined(i, vertex) && !cur_clustering->IsSameClustered(i, vertex))) {
+      local_improvement_list[i] += 2;
+      local_improvement_list[vertex] += 1;
+    } else {
+      local_improvement_list[i] -= 2;
+      local_improvement_list[vertex] -= 1;
+    }
+  }
+  return local_improvement_list;
 }
 
 std::vector<int> non_strict_3cc::LocalSearch::ComputeLocalImprovement(const IGraph &graph,
@@ -49,30 +96,17 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
                                                            const ClusterLabels first_label,
                                                            const ClusterLabels second_label) {
   auto result = cur_clustering->GetCopy();
+  auto local_improvement_list = InitLocalImprovements(graph, cur_clustering, first_label, second_label);
   while (true) {
-    int local_improvement = INT_MIN;
-    unsigned candidate = UINT_MAX;
-    for (unsigned i = 0; i < graph.Size(); i++) {
-      auto label = result->GetLabel(i);
-      if (label != first_label && label != second_label) continue;
-      auto tmp_local_improvement = ComputeLocalImprovement(
-          graph,
-          result,
-          i,
-          first_label,
-          second_label);
-      if (tmp_local_improvement > local_improvement) {
-        local_improvement = tmp_local_improvement;
-        candidate = i;
-      }
-    }
-    if (local_improvement <= 0) {
+    auto candidate = FindCandidate(graph, local_improvement_list, result, first_label, second_label);
+    if (candidate.local_improvement <= 0) {
       break;
     }
-    if (result->GetLabel(candidate) == first_label) {
-      result->SetupLabelForVertex(candidate, second_label);
+    local_improvement_list = UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, first_label, second_label);
+    if (result->GetLabel(candidate.vertex) == first_label) {
+      result->SetupLabelForVertex(candidate.vertex, second_label);
     } else {
-      result->SetupLabelForVertex(candidate, first_label);
+      result->SetupLabelForVertex(candidate.vertex, first_label);
     }
   }
   return result;

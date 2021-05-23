@@ -1,4 +1,5 @@
 #include <climits>
+#include <stdexcept>
 #include "../../include/clustering/BBTernaryClusteringVector.hpp"
 
 BBTernaryClusteringVector::BBTernaryClusteringVector(const unsigned size,

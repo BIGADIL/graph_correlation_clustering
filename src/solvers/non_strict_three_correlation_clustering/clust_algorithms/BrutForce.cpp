@@ -1,6 +1,7 @@
 #include <climits>
 #include <utility>
 #include <vector>
+#include <stdexcept>
 
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp"
 
