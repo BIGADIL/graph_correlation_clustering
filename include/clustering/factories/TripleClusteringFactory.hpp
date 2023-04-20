@@ -2,7 +2,10 @@
 
 #include "IClusteringFactory.hpp"
 
-class TernaryClusteringFactory : public IClusteringFactory {
+/**
+ * Factory creates triple clustering.
+ */
+class TripleClusteringFactory : public IClusteringFactory {
  public:
   IClustPtr CreateClustering(const unsigned size) const override;
 };

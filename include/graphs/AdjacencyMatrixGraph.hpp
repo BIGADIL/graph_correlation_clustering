@@ -4,6 +4,9 @@
 
 #include "IGraph.hpp"
 
+/**
+ * Representation of a graph as an adjacency matrix.
+ */
 class AdjacencyMatrixGraph : public IGraph {
  private:
   std::vector<std::vector<bool>> adjacency_matrix_;

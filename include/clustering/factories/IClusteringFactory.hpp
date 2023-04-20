@@ -7,7 +7,7 @@
 /**
  * Base interface.
  *
- * Factory could create new clustering.
+ * Factory creates new clustering.
  */
 class IClusteringFactory {
  private:
@@ -19,8 +19,8 @@ class IClusteringFactory {
  public:
   IClusteringFactory() = default;
   /**
-   * Create new clustering.
-   * @param size size of new clustering.
+   * Function creates new clustering vector.
+   * @param size length of new clustering.
    * @return new clustering.
    */
   virtual IClustPtr CreateClustering(const unsigned size) const = 0;

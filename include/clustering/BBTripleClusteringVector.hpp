@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../common/ClusteringLabels.hpp"
-#include "TernaryClusteringVector.hpp"
-class BBTernaryClusteringVector : public TernaryClusteringVector {
+#include "TripleClusteringVector.hpp"
+class BBTripleClusteringVector : public TripleClusteringVector {
  private:
   /**
    * Value of objective function on the partially build feasible solution.
@@ -23,8 +23,9 @@ class BBTernaryClusteringVector : public TernaryClusteringVector {
   */
   std::vector<int> obj_func_value_increase_relatively_to_second_cluster_;
   /**
-   *
-   */
+   * For each vertex contains current value of objective function, which this vertex
+   * will contribute if it lies down in third cluster.
+  */
   std::vector<int> obj_func_value_increase_relatively_to_third_cluster_;
   /**
    * For each vertex contains number of neighbours if non-clustered part of graph.
@@ -36,14 +37,14 @@ class BBTernaryClusteringVector : public TernaryClusteringVector {
   IGraphPtr graph_;
 
  protected:
-  BBTernaryClusteringVector() = delete;
-  BBTernaryClusteringVector(const BBTernaryClusteringVector &&) = delete;
-  BBTernaryClusteringVector &operator=(const BBTernaryClusteringVector &&) = delete;
+  BBTripleClusteringVector() = delete;
+  BBTripleClusteringVector(const BBTripleClusteringVector &&) = delete;
+  BBTripleClusteringVector &operator=(const BBTripleClusteringVector &&) = delete;
 
  public:
-  BBTernaryClusteringVector(const BBTernaryClusteringVector &) = default;
-  BBTernaryClusteringVector &operator=(const BBTernaryClusteringVector &) = default;
-  BBTernaryClusteringVector(const unsigned size,
+  BBTripleClusteringVector(const BBTripleClusteringVector &) = default;
+  BBTripleClusteringVector &operator=(const BBTripleClusteringVector &) = default;
+  BBTripleClusteringVector(const unsigned size,
                            const IGraphPtr &graph);
   void SetupLabelForVertex(const unsigned vertex,
                            const ClusterLabels label) override;
@@ -65,7 +66,7 @@ class BBTernaryClusteringVector : public TernaryClusteringVector {
    *
    * @return copy of this clustering vector.
    */
-  BBTernaryClusteringVector Copy() const;
+  BBTripleClusteringVector Copy() const;
 };
 
 

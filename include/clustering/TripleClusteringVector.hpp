@@ -3,7 +3,7 @@
 #include <vector>
 #include "IClustering.hpp"
 
-class TernaryClusteringVector : public IClustering {
+class TripleClusteringVector : public IClustering {
  protected:
   /**
    * Vector of labels.
@@ -27,13 +27,13 @@ class TernaryClusteringVector : public IClustering {
   unsigned num_vertices_in_third_cluster_;
 
  protected:
-  TernaryClusteringVector() = delete;
-  TernaryClusteringVector(const TernaryClusteringVector &) = default;
-  TernaryClusteringVector(const TernaryClusteringVector &&) = delete;
-  TernaryClusteringVector &operator=(const TernaryClusteringVector &) = default;
-  TernaryClusteringVector &operator=(const TernaryClusteringVector &&) = delete;
+  TripleClusteringVector() = delete;
+  TripleClusteringVector(const TripleClusteringVector &) = default;
+  TripleClusteringVector(const TripleClusteringVector &&) = delete;
+  TripleClusteringVector &operator=(const TripleClusteringVector &) = default;
+  TripleClusteringVector &operator=(const TripleClusteringVector &&) = delete;
 
-  TernaryClusteringVector(const unsigned size);
+  TripleClusteringVector(const unsigned size);
 
  public:
   void SetupLabelForVertex(const unsigned vertex,
@@ -48,7 +48,7 @@ class TernaryClusteringVector : public IClustering {
   unsigned int GetNumVerticesByLabel(const ClusterLabels label) const override;
   std::string ToJson() const override;
 
-  friend class TernaryClusteringFactory;
+  friend class TripleClusteringFactory;
 };
 
 

@@ -3,7 +3,7 @@
 #include "IClusteringFactory.hpp"
 
 /**
- * Factory of binary clustering.
+ * Factory creates binary clustering.
  */
 class BinaryClusteringFactory : public IClusteringFactory {
  public:

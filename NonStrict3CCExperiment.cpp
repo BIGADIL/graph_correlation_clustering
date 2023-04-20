@@ -2,7 +2,7 @@
 #include <fstream>
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
-#include "include/clustering/factories/TernaryClusteringFactory.hpp"
+#include "include/clustering/factories/TripleClusteringFactory.hpp"
 #include "include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp"
 #include "include/common/ExperimentParameters.hpp"
 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   path.append("non_strict_3cc");
   std::filesystem::current_path(path);
 
-  std::shared_ptr<TernaryClusteringFactory> factory(new TernaryClusteringFactory);
+  std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);
   for (const auto &graph_size: ep.GetGraphSize()) {
     for (const auto &density: ep.GetDensity()) {
       ErdosRenyiRandomGraphFactory graphs_factory(density);

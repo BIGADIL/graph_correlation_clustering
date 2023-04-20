@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../../graphs/IGraph.hpp"
 #include "../../../clustering/IClustering.hpp"
+
 namespace non_strict_3cc {
 
 class LocalSearch {

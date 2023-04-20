@@ -2,7 +2,7 @@
 
 #include "../../../graphs/IGraph.hpp"
 #include "../../../clustering/IClustering.hpp"
-#include "../../../clustering/BBTernaryClusteringVector.hpp"
+#include "../../../clustering/BBTripleClusteringVector.hpp"
 
 namespace non_strict_3cc {
 
@@ -28,7 +28,7 @@ class BranchAndBounds {
    * Branch out the range of feasible solutions.
    * @param clustering current vector of labels.
    */
-  void Branch(BBTernaryClusteringVector &clustering,
+  void Branch(BBTripleClusteringVector &clustering,
               std::vector<ClusterLabels> used_labels,
               std::vector<ClusterLabels> not_used_labels);
 

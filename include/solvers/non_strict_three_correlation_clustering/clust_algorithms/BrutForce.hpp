@@ -2,6 +2,7 @@
 
 #include "../../../clustering/IClustering.hpp"
 #include "../../../clustering/factories/IClusteringFactory.hpp"
+
 namespace non_strict_3cc {
 
 class BrutForce {

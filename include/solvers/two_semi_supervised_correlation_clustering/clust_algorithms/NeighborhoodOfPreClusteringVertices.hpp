@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../clustering/factories/IClusteringFactory.hpp"
+
 namespace semi_supervised_2cc {
 
 class NeighborhoodOfPreClusteringVertices {

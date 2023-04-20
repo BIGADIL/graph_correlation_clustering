@@ -2,6 +2,7 @@
 
 #include "../../../clustering/factories/IClusteringFactory.hpp"
 #include "../common_functions/NeighborSplitter.hpp"
+
 namespace non_strict_3cc {
 
 class NeighborhoodWith2LocalSearches {

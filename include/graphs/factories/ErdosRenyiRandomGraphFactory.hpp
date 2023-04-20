@@ -6,7 +6,8 @@
 #include "IGraphFactory.hpp"
 
 /**
- * Create new random graph by Erdos-Renyi algorithm.
+ * Factory creates new random graph by Erdos-Renyi model.
+ * https://en.wikipedia.org/wiki/Erdős–Rényi_model
  */
 class ErdosRenyiRandomGraphFactory : IGraphFactory {
  private:

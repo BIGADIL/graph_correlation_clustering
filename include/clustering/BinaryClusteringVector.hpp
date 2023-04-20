@@ -8,7 +8,7 @@
 /**
  * Binary clustering vector contains label (0 or 1) for each vertex.
  *
- * Vector may contain label -1 for non-clustered vertex.
+ * Vector may contain label -1 for non-clustered vertices.
  */
 class BinaryClusteringVector : public IClustering {
  protected:

@@ -1,10 +1,10 @@
 #include <climits>
 #include <stdexcept>
-#include "../../include/clustering/BBTernaryClusteringVector.hpp"
+#include "../../include/clustering/BBTripleClusteringVector.hpp"
 
-BBTernaryClusteringVector::BBTernaryClusteringVector(const unsigned size,
-                                                     const std::shared_ptr<IGraph> &graph)
-    : TernaryClusteringVector(size), graph_(graph) {
+BBTripleClusteringVector::BBTripleClusteringVector(const unsigned size,
+                                                   const std::shared_ptr<IGraph> &graph)
+    : TripleClusteringVector(size), graph_(graph) {
   obj_func_value_increase_relatively_to_first_cluster_ = std::vector<int>(size);
   obj_func_value_increase_relatively_to_second_cluster_ = std::vector<int>(size);
   obj_func_value_increase_relatively_to_third_cluster_ = std::vector<int>(size);
@@ -21,9 +21,9 @@ BBTernaryClusteringVector::BBTernaryClusteringVector(const unsigned size,
   }
 }
 
-void BBTernaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
-                                                    const ClusterLabels label) {
-  TernaryClusteringVector::SetupLabelForVertex(vertex, label);
+void BBTripleClusteringVector::SetupLabelForVertex(const unsigned vertex,
+                                                   const ClusterLabels label) {
+  TripleClusteringVector::SetupLabelForVertex(vertex, label);
   obj_func_value_increase_relatively_to_first_cluster_[vertex] =
   obj_func_value_increase_relatively_to_second_cluster_[vertex] =
   obj_func_value_increase_relatively_to_third_cluster_[vertex] =
@@ -72,7 +72,7 @@ void BBTernaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
   }
 }
 
-unsigned BBTernaryClusteringVector::Choose() const {
+unsigned BBTripleClusteringVector::Choose() const {
   unsigned candidate = UINT_MAX;
   int best_dist = INT_MIN;
   for (unsigned long i = 0; i < labels_.size(); i++) {
@@ -90,7 +90,7 @@ unsigned BBTernaryClusteringVector::Choose() const {
   return candidate;
 }
 
-int BBTernaryClusteringVector::Bound(const unsigned record) const {
+int BBTripleClusteringVector::Bound(const unsigned record) const {
   auto result = obj_func_value_on_partially_built_clustering_;
   if (result >= record) {
     return result;
@@ -113,6 +113,6 @@ int BBTernaryClusteringVector::Bound(const unsigned record) const {
   return result;
 }
 
-BBTernaryClusteringVector BBTernaryClusteringVector::Copy() const {
-  return BBTernaryClusteringVector(*this);
+BBTripleClusteringVector BBTripleClusteringVector::Copy() const {
+  return BBTripleClusteringVector(*this);
 }

@@ -5,7 +5,7 @@
 #include "../IGraph.hpp"
 
 /**
- * Base factory for graphs.
+ * Base factory for graphs representation.
  */
 class IGraphFactory {
  public:

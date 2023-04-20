@@ -1,8 +1,8 @@
 #include <sstream>
-#include "../../include/clustering/TernaryClusteringVector.hpp"
+#include "../../include/clustering/TripleClusteringVector.hpp"
 
-void TernaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
-                                                  const ClusterLabels label) {
+void TripleClusteringVector::SetupLabelForVertex(const unsigned vertex,
+                                                 const ClusterLabels label) {
   switch (label) {
     case FIRST_CLUSTER:num_vertices_in_first_cluster_++;
       break;
@@ -28,7 +28,7 @@ void TernaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
   labels_[vertex] = label;
 }
 
-unsigned TernaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
+unsigned TripleClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
   if (graph.Size() != labels_.size()) {
     auto message = "Graph size must be equal to labels length. Graph size = " + std::to_string(graph.Size())
         + "; labels length = " + std::to_string(labels_.size());
@@ -45,33 +45,33 @@ unsigned TernaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const 
   return distance;
 }
 
-TernaryClusteringVector::TernaryClusteringVector(const unsigned size) {
+TripleClusteringVector::TripleClusteringVector(const unsigned size) {
   labels_ = std::vector<ClusterLabels>(size, NON_CLUSTERED);
   num_non_clustered_vertices_ = size;
   num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = num_vertices_in_third_cluster_ = 0;
 }
 
-IClustPtr TernaryClusteringVector::GetCopy() const {
-  return std::shared_ptr<IClustering>(new TernaryClusteringVector(*this));
+IClustPtr TripleClusteringVector::GetCopy() const {
+  return std::shared_ptr<IClustering>(new TripleClusteringVector(*this));
 }
 
-ClusterLabels TernaryClusteringVector::GetLabel(const unsigned vertex) const {
+ClusterLabels TripleClusteringVector::GetLabel(const unsigned vertex) const {
   return labels_[vertex];
 }
 
-bool TernaryClusteringVector::IsNonClustered(const unsigned vertex) const {
+bool TripleClusteringVector::IsNonClustered(const unsigned vertex) const {
   return labels_[vertex] == NON_CLUSTERED;
 }
 
-bool TernaryClusteringVector::IsSameClustered(const unsigned i,
-                                              const unsigned j) const {
+bool TripleClusteringVector::IsSameClustered(const unsigned i,
+                                             const unsigned j) const {
   return labels_[i] == labels_[j];
 }
-unsigned TernaryClusteringVector::GetNumNonClusteredVertices() const {
+unsigned TripleClusteringVector::GetNumNonClusteredVertices() const {
   return num_non_clustered_vertices_;
 }
 
-unsigned int TernaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels label) const {
+unsigned int TripleClusteringVector::GetNumVerticesByLabel(const ClusterLabels label) const {
   switch (label) {
     case FIRST_CLUSTER:
       return num_vertices_in_first_cluster_;
@@ -84,7 +84,7 @@ unsigned int TernaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels 
   }
 }
 
-std::string TernaryClusteringVector::ToJson() const {
+std::string TripleClusteringVector::ToJson() const {
   std::stringstream ss;
   ss << "\"ternary clustering vector \": [";
   unsigned row_idx = 0;

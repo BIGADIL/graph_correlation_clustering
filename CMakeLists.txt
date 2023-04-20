@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(Graph_correlation_clustering)
+project(graph_correlation_clustering)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     message(" ")
@@ -33,19 +33,19 @@ set(COMMON_SRC
         include/clustering/factories/BinaryClusteringFactory.hpp
         include/clustering/BBBinaryClusteringVector.hpp
         include/common/ClusteringLabels.hpp
-        include/clustering/TernaryClusteringVector.hpp
-        include/clustering/factories/TernaryClusteringFactory.hpp
+        include/clustering/TripleClusteringVector.hpp
+        include/clustering/factories/TripleClusteringFactory.hpp
         include/common/ExperimentParameters.hpp
 
-        include/clustering/BBTernaryClusteringVector.hpp
+        include/clustering/BBTripleClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
         src/clustering/BinaryClusteringVector.cpp
         src/clustering/factories/BinaryClusteringFactory.cpp
         src/clustering/BBBinaryClusteringVector.cpp
-        src/clustering/TernaryClusteringVector.cpp
-        src/clustering/factories/TernaryClusteringFactory.cpp
-        src/clustering/BBTernaryClusteringVector.cpp
+        src/clustering/TripleClusteringVector.cpp
+        src/clustering/factories/TripleClusteringFactory.cpp
+        src/clustering/BBTripleClusteringVector.cpp
         src/common/ExperimentParameters.cpp
         )
 
