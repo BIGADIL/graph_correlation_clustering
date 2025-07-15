@@ -20,6 +20,6 @@ class ErdosRenyiRandomGraphFactory : IGraphFactory {
   double density_;
 
  public:
-  ErdosRenyiRandomGraphFactory(const double density);
-  IGraphPtr CreateGraph(const unsigned size) override;
+  explicit ErdosRenyiRandomGraphFactory(double density);
+  IGraphPtr CreateGraph(unsigned size) override;
 };

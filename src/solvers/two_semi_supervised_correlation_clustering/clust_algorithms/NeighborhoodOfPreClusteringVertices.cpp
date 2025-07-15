@@ -19,7 +19,8 @@ IClustPtr semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::getBestNeigh
       first_clustering->SetupLabelForVertex(i, SECOND_CLUSTER);
     }
   }
-  first_clustering = LocalSearch::ComputeLocalOptimum(graph, first_clustering, first_cluster_vertex, second_cluster_vertex);
+  first_clustering =
+      LocalSearch::ComputeLocalOptimum(graph, first_clustering, first_cluster_vertex, second_cluster_vertex);
   auto first_distance = first_clustering->GetDistanceToGraph(graph);
 
   auto second_clustering = clustering_factory_->CreateClustering(graph.Size());
@@ -30,7 +31,8 @@ IClustPtr semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::getBestNeigh
       second_clustering->SetupLabelForVertex(i, SECOND_CLUSTER);
     }
   }
-  second_clustering = LocalSearch::ComputeLocalOptimum(graph, second_clustering, first_cluster_vertex, second_cluster_vertex);
+  second_clustering =
+      LocalSearch::ComputeLocalOptimum(graph, second_clustering, first_cluster_vertex, second_cluster_vertex);
   auto second_distance = second_clustering->GetDistanceToGraph(graph);
 
   return first_distance < second_distance ? first_clustering : second_clustering;

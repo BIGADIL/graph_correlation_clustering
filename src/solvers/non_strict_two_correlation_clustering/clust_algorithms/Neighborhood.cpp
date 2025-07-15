@@ -23,7 +23,7 @@ void non_strict_2cc::Neighborhood::BestNeighborhoodClusteringThreadWorker(const 
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i);
     unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
-    local_thread_buffer.emplace_back(Solution(tmp_distance, tmp_neighborhood_clustering));
+    local_thread_buffer.emplace_back(tmp_distance, tmp_neighborhood_clustering);
   }
 }
 
@@ -37,7 +37,7 @@ non_strict_2cc::Neighborhood::Neighborhood(const unsigned num_threads,
 std::vector<Solution> non_strict_2cc::Neighborhood::getAllSolutions(const IGraph &graph) const {
   std::vector<std::vector<Solution>> local_thread_buffer;
   for (unsigned i = 0; i < num_threads_; i++) {
-    local_thread_buffer.emplace_back(std::vector<Solution>());
+    local_thread_buffer.emplace_back();
   }
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {

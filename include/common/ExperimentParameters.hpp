@@ -41,12 +41,12 @@ class ExperimentParameters {
                        unsigned num_threads,
                        unsigned num_graphs);
 
-  const std::vector<unsigned int> &GetGraphSize() const;
-  const std::vector<double> &GetDensity() const;
-  const std::vector<std::string> &GetAlgorithms() const;
-  unsigned int GetNumThreads() const;
-  unsigned int GetNumGraphs() const;
-  const std::vector<double> &GetParts() const;
+  [[nodiscard]] const std::vector<unsigned int> &GetGraphSize() const;
+  [[nodiscard]] const std::vector<double> &GetDensity() const;
+  [[nodiscard]] const std::vector<std::string> &GetAlgorithms() const;
+  [[nodiscard]] unsigned int GetNumThreads() const;
+  [[nodiscard]] unsigned int GetNumGraphs() const;
+  [[nodiscard]] const std::vector<double> &GetParts() const;
   static ExperimentParameters readFromConfig(const std::string &path);
 };
 

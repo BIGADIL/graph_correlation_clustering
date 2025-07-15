@@ -13,7 +13,8 @@ IClustPtr non_strict_2cc::BranchAndBounds::GetBestClustering(const IGraphPtr &gr
 }
 
 void non_strict_2cc::BranchAndBounds::Branch(BBBinaryClusteringVector &clustering) {
-  auto num_clustered = clustering.GetNumVerticesByLabel(FIRST_CLUSTER) + clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
+  auto num_clustered =
+      clustering.GetNumVerticesByLabel(FIRST_CLUSTER) + clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
   if (num_clustered != graph_->Size()) {
     auto v = clustering.Choose();
     auto right_clustering = clustering.Copy();

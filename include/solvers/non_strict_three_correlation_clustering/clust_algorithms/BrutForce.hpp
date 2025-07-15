@@ -12,7 +12,7 @@ class BrutForce {
   IClustFactoryPtr factory_;
 
  public:
-  explicit BrutForce(const IClustFactoryPtr factory);
+  explicit BrutForce(IClustFactoryPtr factory);
   /**
    * Get optimal solution for source graph.
    * @param graph source graph.

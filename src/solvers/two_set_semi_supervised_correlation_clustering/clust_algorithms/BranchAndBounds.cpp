@@ -6,7 +6,7 @@ IClustPtr set_semi_supervised_2cc::BranchAndBounds::GetBestClustering(const IGra
                                                                       const std::vector<unsigned> &second_cluster_vertices) {
   graph_ = graph;
   auto clustering = BBBinaryClusteringVector(graph->Size(), graph);
-  for (const auto &fcv : first_cluster_vertices) {
+  for (const auto &fcv: first_cluster_vertices) {
     clustering.SetupLabelForVertex(fcv, FIRST_CLUSTER);
   }
   for (const auto &scv: second_cluster_vertices) {

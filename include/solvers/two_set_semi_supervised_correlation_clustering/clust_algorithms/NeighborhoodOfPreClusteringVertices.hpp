@@ -22,11 +22,11 @@ class NeighborhoodOfPreClusteringVertices {
   IClustFactoryPtr clustering_factory_;
 
  private:
-  static bool IsJoinedWithSet(const std::vector<unsigned> &set, const unsigned vertex, const IGraph &graph);
-  static bool IsVertexInSet(const unsigned vertex, const std::vector<unsigned> &vertices_set);
+  static bool IsJoinedWithSet(const std::vector<unsigned> &set, unsigned vertex, const IGraph &graph);
+  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned> &vertices_set);
 
  public:
-  NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
+  explicit NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.

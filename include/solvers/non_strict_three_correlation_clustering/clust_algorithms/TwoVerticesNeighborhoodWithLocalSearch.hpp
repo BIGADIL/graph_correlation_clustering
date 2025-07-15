@@ -42,7 +42,7 @@ class TwoVerticesNeighborhoodWithLocalSearch {
    */
   [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
 
-  std::vector<Solution> getAllSolutions(const IGraph &graph) const;
+  [[nodiscard]] std::vector<Solution> getAllSolutions(const IGraph &graph) const;
 };
 
 }

@@ -53,7 +53,7 @@ void strict_2cc::Neighborhood::BestNeighborhoodClusteringThreadWorker(const IGra
 }
 
 strict_2cc::Neighborhood::Neighborhood(const unsigned num_threads,
-                           const IClustFactoryPtr &clustering_factory)
+                                       const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
       neighbor_splitter_(NeighborSplitter(clustering_factory)) {

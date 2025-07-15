@@ -58,7 +58,8 @@ std::string semi_supervised_2cc::SemiSupervised2CCSolver::solve(const IGraphPtr 
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodOfPreClusteringVertices") != used_algorithms.end()) {
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodOfPreClusteringVertices")
+      != used_algorithms.end()) {
     NeighborhoodOfPreClusteringVertices npcv(factory_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = npcv.getBestNeighborhoodClustering(

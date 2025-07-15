@@ -36,37 +36,35 @@ class BBTripleClusteringVector : public TripleClusteringVector {
    */
   IGraphPtr graph_;
 
- protected:
+ public:
   BBTripleClusteringVector() = delete;
   BBTripleClusteringVector(const BBTripleClusteringVector &&) = delete;
   BBTripleClusteringVector &operator=(const BBTripleClusteringVector &&) = delete;
-
- public:
   BBTripleClusteringVector(const BBTripleClusteringVector &) = default;
   BBTripleClusteringVector &operator=(const BBTripleClusteringVector &) = default;
-  BBTripleClusteringVector(const unsigned size,
+  BBTripleClusteringVector(unsigned size,
                            const IGraphPtr &graph);
-  void SetupLabelForVertex(const unsigned vertex,
-                           const ClusterLabels label) override;
+  void SetupLabelForVertex(unsigned vertex,
+                           ClusterLabels label) override;
   /**
    * Choose next vertex for branch.
    *
    * @return next vertex for branch.
    */
-  unsigned Choose() const;
+  [[nodiscard]] unsigned Choose() const;
   /**
    * Compute bound of current clustering.
    *
    * @param record value of current record.
    * @return bound of current clustering.
    */
-  int Bound(const unsigned record) const;
+  [[nodiscard]] int Bound(unsigned record) const;
   /**
    * Get copy of this clustering vector.
    *
    * @return copy of this clustering vector.
    */
-  BBTripleClusteringVector Copy() const;
+  [[nodiscard]] BBTripleClusteringVector Copy() const;
 };
 
 

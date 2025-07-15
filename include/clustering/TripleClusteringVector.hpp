@@ -26,28 +26,27 @@ class TripleClusteringVector : public IClustering {
    */
   unsigned num_vertices_in_third_cluster_;
 
- protected:
+ public:
   TripleClusteringVector() = delete;
   TripleClusteringVector(const TripleClusteringVector &) = default;
   TripleClusteringVector(const TripleClusteringVector &&) = delete;
   TripleClusteringVector &operator=(const TripleClusteringVector &) = default;
   TripleClusteringVector &operator=(const TripleClusteringVector &&) = delete;
 
-  TripleClusteringVector(const unsigned size);
+  explicit TripleClusteringVector(unsigned size);
 
- public:
-  void SetupLabelForVertex(const unsigned vertex,
-                           const ClusterLabels label) override;
-  unsigned GetDistanceToGraph(const IGraph &graph) const override;
-  IClustPtr GetCopy() const override;
-  ClusterLabels GetLabel(const unsigned vertex) const override;
-  bool IsNonClustered(const unsigned vertex) const override;
-  bool IsSameClustered(const unsigned i,
-                       const unsigned j) const override;
-  unsigned GetNumNonClusteredVertices() const override;
-  unsigned int GetNumVerticesByLabel(const ClusterLabels label) const override;
-  std::string ToJson() const override;
-  unsigned Size() const override;
+  void SetupLabelForVertex(unsigned vertex,
+                           ClusterLabels label) override;
+  [[nodiscard]] unsigned GetDistanceToGraph(const IGraph &graph) const override;
+  [[nodiscard]] IClustPtr GetCopy() const override;
+  [[nodiscard]] ClusterLabels GetLabel(unsigned vertex) const override;
+  [[nodiscard]] bool IsNonClustered(unsigned vertex) const override;
+  [[nodiscard]] bool IsSameClustered(unsigned i,
+                                     unsigned j) const override;
+  [[nodiscard]] unsigned GetNumNonClusteredVertices() const override;
+  [[nodiscard]] unsigned int GetNumVerticesByLabel(ClusterLabels label) const override;
+  [[nodiscard]] std::string ToJson() const override;
+  [[nodiscard]] unsigned Size() const override;
 
   friend class TripleClusteringFactory;
 };

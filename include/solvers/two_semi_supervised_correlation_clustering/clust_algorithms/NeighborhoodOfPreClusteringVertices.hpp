@@ -19,7 +19,7 @@ class NeighborhoodOfPreClusteringVertices {
 
  public:
 
-  NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
+  explicit NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.

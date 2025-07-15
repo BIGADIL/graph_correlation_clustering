@@ -14,7 +14,8 @@ IClustPtr strict_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
     if (candidate.local_improvement <= 0) {
       break;
     }
-    local_improvement_list = UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, exclude_vertices);
+    local_improvement_list =
+        UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, exclude_vertices);
     result = UpdateClustering(result, candidate.vertex);
   }
   return result;
@@ -57,7 +58,7 @@ strict_2cc::LocalSearch::LocalSearchCandidate strict_2cc::LocalSearch::FindCandi
       candidate = i;
     }
   }
-  return LocalSearchCandidate(candidate, local_improvement);
+  return {candidate, local_improvement};
 }
 
 std::vector<int> strict_2cc::LocalSearch::UpdateLocalImprovements(const IGraph &graph,

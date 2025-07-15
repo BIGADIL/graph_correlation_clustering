@@ -18,7 +18,7 @@ class BrutForce {
   IClustFactoryPtr factory_;
 
  public:
-  explicit BrutForce(const IClustFactoryPtr factory);
+  explicit BrutForce(IClustFactoryPtr factory);
 
   IClustPtr GetBestClustering(const IGraphPtr &graph,
                               const std::vector<unsigned> &first_cluster_vertices,

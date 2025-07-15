@@ -20,7 +20,8 @@ IClustPtr set_semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::getBestN
       first_clustering->SetupLabelForVertex(i, SECOND_CLUSTER);
     }
   }
-  first_clustering = LocalSearch::ComputeLocalOptimum(graph, first_clustering, first_cluster_vertices, second_cluster_vertices);
+  first_clustering =
+      LocalSearch::ComputeLocalOptimum(graph, first_clustering, first_cluster_vertices, second_cluster_vertices);
   auto first_distance = first_clustering->GetDistanceToGraph(graph);
 
   auto second_clustering = clustering_factory_->CreateClustering(graph.Size());
@@ -31,7 +32,8 @@ IClustPtr set_semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::getBestN
       second_clustering->SetupLabelForVertex(i, SECOND_CLUSTER);
     }
   }
-  second_clustering = LocalSearch::ComputeLocalOptimum(graph, second_clustering, first_cluster_vertices, second_cluster_vertices);
+  second_clustering =
+      LocalSearch::ComputeLocalOptimum(graph, second_clustering, first_cluster_vertices, second_cluster_vertices);
   auto second_distance = second_clustering->GetDistanceToGraph(graph);
   return first_distance < second_distance ? first_clustering : second_clustering;
 }
@@ -39,7 +41,7 @@ IClustPtr set_semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::getBestN
 bool set_semi_supervised_2cc::NeighborhoodOfPreClusteringVertices::IsJoinedWithSet(const std::vector<unsigned> &set,
                                                                                    const unsigned vertex,
                                                                                    const IGraph &graph) {
-  for (const auto &s : set) {
+  for (const auto &s: set) {
     if (vertex == s || graph.IsJoined(vertex, s)) {
       return true;
     }

@@ -42,7 +42,7 @@ non_strict_3cc::LocalSearch::LocalSearchCandidate non_strict_3cc::LocalSearch::F
       candidate = i;
     }
   }
-  return LocalSearchCandidate(candidate, local_improvement);
+  return {candidate, local_improvement};
 }
 
 std::vector<int> non_strict_3cc::LocalSearch::UpdateLocalImprovements(const IGraph &graph,
@@ -102,7 +102,8 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
     if (candidate.local_improvement <= 0) {
       break;
     }
-    local_improvement_list = UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, first_label, second_label);
+    local_improvement_list =
+        UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, first_label, second_label);
     if (result->GetLabel(candidate.vertex) == first_label) {
       result->SetupLabelForVertex(candidate.vertex, second_label);
     } else {

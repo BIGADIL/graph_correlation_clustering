@@ -36,35 +36,33 @@ class BBBinaryClusteringVector : public BinaryClusteringVector {
    */
   IGraphPtr graph_;
 
- protected:
+ public:
   BBBinaryClusteringVector() = delete;
   BBBinaryClusteringVector(const BBBinaryClusteringVector &&) = delete;
   BBBinaryClusteringVector &operator=(const BBBinaryClusteringVector &&) = delete;
-
- public:
   BBBinaryClusteringVector(const BBBinaryClusteringVector &) = default;
   BBBinaryClusteringVector &operator=(const BBBinaryClusteringVector &) = default;
-  BBBinaryClusteringVector(const unsigned size,
+  BBBinaryClusteringVector(unsigned size,
                            const IGraphPtr &graph);
-  void SetupLabelForVertex(const unsigned vertex,
-                           const ClusterLabels label) override;
+  void SetupLabelForVertex(unsigned vertex,
+                           ClusterLabels label) override;
   /**
    * Choose next vertex for branch.
    *
    * @return next vertex for branch.
    */
-  unsigned Choose() const;
+  [[nodiscard]] unsigned Choose() const;
   /**
    * Compute bound of current clustering.
    *
    * @param record value of current record.
    * @return bound of current clustering.
    */
-  int Bound(const unsigned record) const;
+  [[nodiscard]] int Bound(unsigned record) const;
   /**
    * Get copy of this clustering vector.
    *
    * @return copy of this clustering vector.
    */
-  BBBinaryClusteringVector Copy() const;
+  [[nodiscard]] BBBinaryClusteringVector Copy() const;
 };

@@ -37,8 +37,8 @@ IClustPtr strict_2cc::NeighborhoodWithManyLocalSearches::getBestNeighborhoodClus
 }
 
 void strict_2cc::NeighborhoodWithManyLocalSearches::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                                               const unsigned threadId,
-                                                                               IClustPtr &local_best_clustering) const {
+                                                                                           const unsigned threadId,
+                                                                                           IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     for (unsigned j = 0; j < graph.Size(); j++) {
@@ -55,7 +55,7 @@ void strict_2cc::NeighborhoodWithManyLocalSearches::BestNeighborhoodClusteringTh
 }
 
 strict_2cc::NeighborhoodWithManyLocalSearches::NeighborhoodWithManyLocalSearches(const unsigned num_threads,
-                                                                     const IClustFactoryPtr &clustering_factory)
+                                                                                 const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
       neighbor_splitter_(NeighborSplitter(clustering_factory)) {

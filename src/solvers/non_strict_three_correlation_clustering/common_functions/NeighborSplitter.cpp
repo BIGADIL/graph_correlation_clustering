@@ -13,7 +13,7 @@ IClustPtr non_strict_3cc::NeighborSplitter::BuildFirstCluster(const IGraph &grap
 
 IClustPtr non_strict_3cc::NeighborSplitter::BuildSecondAndThirdClusters(const IGraph &graph,
                                                                         const IClustPtr &init_clustering,
-                                                                        const unsigned vertex) const {
+                                                                        const unsigned vertex) {
   auto result = init_clustering->GetCopy();
   for (unsigned i = 0; i < graph.Size(); ++i) {
     if (i != vertex && result->GetLabel(i) == FIRST_CLUSTER) continue;

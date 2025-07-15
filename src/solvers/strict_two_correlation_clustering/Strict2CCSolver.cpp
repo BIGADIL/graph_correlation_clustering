@@ -11,7 +11,8 @@ std::string strict_2cc::Strict2CCSolver::solve(const IGraphPtr &graph,
                                                const double density,
                                                std::vector<std::string> used_algorithms) const {
   std::vector<ClusteringInfo> infos;
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithManyLocalSearches") != used_algorithms.end()) {
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithManyLocalSearches")
+      != used_algorithms.end()) {
     NeighborhoodWithManyLocalSearches nmls(num_threads_, factory_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = nmls.getBestNeighborhoodClustering(*graph);
@@ -22,7 +23,8 @@ std::string strict_2cc::Strict2CCSolver::solve(const IGraphPtr &graph,
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithOneLocalSearch") != used_algorithms.end()) {
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithOneLocalSearch")
+      != used_algorithms.end()) {
     NeighborhoodWithOneLocalSearch nols(num_threads_, factory_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = nols.getBestNeighborhoodClustering(*graph);

@@ -48,7 +48,7 @@ non_strict_2cc::LocalSearch::LocalSearchCandidate non_strict_2cc::LocalSearch::F
       candidate = i;
     }
   }
-  return LocalSearchCandidate(candidate, local_improvement);
+  return {candidate, local_improvement};
 }
 
 std::vector<int> non_strict_2cc::LocalSearch::UpdateLocalImprovements(const IGraph &graph,

@@ -7,5 +7,5 @@
  */
 class BinaryClusteringFactory : public IClusteringFactory {
  public:
-  IClustPtr CreateClustering(const unsigned size) const override;
+  [[nodiscard]] IClustPtr CreateClustering(unsigned size) const override;
 };

@@ -14,7 +14,8 @@ std::vector<IClustPtr> set_semi_supervised_2cc::NeighborSplitter::SplitGraphByVe
   if (IsVertexInSet(vertex, first_cluster_vertices)) {
     IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
     for (unsigned i = 0; i < graph.Size(); ++i) {
-      auto could_be_in_first_cluster = i == vertex || IsVertexInSet(i, first_cluster_vertices) || graph.IsJoined(i, vertex);
+      auto could_be_in_first_cluster =
+          i == vertex || IsVertexInSet(i, first_cluster_vertices) || graph.IsJoined(i, vertex);
       if (could_be_in_first_cluster && !IsVertexInSet(i, second_cluster_vertices)) {
         split_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
       } else {
@@ -25,7 +26,8 @@ std::vector<IClustPtr> set_semi_supervised_2cc::NeighborSplitter::SplitGraphByVe
   } else if (IsVertexInSet(vertex, second_cluster_vertices)) {
     IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
     for (unsigned i = 0; i < graph.Size(); ++i) {
-      auto could_be_in_second_cluster = i == vertex || IsVertexInSet(i, second_cluster_vertices) || graph.IsJoined(i, vertex);
+      auto could_be_in_second_cluster =
+          i == vertex || IsVertexInSet(i, second_cluster_vertices) || graph.IsJoined(i, vertex);
       if (could_be_in_second_cluster && !IsVertexInSet(i, first_cluster_vertices)) {
         split_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
       } else {

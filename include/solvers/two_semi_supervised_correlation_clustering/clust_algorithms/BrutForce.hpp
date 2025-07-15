@@ -13,11 +13,11 @@ class BrutForce {
   IClustFactoryPtr factory_;
 
  public:
-  explicit BrutForce(const IClustFactoryPtr factory);
+  explicit BrutForce(IClustFactoryPtr factory);
 
   IClustPtr GetBestClustering(const IGraphPtr &graph,
-                                     const unsigned first_vertex,
-                                     const unsigned second_vertex);
+                              unsigned first_vertex,
+                              unsigned second_vertex);
 };
 
 }

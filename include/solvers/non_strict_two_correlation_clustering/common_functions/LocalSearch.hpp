@@ -34,10 +34,10 @@ class LocalSearch {
   static std::vector<int> UpdateLocalImprovements(const IGraph &graph,
                                                   const IClustPtr &cur_clustering,
                                                   std::vector<int> &local_improvement_list,
-                                                  const unsigned vertex);
+                                                  unsigned vertex);
 
   static IClustPtr UpdateClustering(IClustPtr &cur_clustering,
-                                    const unsigned vertex);
+                                    unsigned vertex);
 
  public:
   /**

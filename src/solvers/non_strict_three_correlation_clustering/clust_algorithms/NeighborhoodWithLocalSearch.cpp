@@ -12,7 +12,7 @@ void non_strict_3cc::NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThre
     auto part_clustering = neighbor_splitter_.BuildFirstCluster(graph, i);
     for (unsigned j = 0; j < graph.Size(); ++j) {
       if (!part_clustering->IsNonClustered(j)) continue;
-      auto tmp_clustering = neighbor_splitter_.BuildSecondAndThirdClusters(graph, part_clustering, j);
+      auto tmp_clustering = non_strict_3cc::NeighborSplitter::BuildSecondAndThirdClusters(graph, part_clustering, j);
       tmp_clustering = LocalSearch::ComputeLocalOptimum(
           graph,
           tmp_clustering,
@@ -28,7 +28,7 @@ void non_strict_3cc::NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThre
 }
 
 non_strict_3cc::NeighborhoodWithLocalSearch::NeighborhoodWithLocalSearch(unsigned num_threads,
-                                                                         const IClustFactoryPtr& clustering_factory) :
+                                                                         const IClustFactoryPtr &clustering_factory) :
     num_threads_(num_threads),
     clustering_factory_(clustering_factory),
     neighbor_splitter_(non_strict_3cc::NeighborSplitter(clustering_factory)) {

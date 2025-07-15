@@ -15,7 +15,7 @@ class NeighborSplitter {
   IClustFactoryPtr clustering_factory_;
 
  private:
-  static bool IsVertexInSet(const unsigned vertex, const std::vector<unsigned> &vertices_set);
+  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned> &vertices_set);
 
  public:
   explicit NeighborSplitter(IClustFactoryPtr clustering_factory);

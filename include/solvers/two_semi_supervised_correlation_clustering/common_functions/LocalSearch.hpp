@@ -19,7 +19,7 @@ class LocalSearch {
 
     }
 
-    bool contain(unsigned i) const {
+    [[nodiscard]] bool contain(unsigned i) const {
       return i == first_cluster_vertex || i == second_cluster_vertex;
     }
   };
@@ -38,20 +38,20 @@ class LocalSearch {
  private:
   static std::vector<int> InitLocalImprovements(const IGraph &graph,
                                                 const IClustPtr &cur_clustering,
-                                                const ExcludeVertices exclude_vertices);
+                                                ExcludeVertices exclude_vertices);
 
   static LocalSearchCandidate FindCandidate(const IGraph &graph,
                                             const std::vector<int> &local_improvement_list,
-                                            const ExcludeVertices exclude_vertices);
+                                            ExcludeVertices exclude_vertices);
 
   static std::vector<int> UpdateLocalImprovements(const IGraph &graph,
                                                   const IClustPtr &cur_clustering,
                                                   std::vector<int> &local_improvement_list,
-                                                  const unsigned vertex,
-                                                  const ExcludeVertices exclude_vertices);
+                                                  unsigned vertex,
+                                                  ExcludeVertices exclude_vertices);
 
   static IClustPtr UpdateClustering(IClustPtr &cur_clustering,
-                                    const unsigned vertex);
+                                    unsigned vertex);
 
  public:
   /**

@@ -68,8 +68,8 @@ bool set_semi_supervised_2cc::BrutForce::IsValidClustering(const std::vector<uns
       if (first_label != second_label) return false;
     }
   }
-  for (unsigned int first_cluster_vertex : first_cluster_vertices) {
-    for (unsigned int second_cluster_vertex : second_cluster_vertices) {
+  for (unsigned int first_cluster_vertex: first_cluster_vertices) {
+    for (unsigned int second_cluster_vertex: second_cluster_vertices) {
       bool first_label = (clustering & (1U << first_cluster_vertex)) == 0;
       bool second_label = (clustering & (1U << second_cluster_vertex)) == 0;
       if (first_label == second_label) return false;
