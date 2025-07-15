@@ -35,7 +35,7 @@ namespace non_strict_2cc {
    private:
     void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                                 unsigned threadId,
-                                                IClustPtr &local_best_clustering) const;
+                                                std::vector<Solution> &local_thread_buffer) const;
 
    public:
     NeighborhoodWithOneLocalSearch(unsigned num_threads,
@@ -46,5 +46,7 @@ namespace non_strict_2cc {
      * @return best clustering.
      */
     [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
+
+    std::vector<Solution> getAllSolutions(const IGraph &graph) const;
   };
 }

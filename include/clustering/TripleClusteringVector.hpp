@@ -47,6 +47,7 @@ class TripleClusteringVector : public IClustering {
   unsigned GetNumNonClusteredVertices() const override;
   unsigned int GetNumVerticesByLabel(const ClusterLabels label) const override;
   std::string ToJson() const override;
+  unsigned Size() const override;
 
   friend class TripleClusteringFactory;
 };

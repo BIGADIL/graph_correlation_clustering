@@ -89,3 +89,6 @@ std::string BinaryClusteringVector::ToJson() const {
   }
   return ss.str();
 }
+unsigned BinaryClusteringVector::Size() const {
+  return labels_.size();
+}

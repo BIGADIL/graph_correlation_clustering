@@ -98,3 +98,6 @@ std::string TripleClusteringVector::ToJson() const {
   }
   return ss.str();
 }
+unsigned TripleClusteringVector::Size() const {
+  return labels_.size();
+}

@@ -6,17 +6,13 @@
 
 void non_strict_3cc::TwoVerticesNeighborhood::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                                                                      unsigned threadId,
-                                                                                     IClustPtr &local_best_clustering) const {
-  unsigned best_distance = UINT_MAX;
+                                                                                     std::vector<Solution> &local_thread_buffer) const {
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     for (unsigned j = 0; j < graph.Size(); ++j) {
       if (i == j) continue;
       auto tmp_clustering = neighbor_splitter_.SplitGraphByTwoVertices(graph, i, j);
       auto tmp_distance = tmp_clustering->GetDistanceToGraph(graph);
-      if (tmp_distance < best_distance) {
-        best_distance = tmp_distance;
-        local_best_clustering = tmp_clustering;
-      }
+      local_thread_buffer.emplace_back(tmp_distance, tmp_clustering);
     }
   }
 }
@@ -30,10 +26,21 @@ non_strict_3cc::TwoVerticesNeighborhood::TwoVerticesNeighborhood(unsigned num_th
 }
 
 IClustPtr non_strict_3cc::TwoVerticesNeighborhood::getBestNeighborhoodClustering(const IGraph &graph) const {
-  std::vector<IClustPtr> local_best_clustering_vector;
+  std::vector<Solution> result = getAllSolutions(graph);
+  unsigned best_distance = UINT_MAX;
+  IClustPtr best_clustering = nullptr;
+  for (auto &it: result) {
+    if (it.distance < best_distance) {
+      best_distance = it.distance;
+      best_clustering = it.clustering;
+    }
+  }
+  return best_clustering;
+}
+std::vector<Solution> non_strict_3cc::TwoVerticesNeighborhood::getAllSolutions(const IGraph &graph) const {
+  std::vector<std::vector<Solution>> local_thread_buffer;
   for (unsigned i = 0; i < num_threads_; i++) {
-    auto instance = clustering_factory_->CreateClustering(graph.Size());
-    local_best_clustering_vector.push_back(instance);
+    local_thread_buffer.emplace_back();
   }
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
@@ -42,20 +49,17 @@ IClustPtr non_strict_3cc::TwoVerticesNeighborhood::getBestNeighborhoodClustering
         this,
         std::ref(graph),
         i,
-        std::ref(local_best_clustering_vector[i])
+        std::ref(local_thread_buffer[i])
     );
   }
   for (auto &it: thread_vector) {
     it.join();
   }
-  IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
-  unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
-  for (auto &it: local_best_clustering_vector) {
-    auto tmp_distance = it->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
-      best_distance = tmp_distance;
-      best_neighborhood_clustering = it;
+  std::vector<Solution> result;
+  for (auto &it: local_thread_buffer) {
+    for (auto &elem: it) {
+      result.emplace_back(elem);
     }
   }
-  return best_neighborhood_clustering;
+  return result;
 }

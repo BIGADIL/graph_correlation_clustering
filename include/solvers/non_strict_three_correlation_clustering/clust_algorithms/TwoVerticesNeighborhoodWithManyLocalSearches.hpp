@@ -6,12 +6,12 @@
 
 namespace non_strict_3cc {
 
-class TwoVerticesNeighborhoodWithLocalSearch {
+class TwoVerticesNeighborhoodWithManyLocalSearches {
  public:
-  TwoVerticesNeighborhoodWithLocalSearch() = delete;
-  TwoVerticesNeighborhoodWithLocalSearch(const TwoVerticesNeighborhoodWithLocalSearch &&) = delete;
-  TwoVerticesNeighborhoodWithLocalSearch &operator=(const TwoVerticesNeighborhoodWithLocalSearch &) = delete;
-  TwoVerticesNeighborhoodWithLocalSearch &operator=(const TwoVerticesNeighborhoodWithLocalSearch &&) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearches() = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearches(const TwoVerticesNeighborhoodWithManyLocalSearches &&) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearches &operator=(const TwoVerticesNeighborhoodWithManyLocalSearches &) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearches &operator=(const TwoVerticesNeighborhoodWithManyLocalSearches &&) = delete;
 
  private:
   /**
@@ -33,8 +33,8 @@ class TwoVerticesNeighborhoodWithLocalSearch {
                                               std::vector<Solution> &local_thread_buffer) const;
 
  public:
-  TwoVerticesNeighborhoodWithLocalSearch(unsigned num_threads,
-                                         const IClustFactoryPtr &clustering_factory);
+  TwoVerticesNeighborhoodWithManyLocalSearches(unsigned num_threads,
+                                               const IClustFactoryPtr &clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.

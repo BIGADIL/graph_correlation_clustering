@@ -62,13 +62,13 @@ ExperimentParameters ExperimentParameters::readFromConfig(const std::string &pat
       parts.push_back(parts_array[i].GetDouble());
     }
   }
-  return ExperimentParameters(
+  return {
       graph_size_vector,
       density_vector,
       algorithms_vector,
       parts,
       doc["num_threads"].GetUint(),
-      doc["num_graphs"].GetUint());
+      doc["num_graphs"].GetUint()};
 }
 
 unsigned int ExperimentParameters::GetNumThreads() const {

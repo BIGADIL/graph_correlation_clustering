@@ -121,6 +121,7 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWith2LocalSearches.hpp
+        include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
@@ -131,6 +132,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWith2LocalSearches.cpp
+        src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.cpp
         )
 
 set(2SSCC_SRC

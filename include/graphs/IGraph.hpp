@@ -28,6 +28,8 @@ class IGraph {
    * @return json-string of graph.
    */
   virtual std::string ToJson() const = 0;
+
+  virtual bool operator==(IGraph &other) const = 0;
 };
 
 using IGraphPtr = std::shared_ptr<IGraph>;

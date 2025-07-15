@@ -70,6 +70,44 @@ class IClustering {
    * @return json-string.
    */
   virtual std::string ToJson() const = 0;
+
+  virtual unsigned Size() const = 0;
 };
 
 using IClustPtr = std::shared_ptr<IClustering>;
+
+struct Solution {
+  unsigned distance;
+  IClustPtr clustering;
+
+  Solution(unsigned distance, IClustPtr clustering)
+      : distance(distance),
+        clustering(std::move(clustering)) {}
+
+  bool operator<(const Solution &other) const {
+    return distance < other.distance;
+  }
+
+  bool operator==(const Solution &other) const {
+    if (distance != other.distance) {
+      return false;
+    }
+    auto len = clustering->Size();
+    for (unsigned i = 0; i < len; i++) {
+      for (unsigned j = i + 1; j < len; j++) {
+        auto eq1 = clustering->GetLabel(i) == clustering->GetLabel(j);
+        auto eq2 = other.clustering->GetLabel(i) == other.clustering->GetLabel(j);
+        if (eq1 != eq2) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+ public:
+
+  [[nodiscard]] Solution getCopy() const {
+    return {distance, clustering->GetCopy()};
+  }
+};

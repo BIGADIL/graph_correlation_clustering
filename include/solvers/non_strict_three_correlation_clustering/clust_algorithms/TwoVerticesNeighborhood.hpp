@@ -29,7 +29,7 @@ class TwoVerticesNeighborhood {
  private:
   void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                               unsigned threadId,
-                                              IClustPtr &local_best_clustering) const;
+                                              std::vector<Solution> &local_thread_buffer) const;
 
  public:
   TwoVerticesNeighborhood(unsigned num_threads,
@@ -40,6 +40,8 @@ class TwoVerticesNeighborhood {
    * @return best clustering.
    */
   [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
+
+  [[nodiscard]] std::vector<Solution> getAllSolutions(const IGraph &graph) const;
 };
 
 }

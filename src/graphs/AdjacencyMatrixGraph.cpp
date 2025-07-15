@@ -28,3 +28,13 @@ std::string AdjacencyMatrixGraph::ToJson() const {
   ss << "]";
   return ss.str();
 }
+
+bool AdjacencyMatrixGraph::operator==(IGraph &other) const {
+  bool eq = true;
+  for (unsigned i = 0; i < Size(); i++) {
+    for (unsigned j = i + 1; j < Size(); j++) {
+      eq &= IsJoined(i, j) == other.IsJoined(i, j);
+    }
+  }
+  return eq;
+}

@@ -18,4 +18,6 @@ class AdjacencyMatrixGraph : public IGraph {
                 const unsigned j) const override { return adjacency_matrix_[i][j]; }
   unsigned Size() const override { return adjacency_matrix_.size(); }
   std::string ToJson() const override;
+
+  bool operator==(IGraph &other) const override;
 };
