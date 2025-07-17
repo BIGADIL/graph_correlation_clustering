@@ -37,9 +37,7 @@ class LocalSearch {
                                                   ClusterLabels first_label,
                                                   ClusterLabels second_label);
 
-  static std::vector<int> ComputeLocalImprovement(const IGraph &graph,
-                                                  const IClustPtr &cur_clustering,
-                                                  unsigned vertex);
+
 
   static bool IsSkipLabelForVertex(ClusterLabels label, unsigned idx);
 
@@ -62,6 +60,10 @@ class LocalSearch {
 
   static IClustPtr ComputeLocalOptimum(const IGraph &graph,
                                        const IClustPtr &cur_clustering);
+
+  static std::vector<int> ComputeLocalImprovement(const IGraph &graph,
+                                                  const IClustPtr &cur_clustering,
+                                                  unsigned vertex);
 };
 
 }

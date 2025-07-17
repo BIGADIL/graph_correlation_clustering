@@ -3,8 +3,11 @@
 #include <set>
 #include <iostream>
 #include <utility>
+#include <climits>
+#include <map>
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
 non_strict_3cc::GeneticAlgorithm::GeneticAlgorithm(unsigned iterations,
                                                    unsigned early_stop_num,
@@ -29,37 +32,137 @@ Solution non_strict_3cc::GeneticAlgorithm::Mutation(const Solution &solution, do
     if (p > p_mutation) {
       continue;
     }
-    auto j = dis_n(gen);
-    auto label_i = copy->GetLabel(i);
-    auto label_j = copy->GetLabel(j);
-    copy->SetupLabelForVertex(i, label_j);
-    copy->SetupLabelForVertex(j, label_i);
+    int plus[3];
+    plus[0] = plus[1] = plus[2] = 0;
+    for (unsigned j = 0; j < graph_->Size(); j++) {
+      if (i == j) {
+        continue;
+      }
+      auto imp = LocalSearch::ComputeLocalImprovement(*graph_, copy, i);
+      ClusterLabels label = NON_CLUSTERED;
+      int best_imp = INT_MIN;
+      for (int k = 0; k < 3; k++) {
+        if (k == copy->GetLabel(i)) {
+          continue;
+        }
+        if (imp[k] > best_imp) {
+          best_imp = imp[k];
+          if (k == 0) {
+            label = FIRST_CLUSTER;
+          } else if (k == 1) {
+            label = SECOND_CLUSTER;
+          } else {
+            label = THIRD_CLUSTER;
+          }
+        }
+      }
+      copy->SetupLabelForVertex(i, label);
+    }
   }
   return {copy->GetDistanceToGraph(*graph_), copy};
 }
 
-std::pair<Solution, Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution &x,
-                                                                          const Solution &y) {
+std::vector<Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution &x,
+                                                                  const Solution &y) {
   std::vector<Solution> solutions;
   solutions.emplace_back(x);
   solutions.emplace_back(y);
 
-  auto child_1 = factory_->CreateClustering(graph_->Size());
-  auto child_2 = factory_->CreateClustering(graph_->Size());
+  std::map<int, std::set<unsigned>> clusters_x;
+  std::map<int, std::set<unsigned>> clusters_y;
 
   for (unsigned i = 0; i < graph_->Size(); i++) {
-    if (dis(gen) > 0.5) {
-      child_1->SetupLabelForVertex(i, x.clustering->GetLabel(i));
-      child_2->SetupLabelForVertex(i, y.clustering->GetLabel(i));
-    } else {
-      child_1->SetupLabelForVertex(i, y.clustering->GetLabel(i));
-      child_2->SetupLabelForVertex(i, x.clustering->GetLabel(i));
+    auto label_x = x.clustering->GetLabel(i);
+    auto [it_x, inserted_x] = clusters_x.try_emplace((int) label_x, std::set<unsigned>{});
+    it_x->second.insert(i);
+    auto label_y = y.clustering->GetLabel(i);
+    auto [it_y, inserted_y] = clusters_y.try_emplace((int) label_y, std::set<unsigned>{});
+    it_y->second.insert(i);
+  }
+
+  std::vector<std::set<unsigned>> bases;
+  for (auto &[key_x, value_x]: clusters_x) {
+    for (auto &[key_y, value_y]: clusters_y) {
+      std::set<unsigned> intersect;
+      std::set_intersection(value_x.begin(),
+                            value_x.end(),
+                            value_y.begin(),
+                            value_y.end(),
+                            std::inserter(intersect, intersect.begin()));
+      bases.emplace_back(intersect);
     }
   }
-  solutions.emplace_back(child_1->GetDistanceToGraph(*graph_), child_1);
-  solutions.emplace_back(child_2->GetDistanceToGraph(*graph_), child_2);
+
+  bases.erase(
+      std::remove_if(
+          bases.begin(),
+          bases.end(),
+          [](const std::set<unsigned> &s) { return s.empty(); }
+      ),
+      bases.end()
+  );
+
+  while (bases.size() > 3) {
+    unsigned to_merge_1 = 0;
+    unsigned to_merge_2 = 1;
+    int record = 0;
+    std::set<unsigned> set0 = bases[0];
+    std::set<unsigned> set1 = bases[1];
+    for (auto &it1: set0) {
+      for (auto &it2: set1) {
+        auto is_joined = graph_->IsJoined(it1, it2);
+        if (is_joined) {
+          record--;
+        } else {
+          record++;
+        }
+      }
+    }
+
+    for (unsigned i = 0; i < bases.size(); i++) {
+      for (unsigned j = i + 1; j < bases.size(); j++) {
+        if (i == 0 && j == 1) continue;
+        int local_record = 0;
+        std::set<unsigned> set0 = bases[i];
+        std::set<unsigned> set1 = bases[j];
+        for (auto &it1: set0) {
+          for (auto &it2: set1) {
+            auto is_joined = graph_->IsJoined(it1, it2);
+            if (is_joined) {
+              local_record--;
+            } else {
+              local_record++;
+            }
+          }
+        }
+        if (local_record < record) {
+          to_merge_1 = i;
+          to_merge_2 = j;
+          record = local_record;
+        }
+      }
+    }
+
+    bases[to_merge_1].insert(bases[to_merge_2].begin(), bases[to_merge_2].end());
+    bases.erase(bases.begin() + to_merge_2);
+  }
+
+  auto child = factory_->CreateClustering(graph_->Size());
+  for (unsigned i = 0; i < bases.size(); i++) {
+    auto base = bases[i];
+    for (auto &it: base) {
+      if (i == 0) {
+        child->SetupLabelForVertex(it, FIRST_CLUSTER);
+      } else if (i == 1) {
+        child->SetupLabelForVertex(it, SECOND_CLUSTER);
+      } else {
+        child->SetupLabelForVertex(it, THIRD_CLUSTER);
+      }
+    }
+  }
+  solutions.emplace_back(child->GetDistanceToGraph(*graph_), child);
   std::sort(solutions.begin(), solutions.end());
-  return {solutions[0], solutions[1]};
+  return {solutions[0]};
 }
 
 Solution non_strict_3cc::GeneticAlgorithm::Selection(std::vector<Solution> population) {
@@ -114,7 +217,7 @@ void non_strict_3cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   if (num_iter_without_record_ == early_stop_num_) {
     stop_training_ = true;
   }
-  if (iteration % 10 == 0 && !stop_training_) {
+  if (iteration % 50 == 0 && !stop_training_) {
     population_.clear();
     for (auto &it: buffer_) {
       auto x = it;
@@ -152,17 +255,9 @@ Solution non_strict_3cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
       auto x = Selection(population_);
       auto y = Selection(population_);
       auto pair = Crossover(x, y);
-      if (!(pair.first == x) && !(pair.first == y)) {
-        std::cout << "";
-      }
-
-      x = Mutation(pair.first, p_mutation_);
-
-      if (buffer_.size() < population_size_ && !IsIn(x, buffer_)) {
+      for (auto &it: pair) {
+        x = Mutation(it, p_mutation_);
         buffer_.emplace_back(x);
-      }
-      if (buffer_.size() < population_size_ && IsIn(y, buffer_)) {
-        buffer_.emplace_back(y);
       }
     }
     OnIterationEnd(i);

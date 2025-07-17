@@ -39,7 +39,7 @@ class GeneticAlgorithm: public IGeneticAlgorithm {
                    double p_mutation);
 
   Solution Mutation(const Solution &solution, double p_mutation) override;
-  std::pair<Solution, Solution> Crossover(const Solution &x, const Solution &y) override;
+  std::vector<Solution> Crossover(const Solution &x, const Solution &y) override;
   Solution Selection(std::vector<Solution> population) override;
   std::vector<Solution> GenerateInitPopulation(unsigned population_size) override;
   void OnIterationBegin(unsigned iteration) override;
