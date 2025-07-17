@@ -121,6 +121,8 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp
+        include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/IGeneticAlgorithm.hpp
+        include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
@@ -131,6 +133,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.cpp
+        src/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.cpp
         )
 
 set(2SSCC_SRC
@@ -199,3 +202,12 @@ add_executable(SetSemiSupervised2CCExperiment
 target_link_libraries(SetSemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(SetSemiSupervised2CCExperiment PUBLIC cxx_std_17)
 add_dependencies(SetSemiSupervised2CCExperiment rapidjson)
+
+add_executable(Genetic_3
+        Genetic_3.cpp
+        ${COMMON_SRC}
+        ${NS3CC_SRC}
+        )
+target_link_libraries(Genetic_3 ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(Genetic_3 PUBLIC cxx_std_17)
+add_dependencies(Genetic_3 rapidjson)
