@@ -1,6 +1,7 @@
 #pragma once
 
 #include <random>
+#include <set>
 #include "IGeneticAlgorithm.hpp"
 #include "../../../clustering/factories/TripleClusteringFactory.hpp"
 namespace non_strict_3cc {
@@ -45,6 +46,8 @@ class GeneticAlgorithm: public IGeneticAlgorithm {
   void OnIterationBegin(unsigned iteration) override;
   void OnIterationEnd(unsigned iteration) override;
   Solution Train(std::shared_ptr<IGraph> graph) override;
+
+  IClustPtr CreateClusteringByBases(std::vector<std::set<unsigned>> bases);
 
   static bool IsIn(Solution &el, std::vector<Solution> &collection) {
     for (auto &it: collection) {
