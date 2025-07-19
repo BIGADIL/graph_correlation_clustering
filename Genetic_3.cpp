@@ -23,29 +23,30 @@ std::vector<IGraphPtr> generate_graphs(ErdosRenyiRandomGraphFactory &graph_facto
   auto algo_b = non_strict_3cc::BranchAndBounds();
   while (res.size() < n) {
     auto graph = graph_factory.CreateGraph(size);
-    auto best_n= algo_n.getBestNeighborhoodClustering(*graph);
-    auto dist_n = best_n->GetDistanceToGraph(*graph);
-    auto best_b = algo_b.GetBestClustering(graph, best_n);
-    auto dist_b = best_b->GetDistanceToGraph(*graph);
-
-    if (dist_b < dist_n) {
-      res.emplace_back(graph);
-    }
+    res.emplace_back(graph);
+//    auto best_n= algo_n.getBestNeighborhoodClustering(*graph);
+//    auto dist_n = best_n->GetDistanceToGraph(*graph);
+//    auto best_b = algo_b.GetBestClustering(graph, best_n);
+//    auto dist_b = best_b->GetDistanceToGraph(*graph);
+//
+//    if (dist_b < dist_n) {
+//      res.emplace_back(graph);
+//    }
   }
   return res;
 }
 
 int main() {
   unsigned num_threads = 8;
-  double density = 0.5;
+  double density = 0.25;
   ErdosRenyiRandomGraphFactory graphs_factory(density);
 
   std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);
-  auto graphs = generate_graphs(graphs_factory, factory, 50, 20);
+  auto graphs = generate_graphs(graphs_factory, factory, 50, 35);
   std::cout << "Stop generate graphs" << std::endl;
 
   auto algo_n = non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch(num_threads, factory);
-  auto algo_g = non_strict_3cc::GeneticAlgorithm(1000, 100, factory, 1024, 20, 1e-3);
+  auto algo_g = non_strict_3cc::GeneticAlgorithm(5000, 200, factory, 2048, 80, 1e-3);
   auto algo_b = non_strict_3cc::BranchAndBounds();
 
   for (auto &graph: graphs) {

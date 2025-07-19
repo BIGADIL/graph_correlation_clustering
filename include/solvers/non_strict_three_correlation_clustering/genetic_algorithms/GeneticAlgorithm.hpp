@@ -2,10 +2,18 @@
 
 #include <random>
 #include <set>
+#include <climits>
 #include "IGeneticAlgorithm.hpp"
 #include "../../../clustering/factories/TripleClusteringFactory.hpp"
 namespace non_strict_3cc {
-class GeneticAlgorithm: public IGeneticAlgorithm {
+
+struct ToMergeCandidate {
+  unsigned i = -1;
+  unsigned j = -1;
+  int record = INT_MAX;
+};
+
+class GeneticAlgorithm : public IGeneticAlgorithm {
  private:
   std::shared_ptr<Solution> record_ = nullptr;
   unsigned num_iter_without_record_ = 0;
@@ -24,7 +32,6 @@ class GeneticAlgorithm: public IGeneticAlgorithm {
   unsigned population_size_;
   unsigned tournament_size_;
   double p_mutation_;
-
 
  public:
   GeneticAlgorithm() = delete;
@@ -47,7 +54,9 @@ class GeneticAlgorithm: public IGeneticAlgorithm {
   void OnIterationEnd(unsigned iteration) override;
   Solution Train(std::shared_ptr<IGraph> graph) override;
 
-  IClustPtr CreateClusteringByBases(std::vector<std::set<unsigned>> bases);
+  IClustPtr CreateClusteringByBases(std::vector<std::set<unsigned>> &bases);
+
+  ToMergeCandidate FindCandidateToMerge(std::vector<std::set<unsigned>> &bases);
 
   static bool IsIn(Solution &el, std::vector<Solution> &collection) {
     for (auto &it: collection) {
@@ -58,4 +67,5 @@ class GeneticAlgorithm: public IGeneticAlgorithm {
     return false;
   }
 };
+
 }

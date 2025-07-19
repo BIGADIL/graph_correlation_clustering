@@ -7,7 +7,9 @@
 #include <map>
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhood.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp"
 
 non_strict_3cc::GeneticAlgorithm::GeneticAlgorithm(unsigned iterations,
                                                    unsigned early_stop_num,
@@ -32,8 +34,6 @@ Solution non_strict_3cc::GeneticAlgorithm::Mutation(const Solution &solution, do
     if (p > p_mutation) {
       continue;
     }
-    int plus[3];
-    plus[0] = plus[1] = plus[2] = 0;
     for (unsigned j = 0; j < graph_->Size(); j++) {
       if (i == j) {
         continue;
@@ -47,14 +47,11 @@ Solution non_strict_3cc::GeneticAlgorithm::Mutation(const Solution &solution, do
         }
         if (imp[k] > best_imp) {
           best_imp = imp[k];
-          if (k == 0) {
-            label = FIRST_CLUSTER;
-          } else if (k == 1) {
-            label = SECOND_CLUSTER;
-          } else {
-            label = THIRD_CLUSTER;
-          }
+          label = (ClusterLabels) k;
         }
+      }
+      if (best_imp <= 0) {
+        continue;
       }
       copy->SetupLabelForVertex(i, label);
     }
@@ -103,66 +100,16 @@ std::vector<Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution
   );
 
   while (bases.size() > 3) {
-    unsigned to_merge_1 = -1;
-    unsigned to_merge_2 = -1;
-    int record = INT_MAX;
-    for (unsigned i = 0; i < bases.size(); i++) {
-      for (unsigned j = i + 1; j < bases.size(); j++) {
-        int local_record = 0;
-        std::set<unsigned> set_i = bases[i];
-        std::set<unsigned> set_j = bases[j];
-        for (auto &it1: set_i) {
-          for (auto &it2: set_j) {
-            auto is_joined = graph_->IsJoined(it1, it2);
-            if (is_joined) {
-              local_record--;
-            } else {
-              local_record++;
-            }
-          }
-        }
-        if (local_record < record) {
-          to_merge_1 = i;
-          to_merge_2 = j;
-          record = local_record;
-        }
-      }
-    }
-
-    bases[to_merge_1].insert(bases[to_merge_2].begin(), bases[to_merge_2].end());
-    bases.erase(bases.begin() + to_merge_2);
+    auto candidate = FindCandidateToMerge(bases);
+    bases[candidate.i].insert(bases[candidate.j].begin(), bases[candidate.j].end());
+    bases.erase(bases.begin() + candidate.j);
   }
 
   while (true) {
-    unsigned to_merge_1 = -1;
-    unsigned to_merge_2 = -1;
-    int record = INT_MAX;
-    for (unsigned i = 0; i < bases.size(); i++) {
-      for (unsigned j = i + 1; j < bases.size(); j++) {
-        int local_record = 0;
-        std::set<unsigned> set_i = bases[i];
-        std::set<unsigned> set_j = bases[j];
-        for (auto &it1: set_i) {
-          for (auto &it2: set_j) {
-            auto is_joined = graph_->IsJoined(it1, it2);
-            if (is_joined) {
-              local_record--;
-            } else {
-              local_record++;
-            }
-          }
-        }
-        if (local_record < record) {
-          to_merge_1 = i;
-          to_merge_2 = j;
-          record = local_record;
-        }
-      }
-    }
-
-    if (record < 0) {
-      bases[to_merge_1].insert(bases[to_merge_2].begin(), bases[to_merge_2].end());
-      bases.erase(bases.begin() + to_merge_2);
+    auto candidate = FindCandidateToMerge(bases);
+    if (candidate.record < 0) {
+      bases[candidate.i].insert(bases[candidate.j].begin(), bases[candidate.j].end());
+      bases.erase(bases.begin() + candidate.j);
     } else {
       break;
     }
@@ -191,11 +138,21 @@ Solution non_strict_3cc::GeneticAlgorithm::Selection(std::vector<Solution> popul
 }
 
 std::vector<Solution> non_strict_3cc::GeneticAlgorithm::GenerateInitPopulation(unsigned int population_size) {
-  auto generator = non_strict_3cc::TwoVerticesNeighborhood(8, factory_);
+  auto generator = non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch(8, factory_);
   auto solutions = generator.getAllSolutions(*graph_);
+  unsigned best_distance = UINT_MAX;
+  for (auto &it: solutions) {
+    if (it.distance < best_distance) {
+      best_distance = it.distance;
+    }
+  }
   std::vector<Solution> result;
   for (auto &it: solutions) {
-    result.emplace_back(it);
+    if (it.distance > best_distance) {
+      result.emplace_back(it);
+    } else {
+      record_ = std::make_shared<Solution>(it);
+    }
   }
   return result;
 }
@@ -250,11 +207,11 @@ Solution non_strict_3cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
     }
   }
 
-  for (auto &it: population_) {
-    if (record_ == nullptr || record_->distance > it.distance) {
-      record_ = std::make_shared<Solution>(it);
-    }
-  }
+//  for (auto &it: population_) {
+//    if (record_ == nullptr || record_->distance > it.distance) {
+//      record_ = std::make_shared<Solution>(it);
+//    }
+//  }
 
   num_iter_without_record_ = 0;
   stop_training_ = false;
@@ -278,7 +235,7 @@ Solution non_strict_3cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
   return *record_;
 }
 
-IClustPtr non_strict_3cc::GeneticAlgorithm::CreateClusteringByBases(std::vector<std::set<unsigned int>> bases) {
+IClustPtr non_strict_3cc::GeneticAlgorithm::CreateClusteringByBases(std::vector<std::set<unsigned int>> &bases) {
   auto child = factory_->CreateClustering(graph_->Size());
   for (unsigned i = 0; i < bases.size(); i++) {
     auto base = bases[i];
@@ -293,4 +250,31 @@ IClustPtr non_strict_3cc::GeneticAlgorithm::CreateClusteringByBases(std::vector<
     }
   }
   return child;
+}
+
+non_strict_3cc::ToMergeCandidate non_strict_3cc::GeneticAlgorithm::FindCandidateToMerge(std::vector<std::set<unsigned int>> &bases) {
+  ToMergeCandidate candidate;
+  for (unsigned i = 0; i < bases.size(); i++) {
+    for (unsigned j = i + 1; j < bases.size(); j++) {
+      int local_record = 0;
+      std::set<unsigned> set_i = bases[i];
+      std::set<unsigned> set_j = bases[j];
+      for (auto &it1: set_i) {
+        for (auto &it2: set_j) {
+          auto is_joined = graph_->IsJoined(it1, it2);
+          if (is_joined) {
+            local_record--;
+          } else {
+            local_record++;
+          }
+        }
+      }
+      if (local_record < candidate.record) {
+        candidate.i = i;
+        candidate.j = j;
+        candidate.record = local_record;
+      }
+    }
+  }
+  return candidate;
 }

@@ -91,7 +91,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(1000, 100, factory_, 1024, 40, 1e-3);
+    GeneticAlgorithm genetic(5000, 100, factory_, 1024, 40, 1e-3);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(
