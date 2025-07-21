@@ -188,16 +188,21 @@ void non_strict_3cc::GeneticAlgorithm::OnIterationBegin(unsigned int iteration) 
 
 void non_strict_3cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   population_.clear();
-  for (auto &it: buffer_) {
-    population_.emplace_back(it);
+  population_.insert(population_.end(), buffer_.begin(), buffer_.end());
+  std::sort(population_.begin(), population_.end());
+  auto size = population_.size();
+  unsigned r = (unsigned) 0.1 * population_size_;
+  for (unsigned k = 0; k < r; k++) {
+    population_[size - k - 1] = population_[k];
   }
+  auto best = population_[0];
 
-  Solution best = population_[0];
-  for (unsigned i = 1; i < population_.size(); i++) {
-    if (population_[i].distance < best.distance) {
-      best = population_[i];
-    }
-  }
+//  Solution best = population_[0];
+//  for (unsigned i = 1; i < population_.size(); i++) {
+//    if (population_[i].distance < best.distance) {
+//      best = population_[i];
+//    }
+//  }
 
   if (best.distance >= record_->distance) {
     num_iter_without_record_++;
@@ -326,7 +331,7 @@ void non_strict_3cc::GeneticAlgorithm::ThreadWorker(std::vector<Solution> &local
       }
     }
   }
-  if (iteration % 50 == 0 && iteration > 0) {
+  if (iteration % 75 == 0 && iteration > 0) {
     std::vector<Solution> tmp_buffer;
     for (auto &it: local_buffer) {
       auto x = it;
