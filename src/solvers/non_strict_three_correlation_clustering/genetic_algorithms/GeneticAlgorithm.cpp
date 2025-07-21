@@ -29,31 +29,8 @@ non_strict_3cc::GeneticAlgorithm::GeneticAlgorithm(unsigned iterations,
 
 Solution non_strict_3cc::GeneticAlgorithm::Mutation(const Solution &solution, double p_mutation) {
   auto copy = solution.clustering->GetCopy();
-  std::random_device rd_;
-  std::default_random_engine gen{rd_()};
-  std::uniform_real_distribution<> dis;
-  for (unsigned i = 0; i < graph_->Size(); i++) {
-    auto p = dis(gen);
-    if (p > p_mutation) {
-      continue;
-    }
-    auto imp = LocalSearch::ComputeLocalImprovement(*graph_, copy, i);
-    auto label_i = copy->GetLabel(i);
-    ClusterLabels label = NON_CLUSTERED;
-    int best_imp = INT_MIN;
-    for (unsigned j = 0; j < imp.size(); j++) {
-      if ((ClusterLabels) j == label_i) continue;
-      if (imp[j] > best_imp) {
-        best_imp = imp[j];
-        label = (ClusterLabels) j;
-      }
-    }
-    if (best_imp <= 0) {
-      continue;
-    }
-    copy->SetupLabelForVertex(i, label);
-  }
-  return {copy->GetDistanceToGraph(*graph_), copy};
+  auto lo = LocalSearch::ComputeLocalOptimum(*graph_, copy);
+  return {lo->GetDistanceToGraph(*graph_), lo};
 }
 
 Solution non_strict_3cc::GeneticAlgorithm::ShakeUp(const Solution &solution, double p_shake) {
@@ -142,7 +119,7 @@ std::vector<Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution
 
   solutions.emplace_back(child->GetDistanceToGraph(*graph_), child);
   std::sort(solutions.begin(), solutions.end());
-  return {solutions[0]};
+  return {Solution(child->GetDistanceToGraph(*graph_), child)};
 }
 
 Solution non_strict_3cc::GeneticAlgorithm::Selection(std::vector<Solution> population) {
@@ -189,20 +166,12 @@ void non_strict_3cc::GeneticAlgorithm::OnIterationBegin(unsigned int iteration) 
 void non_strict_3cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   population_.clear();
   population_.insert(population_.end(), buffer_.begin(), buffer_.end());
-  std::sort(population_.begin(), population_.end());
-  auto size = population_.size();
-  unsigned r = (unsigned) 0.1 * population_size_;
-  for (unsigned k = 0; k < r; k++) {
-    population_[size - k - 1] = population_[k];
+  Solution best = population_[0];
+  for (unsigned i = 1; i < population_.size(); i++) {
+    if (population_[i].distance < best.distance) {
+      best = population_[i];
+    }
   }
-  auto best = population_[0];
-
-//  Solution best = population_[0];
-//  for (unsigned i = 1; i < population_.size(); i++) {
-//    if (population_[i].distance < best.distance) {
-//      best = population_[i];
-//    }
-//  }
 
   if (best.distance >= record_->distance) {
     num_iter_without_record_++;
@@ -331,7 +300,7 @@ void non_strict_3cc::GeneticAlgorithm::ThreadWorker(std::vector<Solution> &local
       }
     }
   }
-  if (iteration % 75 == 0 && iteration > 0) {
+  if (iteration % 5 == 0 && iteration > 0) {
     std::vector<Solution> tmp_buffer;
     for (auto &it: local_buffer) {
       auto x = it;
