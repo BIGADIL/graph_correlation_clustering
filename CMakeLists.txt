@@ -11,7 +11,8 @@ elseif (CMAKE_BUILD_TYPE MATCHES Release)
     message(" ")
 endif ()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -lstdc++fs")
@@ -164,7 +165,7 @@ add_executable(NonStrict2CCExperiment
         ${NS2CC_SRC}
         )
 target_link_libraries(NonStrict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_17)
+target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict2CCExperiment rapidjson)
 
 add_executable(Strict2CCExperiment
@@ -173,7 +174,7 @@ add_executable(Strict2CCExperiment
         ${S2CC_SCR}
         )
 target_link_libraries(Strict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(Strict2CCExperiment PUBLIC cxx_std_17)
+target_compile_features(Strict2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(Strict2CCExperiment rapidjson)
 
 add_executable(SemiSupervised2CCExperiment
@@ -182,7 +183,7 @@ add_executable(SemiSupervised2CCExperiment
         ${2SCC_SRC}
         )
 target_link_libraries(SemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(SemiSupervised2CCExperiment PUBLIC cxx_std_17)
+target_compile_features(SemiSupervised2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(SemiSupervised2CCExperiment rapidjson)
 
 add_executable(NonStrict3CCExperiment
@@ -191,7 +192,7 @@ add_executable(NonStrict3CCExperiment
         ${NS3CC_SRC}
         )
 target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_17)
+target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict3CCExperiment rapidjson)
 
 add_executable(SetSemiSupervised2CCExperiment
@@ -200,7 +201,7 @@ add_executable(SetSemiSupervised2CCExperiment
         ${2SSCC_SRC}
         )
 target_link_libraries(SetSemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(SetSemiSupervised2CCExperiment PUBLIC cxx_std_17)
+target_compile_features(SetSemiSupervised2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(SetSemiSupervised2CCExperiment rapidjson)
 
 add_executable(Genetic_3
@@ -209,5 +210,5 @@ add_executable(Genetic_3
         ${NS3CC_SRC}
         )
 target_link_libraries(Genetic_3 ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(Genetic_3 PUBLIC cxx_std_17)
+target_compile_features(Genetic_3 PUBLIC cxx_std_20)
 add_dependencies(Genetic_3 rapidjson)

@@ -42,11 +42,11 @@ int main() {
   ErdosRenyiRandomGraphFactory graphs_factory(density);
 
   std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);
-  auto graphs = generate_graphs(graphs_factory, factory, 50, 35);
+  auto graphs = generate_graphs(graphs_factory, factory, 50, 20);
   std::cout << "Stop generate graphs" << std::endl;
 
   auto algo_n = non_strict_3cc::TwoVerticesNeighborhoodWithLocalSearch(num_threads, factory);
-  auto algo_g = non_strict_3cc::GeneticAlgorithm(5000, 200, factory, 2048, 80, 1e-3);
+  auto algo_g = non_strict_3cc::GeneticAlgorithm(5000, 100, factory, 2048, 40, 1e-3);
   auto algo_b = non_strict_3cc::BranchAndBounds();
 
   for (auto &graph: graphs) {

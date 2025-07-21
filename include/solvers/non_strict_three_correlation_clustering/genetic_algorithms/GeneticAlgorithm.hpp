@@ -3,6 +3,10 @@
 #include <random>
 #include <set>
 #include <climits>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
+#include <barrier>
 #include "IGeneticAlgorithm.hpp"
 #include "../../../clustering/factories/TripleClusteringFactory.hpp"
 namespace non_strict_3cc {
@@ -21,10 +25,9 @@ class GeneticAlgorithm : public IGeneticAlgorithm {
   std::vector<Solution> population_;
   std::vector<Solution> buffer_;
   bool stop_training_ = false;
+  unsigned num_threads_;
 
-  std::random_device rd_;
-  std::default_random_engine gen{rd_()};
-  std::uniform_real_distribution<> dis;
+  std::unique_ptr<std::barrier<>> barrier_;
 
   unsigned iterations_;
   unsigned early_stop_num_;
@@ -32,6 +35,10 @@ class GeneticAlgorithm : public IGeneticAlgorithm {
   unsigned population_size_;
   unsigned tournament_size_;
   double p_mutation_;
+
+  void WorkerLoop(std::vector<Solution> &local_buffer, unsigned max_capacity);
+  void ThreadWorker(std::vector<Solution> &local_buffer, unsigned max_capacity, unsigned iteration);
+  Solution ShakeUp(const Solution &solution, double p_shake);
 
  public:
   GeneticAlgorithm() = delete;
