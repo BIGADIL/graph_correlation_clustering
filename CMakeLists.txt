@@ -28,6 +28,7 @@ set(COMMON_SRC
         include/graphs/AdjacencyMatrixGraph.hpp
         include/graphs/factories/IGraphFactory.hpp
         include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp
+        include/graphs/factories/StackOverflowGraphFactory.hpp
         include/clustering/IClustering.hpp
         include/clustering/BinaryClusteringVector.hpp
         include/clustering/factories/IClusteringFactory.hpp
@@ -41,6 +42,7 @@ set(COMMON_SRC
         include/clustering/BBTripleClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
+        src/graphs/factories/StackOverflowGraphFactory.cpp
         src/clustering/BinaryClusteringVector.cpp
         src/clustering/factories/BinaryClusteringFactory.cpp
         src/clustering/BBBinaryClusteringVector.cpp
@@ -194,6 +196,15 @@ add_executable(NonStrict3CCExperiment
 target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict3CCExperiment rapidjson)
+
+add_executable(NonStrict3CCExperimentSO
+        NonStrict3CCExperimentSO.cpp
+        ${COMMON_SRC}
+        ${NS3CC_SRC}
+        )
+target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(NonStrict3CCExperimentSO PUBLIC cxx_std_20)
+add_dependencies(NonStrict3CCExperimentSO rapidjson)
 
 add_executable(SetSemiSupervised2CCExperiment
         SetSemiSupervised2CCExperiment.cpp
