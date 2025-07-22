@@ -24,7 +24,7 @@ class GeneticAlgorithm : public IGeneticAlgorithm {
   std::shared_ptr<IGraph> graph_ = nullptr;
   std::vector<Solution> population_;
   std::vector<Solution> buffer_;
-  bool stop_training_ = false;
+  std::atomic<bool> stop_training_ = false;
   unsigned num_threads_;
 
   std::unique_ptr<std::barrier<>> barrier_;

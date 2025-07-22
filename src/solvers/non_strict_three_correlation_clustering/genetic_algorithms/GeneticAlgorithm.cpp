@@ -61,9 +61,6 @@ Solution non_strict_3cc::GeneticAlgorithm::ShakeUp(const Solution &solution, dou
 
 std::vector<Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution &x,
                                                                   const Solution &y) {
-  std::vector<Solution> solutions;
-  solutions.emplace_back(x);
-  solutions.emplace_back(y);
 
   std::map<int, std::set<unsigned>> clusters_x;
   std::map<int, std::set<unsigned>> clusters_y;
@@ -116,9 +113,6 @@ std::vector<Solution> non_strict_3cc::GeneticAlgorithm::Crossover(const Solution
   }
 
   auto child = CreateClusteringByBases(bases);
-
-  solutions.emplace_back(child->GetDistanceToGraph(*graph_), child);
-  std::sort(solutions.begin(), solutions.end());
   return {Solution(child->GetDistanceToGraph(*graph_), child)};
 }
 
@@ -233,6 +227,7 @@ Solution non_strict_3cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
     }
   }
 
+  stop_training_ = true;
   barrier_->arrive_and_wait();
   barrier_->arrive_and_wait();
   for (auto &it: threads) {
