@@ -14,13 +14,11 @@ class StackOverflowGraphFactory : IGraphFactory {
   std::vector<std::string> keys_;
   std::random_device rd_;
   std::default_random_engine gen_{rd_()};
-  std::uniform_int_distribution<> dis_;
-  std::uniform_real_distribution<> noise_generator_{0.0, 1.0};
-  double noise_;
+  std::string distribution_;
 
-  static bool HasCommonElement(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
+  static double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
 
  public:
-  explicit StackOverflowGraphFactory(const std::string &path, const double noise);
+  explicit StackOverflowGraphFactory(const std::string &path, std::string distribution_);
   IGraphPtr CreateGraph(unsigned size) override;
 };

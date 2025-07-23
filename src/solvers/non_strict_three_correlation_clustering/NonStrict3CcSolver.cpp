@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <utility>
 
 #include "../../../include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/NeighborhoodWithLocalSearch.hpp"
@@ -12,11 +13,17 @@
 std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(const IGraph &graph,
                                                                         const std::vector<ClusteringInfo> &computation_results,
                                                                         unsigned int size,
-                                                                        double density) {
+                                                                        double density,
+                                                                        const std::string& distribution) {
   std::stringstream ss;
   ss << "{ " << std::endl;
   ss << "\"size\": " << size << "," << std::endl;
-  ss << "\"density\": " << density << "," << std::endl;
+  if (density != -1) {
+    ss << "\"density\": " << density << "," << std::endl;
+  }
+  if (!distribution.empty()) {
+    ss << "\"distribution\": " << distribution << "," << std::endl;
+  }
   ss << graph.ToJson() << "," << std::endl;
   unsigned idx = 0;
   for (const auto &computation_result: computation_results) {
@@ -39,6 +46,7 @@ non_strict_3cc::NonStrict3CCSolver::NonStrict3CCSolver(unsigned int num_threads,
 }
 
 std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
+                                                      const std::string& distribution,
                                                       double density,
                                                       std::vector<std::string> used_algorithms) const {
   std::vector<ClusteringInfo> infos;
@@ -91,7 +99,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 20, factory_, 512, 10, 1e-1);
+    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(
@@ -125,5 +133,17 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  return FormatComputationToJson(*graph, infos, graph->Size(), density);
+  return FormatComputationToJson(*graph, infos, graph->Size(), density, distribution);
+}
+
+std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
+                                                      double density,
+                                                      std::vector<std::string> used_algorithms) const {
+  return solve(graph, "", density, std::move(used_algorithms));
+}
+
+std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
+                                                      const std::string& distribution,
+                                                      std::vector<std::string> used_algorithms) const {
+  return solve(graph, distribution, -1, std::move(used_algorithms));
 }

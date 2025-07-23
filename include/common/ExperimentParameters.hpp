@@ -17,6 +17,10 @@ class ExperimentParameters {
    */
   const std::vector<double> density_vector_;
   /**
+   * Vector contains distribution of investigated graphs.
+   */
+  const std::vector<std::string> distribution_vector_;
+  /**
    * Vector contains names of algorithm which solves clustering problem.
    */
   const std::vector<std::string> algorithms_vector_;
@@ -36,6 +40,7 @@ class ExperimentParameters {
  public:
   ExperimentParameters(std::vector<unsigned> graph_size_vector,
                        std::vector<double> density_vector,
+                       std::vector<std::string> distribution_vector,
                        std::vector<std::string> algorithms_vector,
                        std::vector<double> parts,
                        unsigned num_threads,
@@ -43,6 +48,7 @@ class ExperimentParameters {
 
   [[nodiscard]] const std::vector<unsigned int> &GetGraphSize() const;
   [[nodiscard]] const std::vector<double> &GetDensity() const;
+  [[nodiscard]] const std::vector<std::string> &GetDistribution() const;
   [[nodiscard]] const std::vector<std::string> &GetAlgorithms() const;
   [[nodiscard]] unsigned int GetNumThreads() const;
   [[nodiscard]] unsigned int GetNumGraphs() const;
