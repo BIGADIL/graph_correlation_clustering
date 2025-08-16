@@ -172,7 +172,7 @@ void non_strict_3cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   } else {
     record_ = std::make_shared<Solution>(best.getCopy());
     num_iter_without_record_ = 0;
-    std::cout << "Update record on iteration " << iteration << std::endl;
+//    std::cout << "Update record on iteration " << iteration << std::endl;
   }
 
   if (num_iter_without_record_ == early_stop_num_) {
@@ -220,9 +220,9 @@ Solution non_strict_3cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
     }
 
     OnIterationEnd(i);
-    std::cout << "Iteration " << i << " done" << std::endl;
+//    std::cout << "Iteration " << i << " done" << std::endl;
     if (stop_training_) {
-      std::cout << "stop training" << std::endl;
+//      std::cout << "stop training" << std::endl;
       break;
     }
   }

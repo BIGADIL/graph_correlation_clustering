@@ -48,7 +48,6 @@ IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
       ids.emplace_back(id);
     }
   }
-  double edges = 0;
   for (unsigned i = 0; i < size; i++) {
     for (unsigned j = i + 1; j < size; j++) {
       auto tags_1 = data_[keys_[ids[i]]];
@@ -65,13 +64,11 @@ IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
       }
       if (has_edge) {
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = true;
-        edges++;
       } else {
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = false;
       }
     }
   }
-  std::cout << edges / (size * (size - 1) / 2) << std::endl;
 
   return IGraphPtr(new AdjacencyMatrixGraph(adjacency_matrix));
 }

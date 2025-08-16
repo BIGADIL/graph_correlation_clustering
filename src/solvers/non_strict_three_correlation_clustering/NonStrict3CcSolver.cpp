@@ -22,7 +22,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(const IG
     ss << "\"density\": " << density << "," << std::endl;
   }
   if (!distribution.empty()) {
-    ss << "\"distribution\": " << distribution << "," << std::endl;
+    ss << "\"distribution\": " << "\"" << distribution << "\"," << std::endl;
   }
   ss << graph.ToJson() << "," << std::endl;
   unsigned idx = 0;
@@ -99,7 +99,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
+    GeneticAlgorithm genetic(5000, 10, factory_, 2048, 10, 1e-1);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(
@@ -110,11 +110,11 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BranchAndBounds") != used_algorithms.end()) {
-    TwoVerticesNeighborhoodWithLocalSearch twnls(num_threads_, factory_);
-    auto approximate_clustering = twnls.getBestNeighborhoodClustering(*graph);
+    GeneticAlgorithm genetic(5000, 10, factory_, 2048, 10, 1e-1);
+    auto sol = genetic.Train(graph);
     BranchAndBounds bb;
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = bb.GetBestClustering(graph, approximate_clustering);
+    auto clustering = bb.GetBestClustering(graph, sol.clustering);
     infos.emplace_back(
         "BranchAndBounds",
         clustering,
