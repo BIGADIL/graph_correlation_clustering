@@ -61,6 +61,8 @@ set(NS2CC_SRC
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp
         include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BrutForce.hpp
+        include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp
+        include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/IGeneticAlgorithm.hpp
 
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/non_strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
@@ -70,7 +72,7 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
         src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BrutForce.cpp
-        )
+        src/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.cpp)
 
 set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.hpp
@@ -170,6 +172,15 @@ target_link_libraries(NonStrict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict2CCExperiment rapidjson)
 
+add_executable(NonStrict2CCExperimentSO
+        NonStrict2CCExperimentSO.cpp
+        ${COMMON_SRC}
+        ${NS2CC_SRC}
+        )
+target_link_libraries(NonStrict2CCExperimentSO ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(NonStrict2CCExperimentSO PUBLIC cxx_std_20)
+add_dependencies(NonStrict2CCExperimentSO rapidjson)
+
 add_executable(Strict2CCExperiment
         Strict2CCExperiment.cpp
         ${COMMON_SRC}
@@ -202,7 +213,7 @@ add_executable(NonStrict3CCExperimentSO
         ${COMMON_SRC}
         ${NS3CC_SRC}
         )
-target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(NonStrict3CCExperimentSO ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(NonStrict3CCExperimentSO PUBLIC cxx_std_20)
 add_dependencies(NonStrict3CCExperimentSO rapidjson)
 

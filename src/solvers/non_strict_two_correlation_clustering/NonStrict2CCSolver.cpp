@@ -7,9 +7,11 @@
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp"
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BranchAndBounds.hpp"
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BrutForce.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
 
 std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
-                                                      const double density,
+                                                      const std::string& distribution,
+                                                      double density,
                                                       std::vector<std::string> used_algorithms) const {
   std::vector<ClusteringInfo> infos;
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithManyLocalSearches")
@@ -60,6 +62,17 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
+  if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
+    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = genetic.Train(graph);
+    infos.emplace_back(
+        "Genetic",
+        clustering.clustering,
+        clustering.distance,
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+    );
+  }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BrutForce") != used_algorithms.end()) {
     BrutForce bf(factory_);
     auto start_time = std::chrono::steady_clock::now();
@@ -71,7 +84,19 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  return FormatComputationToJson(*graph, infos, graph->Size(), density);
+  return FormatComputationToJson(*graph, infos, graph->Size(), density, distribution);
+}
+
+std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
+                                                      double density,
+                                                      std::vector<std::string> used_algorithms) const {
+  return solve(graph, "", density, std::move(used_algorithms));
+}
+
+std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
+                                                      const std::string& distribution,
+                                                      std::vector<std::string> used_algorithms) const {
+  return solve(graph, distribution, -1, std::move(used_algorithms));
 }
 
 non_strict_2cc::NonStrict2CCSolver::NonStrict2CCSolver(const unsigned num_threads,
@@ -83,12 +108,18 @@ non_strict_2cc::NonStrict2CCSolver::NonStrict2CCSolver(const unsigned num_thread
 
 std::string non_strict_2cc::NonStrict2CCSolver::FormatComputationToJson(const IGraph &graph,
                                                                         const std::vector<ClusteringInfo> &computation_results,
-                                                                        const unsigned int size,
-                                                                        const double density) {
+                                                                        unsigned int size,
+                                                                        double density,
+                                                                        const std::string& distribution) {
   std::stringstream ss;
   ss << "{ " << std::endl;
   ss << "\"size\": " << size << "," << std::endl;
-  ss << "\"density\": " << density << "," << std::endl;
+  if (density != -1) {
+    ss << "\"density\": " << density << "," << std::endl;
+  }
+  if (!distribution.empty()) {
+    ss << "\"distribution\": " << "\"" << distribution << "\"," << std::endl;
+  }
   ss << graph.ToJson() << "," << std::endl;
   unsigned idx = 0;
   for (const auto &computation_result: computation_results) {

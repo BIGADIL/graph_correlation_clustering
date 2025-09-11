@@ -51,7 +51,13 @@ class NonStrict2CCSolver {
   static std::string FormatComputationToJson(const IGraph &graph,
                                              const std::vector<ClusteringInfo> &computation_results,
                                              unsigned size,
-                                             double density);
+                                             double density,
+                                             const std::string& distribution);
+
+  [[nodiscard]] std::string solve(const IGraphPtr &graph,
+                                  const std::string& distribution,
+                                  double density,
+                                  std::vector<std::string> used_algorithms) const;
 
  public:
   NonStrict2CCSolver(unsigned num_threads,
@@ -59,6 +65,10 @@ class NonStrict2CCSolver {
 
   [[nodiscard]] std::string solve(const IGraphPtr &graph,
                                   double density,
+                                  std::vector<std::string> used_algorithms) const;
+
+  [[nodiscard]] std::string solve(const IGraphPtr &graph,
+                                  const std::string& distribution,
                                   std::vector<std::string> used_algorithms) const;
 };
 

@@ -99,7 +99,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 10, factory_, 2048, 10, 1e-1);
+    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(
@@ -110,7 +110,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BranchAndBounds") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 10, factory_, 2048, 10, 1e-1);
+    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
     auto sol = genetic.Train(graph);
     BranchAndBounds bb;
     auto start_time = std::chrono::steady_clock::now();
