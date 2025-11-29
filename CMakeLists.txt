@@ -61,8 +61,7 @@ set(NS2CC_SRC
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp
         include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp
         include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BrutForce.hpp
-        include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp
-        include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/IGeneticAlgorithm.hpp
+        include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp
 
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearches.cpp
         src/solvers/non_strict_two_correlation_clustering/common_functions/NeighborSplitter.cpp
@@ -72,7 +71,7 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/Neighborhood.cpp
         src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BrutForce.cpp
-        src/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.cpp)
+        src/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.cpp)
 
 set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.hpp
@@ -126,8 +125,7 @@ set(NS3CC_SRC
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp
         include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp
-        include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/IGeneticAlgorithm.hpp
-        include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp
+        include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp
 
         src/solvers/non_strict_three_correlation_clustering/common_functions/NeighborSplitter.cpp
         src/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.cpp
@@ -138,7 +136,7 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.cpp
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.cpp
-        src/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.cpp
+        src/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.cpp
         )
 
 set(2SSCC_SRC

@@ -4,9 +4,9 @@
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/graphs/factories/StackOverflowGraphFactory.hpp"
-#include "include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
+#include "include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 
 std::vector<IGraphPtr> generate_graphs(StackOverflowGraphFactory &graph_factory,
                                        unsigned n,
@@ -36,13 +36,13 @@ int main() {
     for (auto &population_size: population_sizes) {
       for (auto &tournament_size: tournament_sizes) {
         for (auto &mutation: mutations) {
-          auto algo_g = non_strict_3cc::GeneticAlgorithm(5000,
-                                                         early_stop,
-                                                         factory,
-                                                         population_size,
-                                                         tournament_size,
-                                                         mutation,
-                                                         num_threads);
+          auto algo_g = non_strict_3cc::IPLSAlgorithm(5000,
+                                                      early_stop,
+                                                      factory,
+                                                      population_size,
+                                                      tournament_size,
+                                                      mutation,
+                                                      num_threads);
           double sum = 0;
           for (auto &graph: graphs) {
             auto best_g = algo_g.Train(graph);

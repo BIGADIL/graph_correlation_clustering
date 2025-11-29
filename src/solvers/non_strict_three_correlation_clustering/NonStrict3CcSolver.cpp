@@ -8,7 +8,7 @@
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp"
-#include "../../../include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
+#include "../../../include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 
 std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(const IGraph &graph,
                                                                         const std::vector<ClusteringInfo> &computation_results,
@@ -99,7 +99,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 6, factory_, 128, 5, 0.4, num_threads_);
+    IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(
@@ -110,7 +110,7 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BranchAndBounds") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 6, factory_, 128, 5, 0.4, num_threads_);
+    IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
     auto sol = genetic.Train(graph);
     BranchAndBounds bb;
     auto start_time = std::chrono::steady_clock::now();

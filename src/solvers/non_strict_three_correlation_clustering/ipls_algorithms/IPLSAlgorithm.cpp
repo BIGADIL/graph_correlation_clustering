@@ -4,54 +4,59 @@
 #include <climits>
 #include <thread>
 
-#include "../../../../include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
-#include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/LocalSearch.hpp"
-#include "../../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithOneLocalSearch.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
+#include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
-non_strict_2cc::GeneticAlgorithm::GeneticAlgorithm(unsigned iterations,
-                                                   unsigned early_stop_num,
-                                                   IClustFactoryPtr factory,
-                                                   unsigned population_size,
-                                                   unsigned tournament_size,
-                                                   double p_mutation,
-                                                   unsigned num_threads) :
-    num_threads_(num_threads),
+non_strict_3cc::IPLSAlgorithm::IPLSAlgorithm(unsigned iterations,
+                                             unsigned early_stop_num,
+                                             IClustFactoryPtr factory,
+                                             unsigned population_size,
+                                             unsigned tournament_size,
+                                             double p_perturbation,
+                                             unsigned num_threads) :
     iterations_(iterations),
     early_stop_num_(early_stop_num),
     factory_(std::move(factory)),
     population_size_(population_size),
     tournament_size_(tournament_size),
-    p_mutation_(p_mutation) {
+    p_perturbation_(p_perturbation),
+    num_threads_(num_threads) {
+
 }
 
-Solution non_strict_2cc::GeneticAlgorithm::Mutation(const Solution &solution, double p_mutation) {
+Solution non_strict_3cc::IPLSAlgorithm::LocalSearch(const Solution &solution) const {
   auto copy = solution.clustering->GetCopy();
   auto lo = LocalSearch::ComputeLocalOptimum(*graph_, copy);
   return {lo->GetDistanceToGraph(*graph_), lo};
 }
 
-Solution non_strict_2cc::GeneticAlgorithm::Perturbation(const Solution &solution, double p_shake) {
+Solution non_strict_3cc::IPLSAlgorithm::Perturbation(const Solution &solution, double p_perturbation) const {
   auto copy = solution.clustering->GetCopy();
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
   std::uniform_real_distribution<> dis;
   for (unsigned i = 0; i < graph_->Size(); i++) {
     auto p = dis(gen);
-    if (p > p_shake) {
+    if (p > p_perturbation) {
       continue;
     }
-    auto label = copy->GetLabel(i);
-    if (label == FIRST_CLUSTER) {
-      copy->SetupLabelForVertex(i, SECOND_CLUSTER);
-    } else {
-      copy->SetupLabelForVertex(i, FIRST_CLUSTER);
+    auto imp = LocalSearch::ComputeLocalImprovement(*graph_, copy, i);
+    auto label_i = copy->GetLabel(i);
+    ClusterLabels label = NON_CLUSTERED;
+    int best_imp = INT_MIN;
+    for (unsigned j = 0; j < imp.size(); j++) {
+      if ((ClusterLabels) j == label_i) continue;
+      if (imp[j] > best_imp) {
+        best_imp = imp[j];
+        label = (ClusterLabels) j;
+      }
     }
+    copy->SetupLabelForVertex(i, label);
   }
   return {copy->GetDistanceToGraph(*graph_), copy};
 }
 
-
-Solution non_strict_2cc::GeneticAlgorithm::Selection(std::vector<Solution> population) {
+Solution non_strict_3cc::IPLSAlgorithm::Selection(std::vector<Solution> population) const {
   std::vector<Solution> solutions;
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
@@ -68,12 +73,12 @@ Solution non_strict_2cc::GeneticAlgorithm::Selection(std::vector<Solution> popul
   return best;
 }
 
-std::vector<Solution> non_strict_2cc::GeneticAlgorithm::GenerateInitPopulation(unsigned int population_size) {
+void non_strict_3cc::IPLSAlgorithm::GenerateInitPopulation(unsigned int population_size) {
   std::vector<std::vector<Solution>> local_buffers(num_threads_);
   std::vector<std::thread> threads(num_threads_);
   for (unsigned i = 0; i < num_threads_; ++i) {
     threads[i] = std::thread(
-        &GeneticAlgorithm::InitPopulationWorker,
+        &IPLSAlgorithm::InitPopulationWorker,
         this,
         std::ref(local_buffers[i]),
         i,
@@ -82,18 +87,17 @@ std::vector<Solution> non_strict_2cc::GeneticAlgorithm::GenerateInitPopulation(u
   for (auto &item: threads) {
     item.join();
   }
-  std::vector<Solution> result;
+  population_.clear();
   for (auto &it: local_buffers) {
-    result.insert(result.end(), it.begin(), it.end());
+    population_.insert(population_.end(), it.begin(), it.end());
   }
-  return result;
 }
 
-void non_strict_2cc::GeneticAlgorithm::OnIterationBegin(unsigned int iteration) {
+void non_strict_3cc::IPLSAlgorithm::OnIterationBegin() {
   buffer_.clear();
 }
 
-void non_strict_2cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
+void non_strict_3cc::IPLSAlgorithm::OnIterationEnd() {
   Solution best = buffer_[0];
   for (unsigned i = 1; i < buffer_.size(); i++) {
     if (buffer_[i].distance < best.distance) {
@@ -106,7 +110,6 @@ void non_strict_2cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   } else {
     record_ = std::make_shared<Solution>(best.getCopy());
     num_iter_without_record_ = 0;
-//    std::cout << "Update record on iteration " << iteration << std::endl;
   }
 
   if (num_iter_without_record_ == early_stop_num_) {
@@ -114,10 +117,10 @@ void non_strict_2cc::GeneticAlgorithm::OnIterationEnd(unsigned int iteration) {
   }
 }
 
-Solution non_strict_2cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) {
+Solution non_strict_3cc::IPLSAlgorithm::Train(std::shared_ptr<IGraph> graph) {
   record_ = nullptr;
   graph_ = graph;
-  population_ = GenerateInitPopulation(population_size_);
+  GenerateInitPopulation(population_size_);
 
   num_iter_without_record_ = 0;
   stop_training_.store(false, std::memory_order_release);
@@ -129,7 +132,7 @@ Solution non_strict_2cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
 
   for (unsigned i = 0; i < num_threads_; i++) {
     threads[i] = std::thread(
-        &GeneticAlgorithm::WorkerLoop,
+        &IPLSAlgorithm::TrainWorkerLoop,
         this,
         std::ref(local_buffers[i]),
         i,
@@ -139,7 +142,7 @@ Solution non_strict_2cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
   }
 
   for (unsigned i = 0; i < iterations_; i++) {
-    OnIterationBegin(i);
+    OnIterationBegin();
 
     barrier_->arrive_and_wait();
     barrier_->arrive_and_wait();
@@ -155,17 +158,14 @@ Solution non_strict_2cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
       it.clear();
     }
 
-    OnIterationEnd(i);
-//    std::cout << "Iteration " << i << " done" << std::endl;
+    OnIterationEnd();
     if (stop_training_) {
-//      std::cout << "stop training" << std::endl;
       break;
     }
   }
 
   stop_training_ = true;
   barrier_->arrive_and_drop();
-//  std::cout << "Barrier done" << std::endl;
   for (auto &it: threads) {
     it.join();
   }
@@ -173,15 +173,14 @@ Solution non_strict_2cc::GeneticAlgorithm::Train(std::shared_ptr<IGraph> graph) 
   return *record_;
 }
 
-void non_strict_2cc::GeneticAlgorithm::ThreadWorker(std::vector<Solution> &local_buffer,
-                                                    unsigned thread_id,
-                                                    const unsigned max_capacity,
-                                                    std::vector<Solution> &local_optimum,
-                                                    const unsigned iteration) {
+void non_strict_3cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buffer,
+                                                unsigned thread_id,
+                                                unsigned max_capacity,
+                                                std::vector<Solution> &local_optimum) {
   Solution solution{UINT_MAX, nullptr};
   for (unsigned i = thread_id; i < max_capacity; i += num_threads_) {
     auto x = Selection(population_);
-    x = Mutation(x, p_mutation_);
+    x = LocalSearch(x);
     local_buffer.emplace_back(x);
     if (x.distance < solution.distance) {
       solution = x;
@@ -190,7 +189,7 @@ void non_strict_2cc::GeneticAlgorithm::ThreadWorker(std::vector<Solution> &local
   std::vector<Solution> tmp_buffer;
   for (auto &it: local_buffer) {
     auto x = it;
-    x = Perturbation(x, p_mutation_);
+    x = Perturbation(x, p_perturbation_);
     tmp_buffer.emplace_back(x);
     if (x.distance < solution.distance) {
       solution = x;
@@ -201,29 +200,27 @@ void non_strict_2cc::GeneticAlgorithm::ThreadWorker(std::vector<Solution> &local
   local_optimum.emplace_back(solution);
 }
 
-void non_strict_2cc::GeneticAlgorithm::WorkerLoop(std::vector<Solution> &local_buffer,
-                                                  unsigned thread_id,
-                                                  unsigned int max_capacity,
-                                                  std::vector<Solution> &local_optimum) {
-  unsigned iteration = 0;
+void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution> &local_buffer,
+                                                    unsigned thread_id,
+                                                    unsigned int max_capacity,
+                                                    std::vector<Solution> &local_optimum) {
   while (true) {
     barrier_->arrive_and_wait();
     if (stop_training_.load(std::memory_order_acquire)) {
       barrier_->arrive_and_drop();
       break;
     }
-    ThreadWorker(local_buffer, thread_id, max_capacity, local_optimum, iteration);
-    iteration++;
+    TrainWorker(local_buffer, thread_id, max_capacity, local_optimum);
     barrier_->arrive_and_wait();
   }
 }
 
-void non_strict_2cc::GeneticAlgorithm::InitPopulationWorker(std::vector<Solution> &local_buffer,
-                                                            unsigned int thread_id,
-                                                            unsigned int population_size) {
+void non_strict_3cc::IPLSAlgorithm::InitPopulationWorker(std::vector<Solution> &local_buffer,
+                                                         unsigned int thread_id,
+                                                         unsigned int population_size) {
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
-  std::uniform_int_distribution<> dis(0, 1);
+  std::uniform_int_distribution<> dis(0, 2);
 
   for (unsigned i = thread_id; i < population_size; i += num_threads_) {
     auto clustering = factory_->CreateClustering(graph_->Size());
@@ -231,8 +228,10 @@ void non_strict_2cc::GeneticAlgorithm::InitPopulationWorker(std::vector<Solution
       auto rnd = dis(gen);
       if (rnd == 0) {
         clustering->SetupLabelForVertex(j, FIRST_CLUSTER);
-      } else {
+      } else if (rnd == 1) {
         clustering->SetupLabelForVertex(j, SECOND_CLUSTER);
+      } else {
+        clustering->SetupLabelForVertex(j, THIRD_CLUSTER);
       }
     }
     auto sol = Solution(clustering->GetDistanceToGraph(*graph_), clustering);
