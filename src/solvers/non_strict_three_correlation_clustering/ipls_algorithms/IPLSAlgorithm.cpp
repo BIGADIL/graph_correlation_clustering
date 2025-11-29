@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <iostream>
 #include <climits>
@@ -238,5 +237,3 @@ void non_strict_3cc::IPLSAlgorithm::InitPopulationWorker(std::vector<Solution> &
     local_buffer.emplace_back(sol);
   }
 }
-
-

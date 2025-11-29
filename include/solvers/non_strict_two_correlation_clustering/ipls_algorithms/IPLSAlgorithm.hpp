@@ -1,12 +1,10 @@
 #pragma once
 
 #include <random>
-#include <set>
 #include <climits>
-#include <mutex>
-#include <condition_variable>
 #include <atomic>
 #include <barrier>
+
 #include "../../../clustering/factories/TripleClusteringFactory.hpp"
 
 namespace non_strict_2cc {
