@@ -1,16 +1,16 @@
-#pragma once
-
 #include <fstream>
 #include <set>
 #include <iostream>
 #include <algorithm>
 #include <utility>
-#include "../../../include/graphs/factories/StackOverflowGraphFactory.hpp"
-#include "rapidjson/istreamwrapper.h"
-#include "rapidjson/document.h"
+
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+
+#include "../../../include/graphs/factories/TagsGraphFactory.hpp"
 #include "../../../include/graphs/AdjacencyMatrixGraph.hpp"
 
-StackOverflowGraphFactory::StackOverflowGraphFactory(const std::string &path, std::string distribution) :
+TagsGraphFactory::TagsGraphFactory(const std::string &path, std::string distribution) :
     distribution_(std::move(distribution)) {
   std::ifstream ifs{path};
   rapidjson::IStreamWrapper isw{ifs};
@@ -32,7 +32,7 @@ StackOverflowGraphFactory::StackOverflowGraphFactory(const std::string &path, st
   }
 }
 
-IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
+IGraphPtr TagsGraphFactory::CreateGraph(unsigned int size) {
   std::vector<std::vector<bool>> adjacency_matrix(size);
   for (auto &row: adjacency_matrix) {
     row = std::vector<bool>(size);
@@ -48,7 +48,6 @@ IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
       ids.emplace_back(id);
     }
   }
-  double edges = 0, possible = 0;
   for (unsigned i = 0; i < size; i++) {
     for (unsigned j = i + 1; j < size; j++) {
       auto tags_1 = data_[keys_[ids[i]]];
@@ -63,22 +62,19 @@ IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
       } else {
         throw std::logic_error("Unknown distribution: " + distribution_);
       }
-      possible++;
       if (has_edge) {
-        edges++;
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = true;
       } else {
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = false;
       }
     }
   }
-//  std::cout << "density: " << edges / possible << std::endl;
 
   return IGraphPtr(new AdjacencyMatrixGraph(adjacency_matrix));
 }
 
-double StackOverflowGraphFactory::Chance(const std::vector<std::string> &vec1,
-                                         const std::vector<std::string> &vec2) {
+double TagsGraphFactory::Chance(const std::vector<std::string> &vec1,
+                                const std::vector<std::string> &vec2) {
   std::set<std::string> set_1(vec1.begin(), vec1.end());
   std::set<std::string> set_2(vec2.begin(), vec2.end());
 
@@ -108,5 +104,3 @@ double StackOverflowGraphFactory::Chance(const std::vector<std::string> &vec1,
     throw std::logic_error("Unknown method" + distribution_);
   }
 }
-
-

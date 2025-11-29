@@ -5,10 +5,10 @@
 #include <random>
 #include "IGraphFactory.hpp"
 /**
- * Factory creates new random graph by Erdos-Renyi model.
- * https://en.wikipedia.org/wiki/Erdős–Rényi_model
+ * Factory creates graphs by set of tags.
+ * Example: https://www.kaggle.com/datasets/stackoverflow/stacksample/
  */
-class StackOverflowGraphFactory : IGraphFactory {
+class TagsGraphFactory : IGraphFactory {
  private:
   std::unordered_map<std::string, std::vector<std::string>> data_;
   std::vector<std::string> keys_;
@@ -19,6 +19,6 @@ class StackOverflowGraphFactory : IGraphFactory {
   double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
 
  public:
-  explicit StackOverflowGraphFactory(const std::string &path, std::string distribution_);
+  explicit TagsGraphFactory(const std::string &path, std::string distribution_);
   IGraphPtr CreateGraph(unsigned size) override;
 };

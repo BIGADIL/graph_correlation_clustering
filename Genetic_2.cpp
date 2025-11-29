@@ -3,12 +3,12 @@
 #include <set>
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
-#include "include/graphs/factories/StackOverflowGraphFactory.hpp"
+#include "include/graphs/factories/TagsGraphFactory.hpp"
 #include "include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
 #include "include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 
-std::vector<IGraphPtr> generate_graphs(StackOverflowGraphFactory &graph_factory,
+std::vector<IGraphPtr> generate_graphs(TagsGraphFactory &graph_factory,
                                        unsigned n,
                                        unsigned size) {
   std::vector<IGraphPtr> res;
@@ -21,7 +21,7 @@ std::vector<IGraphPtr> generate_graphs(StackOverflowGraphFactory &graph_factory,
 
 int main() {
   unsigned num_threads = 8;
-  StackOverflowGraphFactory
+  TagsGraphFactory
       graphs_factory(R"(D:\run\graph_correlation_clustering\non_strict_2cc\Tags_so.json)", "jaccard_threshold");
 
   std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);

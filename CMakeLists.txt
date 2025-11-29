@@ -28,7 +28,7 @@ set(COMMON_SRC
         include/graphs/AdjacencyMatrixGraph.hpp
         include/graphs/factories/IGraphFactory.hpp
         include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp
-        include/graphs/factories/StackOverflowGraphFactory.hpp
+        include/graphs/factories/TagsGraphFactory.hpp
         include/clustering/IClustering.hpp
         include/clustering/BinaryClusteringVector.hpp
         include/clustering/factories/IClusteringFactory.hpp
@@ -42,7 +42,7 @@ set(COMMON_SRC
         include/clustering/BBTripleClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
-        src/graphs/factories/StackOverflowGraphFactory.cpp
+        src/graphs/factories/TagsGraphFactory.cpp
         src/clustering/BinaryClusteringVector.cpp
         src/clustering/factories/BinaryClusteringFactory.cpp
         src/clustering/BBBinaryClusteringVector.cpp

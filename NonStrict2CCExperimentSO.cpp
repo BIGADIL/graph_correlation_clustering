@@ -3,7 +3,7 @@
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/common/ExperimentParameters.hpp"
-#include "include/graphs/factories/StackOverflowGraphFactory.hpp"
+#include "include/graphs/factories/TagsGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
 #include "include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp"
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<BinaryClusteringFactory> factory(new BinaryClusteringFactory);
   for (const auto &graph_size: ep.GetGraphSize()) {
     for (const auto &distribution: ep.GetDistribution()) {
-      StackOverflowGraphFactory graphs_factory(std::filesystem::current_path().string() + "/" + data_set, distribution);
+      TagsGraphFactory graphs_factory(std::filesystem::current_path().string() + "/" + data_set, distribution);
       const auto dir_name = "n-" + std::to_string(graph_size) + "-ds-" + data_set + "-dist-" + distribution + "/";
       std::filesystem::create_directory(dir_name);
       non_strict_2cc::NonStrict2CCSolver solver(ep.GetNumThreads(), factory);
