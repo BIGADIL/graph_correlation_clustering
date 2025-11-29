@@ -31,7 +31,7 @@ non_strict_2cc::Neighborhood::Neighborhood(const unsigned num_threads,
                                            const IClustFactoryPtr &clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
-      neighbor_splitter_(non_strict_2cc::NeighborSplitter(clustering_factory)) {
+      neighbor_splitter_(NeighborSplitter(clustering_factory)) {
 }
 
 std::vector<Solution> non_strict_2cc::Neighborhood::getAllSolutions(const IGraph &graph) const {

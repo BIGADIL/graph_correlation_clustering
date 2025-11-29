@@ -11,12 +11,6 @@
 #include "../../../clustering/factories/TripleClusteringFactory.hpp"
 namespace non_strict_2cc {
 
-struct ToMergeCandidate {
-  unsigned i = -1;
-  unsigned j = -1;
-  int record = INT_MAX;
-};
-
 class GeneticAlgorithm : public IGeneticAlgorithm {
  private:
   std::shared_ptr<Solution> record_ = nullptr;
@@ -36,9 +30,10 @@ class GeneticAlgorithm : public IGeneticAlgorithm {
   unsigned tournament_size_;
   double p_mutation_;
 
-  void WorkerLoop(std::vector<Solution> &local_buffer, unsigned max_capacity);
-  void ThreadWorker(std::vector<Solution> &local_buffer, unsigned max_capacity, unsigned iteration);
-  Solution ShakeUp(const Solution &solution, double p_shake);
+  void WorkerLoop(std::vector<Solution> &local_buffer, unsigned thread_id, unsigned max_capacity, std::vector<Solution> &local_optimum);
+  void ThreadWorker(std::vector<Solution> &local_buffer, unsigned thread_id, unsigned max_capacity, std::vector<Solution> &local_optimum, unsigned iteration);
+  Solution Perturbation(const Solution &solution, double p_shake);
+  void InitPopulationWorker(std::vector<Solution> &local_buffer, unsigned thread_id, unsigned population_size);
 
  public:
   GeneticAlgorithm() = delete;
@@ -51,28 +46,15 @@ class GeneticAlgorithm : public IGeneticAlgorithm {
                    IClustFactoryPtr factory,
                    unsigned population_size,
                    unsigned tournament_size,
-                   double p_mutation);
+                   double p_mutation,
+                   unsigned num_threads);
 
   Solution Mutation(const Solution &solution, double p_mutation) override;
-  std::vector<Solution> Crossover(const Solution &x, const Solution &y) override;
   Solution Selection(std::vector<Solution> population) override;
   std::vector<Solution> GenerateInitPopulation(unsigned population_size) override;
   void OnIterationBegin(unsigned iteration) override;
   void OnIterationEnd(unsigned iteration) override;
   Solution Train(std::shared_ptr<IGraph> graph) override;
-
-  IClustPtr CreateClusteringByBases(std::vector<std::set<unsigned>> &bases);
-
-  ToMergeCandidate FindCandidateToMerge(std::vector<std::set<unsigned>> &bases);
-
-  static bool IsIn(Solution &el, std::vector<Solution> &collection) {
-    for (auto &it: collection) {
-      if (it == el) {
-        return true;
-      }
-    }
-    return false;
-  }
 };
 
 }

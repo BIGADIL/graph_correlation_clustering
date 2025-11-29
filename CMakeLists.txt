@@ -226,11 +226,12 @@ target_link_libraries(SetSemiSupervised2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
 target_compile_features(SetSemiSupervised2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(SetSemiSupervised2CCExperiment rapidjson)
 
-add_executable(Genetic_3
-        Genetic_3.cpp
+add_executable(Genetic_2
+        Genetic_2.cpp
         ${COMMON_SRC}
+        ${NS2CC_SRC}
         ${NS3CC_SRC}
         )
-target_link_libraries(Genetic_3 ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(Genetic_3 PUBLIC cxx_std_20)
-add_dependencies(Genetic_3 rapidjson)
+target_link_libraries(Genetic_2 ${CMAKE_THREAD_LIBS_INIT})
+target_compile_features(Genetic_2 PUBLIC cxx_std_20)
+add_dependencies(Genetic_2 rapidjson)

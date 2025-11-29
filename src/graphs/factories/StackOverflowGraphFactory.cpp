@@ -48,27 +48,31 @@ IGraphPtr StackOverflowGraphFactory::CreateGraph(unsigned int size) {
       ids.emplace_back(id);
     }
   }
+  double edges = 0, possible = 0;
   for (unsigned i = 0; i < size; i++) {
     for (unsigned j = i + 1; j < size; j++) {
       auto tags_1 = data_[keys_[ids[i]]];
       auto tags_2 = data_[keys_[ids[j]]];
       auto chance = Chance(tags_1, tags_2);
       bool has_edge;
-      if (distribution_ == "probs") {
+      if (distribution_.find("probs") != std::string::npos) {
         auto proba = dis_real(gen_);
         has_edge = proba <= chance;
-      } else if (distribution_ == "threshold") {
+      } else if (distribution_.find("threshold") != std::string::npos) {
         has_edge = chance >= 0.5;
       } else {
-        throw std::logic_error("unknown distribution: " + distribution_);
+        throw std::logic_error("Unknown distribution: " + distribution_);
       }
+      possible++;
       if (has_edge) {
+        edges++;
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = true;
       } else {
         adjacency_matrix[i][j] = adjacency_matrix[j][i] = false;
       }
     }
   }
+//  std::cout << "density: " << edges / possible << std::endl;
 
   return IGraphPtr(new AdjacencyMatrixGraph(adjacency_matrix));
 }
@@ -92,8 +96,17 @@ double StackOverflowGraphFactory::Chance(const std::vector<std::string> &vec1,
       std::inserter(union_set, union_set.begin())
   );
 
-  auto chance = (double) intersection_set.size() / (double) union_set.size();
-  return chance;
+  if (distribution_.find("jaccard") != std::string::npos) {
+    return (double) intersection_set.size() / (double) union_set.size();
+  } else if (distribution_.find("cosine") != std::string::npos) {
+    return (double) intersection_set.size() / sqrt((double) set_1.size() * (double) set_2.size());
+  } else if (distribution_.find("dice") != std::string::npos) {
+    return 2.0 * (double) intersection_set.size() / ((double) set_1.size() + (double) set_2.size());
+  } else if (distribution_.find("overlap") != std::string::npos) {
+    return (double) intersection_set.size() / std::min((double) set_1.size(), (double) set_2.size());
+  } else {
+    throw std::logic_error("Unknown method" + distribution_);
+  }
 }
 
 

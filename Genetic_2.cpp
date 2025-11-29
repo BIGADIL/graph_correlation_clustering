@@ -1,18 +1,12 @@
 #include <iostream>
-#include <thread>
-#include <climits>
 #include <random>
-#include <algorithm>
 #include <set>
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
-#include "include/clustering/factories/TripleClusteringFactory.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
-#include "include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp"
 #include "include/graphs/factories/StackOverflowGraphFactory.hpp"
+#include "include/solvers/non_strict_two_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
+#include "include/clustering/factories/BinaryClusteringFactory.hpp"
+#include "include/solvers/non_strict_three_correlation_clustering/genetic_algorithms/GeneticAlgorithm.hpp"
 
 std::vector<IGraphPtr> generate_graphs(StackOverflowGraphFactory &graph_factory,
                                        unsigned n,
@@ -28,15 +22,15 @@ std::vector<IGraphPtr> generate_graphs(StackOverflowGraphFactory &graph_factory,
 int main() {
   unsigned num_threads = 8;
   StackOverflowGraphFactory
-      graphs_factory(R"(D:\run\graph_correlation_clustering\non_strict_3cc\Tags_10.json)", "threshold");
+      graphs_factory(R"(D:\run\graph_correlation_clustering\non_strict_2cc\Tags_so.json)", "jaccard_threshold");
 
   std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);
-  auto graphs = generate_graphs(graphs_factory, 30, 100);
+  auto graphs = generate_graphs(graphs_factory, 100, 100);
 
-  auto early_stops = {10};
-  auto population_sizes = {512, 1024, 2048, 4096};
-  auto tournament_sizes = {5, 10, 20, 40};
-  auto mutations = {1e-1};
+  auto early_stops = {6};
+  auto population_sizes = {128, 256, 512};
+  auto tournament_sizes = {5, 10, 15};
+  auto mutations = {1e-2, 1e-1, 2e-1, 3e-1, 4e-1};
 
   for (auto &early_stop: early_stops) {
     for (auto &population_size: population_sizes) {
@@ -47,8 +41,8 @@ int main() {
                                                          factory,
                                                          population_size,
                                                          tournament_size,
-                                                         mutation);
-          std::cout << 1 << std::endl;
+                                                         mutation,
+                                                         num_threads);
           double sum = 0;
           for (auto &graph: graphs) {
             auto best_g = algo_g.Train(graph);
@@ -60,7 +54,6 @@ int main() {
                     << ", tournament_size=" << tournament_size
                     << ", mutation=" << mutation
                     << ", average_obj=" << sum << std::endl;
-
         }
       }
     }

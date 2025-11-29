@@ -50,11 +50,11 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "BranchAndBounds") != used_algorithms.end()) {
-    NeighborhoodWithManyLocalSearches nmls(num_threads_, factory_);
-    auto approximate_clustering = nmls.getBestNeighborhoodClustering(*graph);
+    GeneticAlgorithm genetic(5000, 6, factory_, 128, 5, 0.4, num_threads_);
+    auto sol = genetic.Train(graph);
     BranchAndBounds bb;
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = bb.GetBestClustering(graph, approximate_clustering);
+    auto clustering = bb.GetBestClustering(graph, sol.clustering);
     infos.emplace_back(
         "BranchAndBounds",
         clustering,
@@ -63,7 +63,7 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(const IGraphPtr &graph,
     );
   }
   if (std::find(used_algorithms.begin(), used_algorithms.end(), "Genetic") != used_algorithms.end()) {
-    GeneticAlgorithm genetic(5000, 10, factory_, 512, 10, 1e-1);
+    GeneticAlgorithm genetic(5000, 6, factory_, 128, 5, 0.4, num_threads_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = genetic.Train(graph);
     infos.emplace_back(

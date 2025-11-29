@@ -16,7 +16,7 @@ class StackOverflowGraphFactory : IGraphFactory {
   std::default_random_engine gen_{rd_()};
   std::string distribution_;
 
-  static double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
+  double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
 
  public:
   explicit StackOverflowGraphFactory(const std::string &path, std::string distribution_);
