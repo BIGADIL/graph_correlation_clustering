@@ -5,7 +5,7 @@
 /**
  * Factory creates binary clustering.
  */
-class BinaryClusteringFactory : public IClusteringFactory {
-public:
-    [[nodiscard]] IClustPtr CreateClustering(unsigned size) const override;
+class BinaryClusteringFactory final : public IClusteringFactory {
+ public:
+  [[nodiscard]] IClustPtr CreateClustering(unsigned size) const override;
 };

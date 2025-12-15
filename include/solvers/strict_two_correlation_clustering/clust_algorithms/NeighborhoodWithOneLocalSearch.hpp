@@ -8,9 +8,12 @@ namespace strict_2cc {
 class NeighborhoodWithOneLocalSearch {
  public:
   NeighborhoodWithOneLocalSearch() = delete;
-  NeighborhoodWithOneLocalSearch(const NeighborhoodWithOneLocalSearch &&) = delete;
-  NeighborhoodWithOneLocalSearch &operator=(const NeighborhoodWithOneLocalSearch &) = delete;
-  NeighborhoodWithOneLocalSearch &operator=(const NeighborhoodWithOneLocalSearch &&) = delete;
+  NeighborhoodWithOneLocalSearch(const NeighborhoodWithOneLocalSearch &&) =
+      delete;
+  NeighborhoodWithOneLocalSearch &operator=(
+      const NeighborhoodWithOneLocalSearch &) = delete;
+  NeighborhoodWithOneLocalSearch &operator=(
+      const NeighborhoodWithOneLocalSearch &&) = delete;
 
  private:
   /**
@@ -18,15 +21,14 @@ class NeighborhoodWithOneLocalSearch {
    */
   unsigned num_threads_;
   /**
-  * Factory that create new clustering.
-  */
+   * Factory that create new clustering.
+   */
   IClustFactoryPtr clustering_factory_;
   /**
    * Neighborhood splitter.
    */
   NeighborSplitter neighbor_splitter_;
 
- private:
   void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                               unsigned threadId,
                                               IClustPtr &local_best_clustering,
@@ -41,7 +43,8 @@ class NeighborhoodWithOneLocalSearch {
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
+      const IGraph &graph) const;
 };
 
-}
+}  // namespace strict_2cc

@@ -9,7 +9,8 @@ namespace strict_2cc {
 
 /**
  * Local search for S2CC.
- * @see Coleman, Saunderson and Wirth. A Local-Search 2-Approximation for 2-Correlation-Clustering.
+ * @see Coleman, Saunderson and Wirth. A Local-Search 2-Approximation for
+ * 2-Correlation-Clustering.
  */
 class LocalSearch {
   struct ExcludeVertices {
@@ -17,9 +18,7 @@ class LocalSearch {
     unsigned opposite_vertex;
 
     ExcludeVertices(unsigned vertex, unsigned opposite_vertex)
-        : vertex(vertex), opposite_vertex(opposite_vertex) {
-
-    }
+        : vertex(vertex), opposite_vertex(opposite_vertex) {}
 
     [[nodiscard]] bool contain(unsigned i) const {
       return i == vertex || i == opposite_vertex;
@@ -31,27 +30,23 @@ class LocalSearch {
     int local_improvement;
 
     LocalSearchCandidate(unsigned vertex, int local_improvement)
-        : vertex(vertex), local_improvement(local_improvement) {
-
-    }
+        : vertex(vertex), local_improvement(local_improvement) {}
   };
 
-  static std::vector<int> InitLocalImprovements(const IGraph &graph,
-                                                const IClustPtr &cur_clustering,
-                                                ExcludeVertices exclude_vertices);
+  static std::vector<int> InitLocalImprovements(
+      const IGraph &graph, const IClustPtr &cur_clustering,
+      ExcludeVertices exclude_vertices);
 
-  static LocalSearchCandidate FindCandidate(const IGraph &graph,
-                                            const std::vector<int> &local_improvement_list,
-                                            ExcludeVertices exclude_vertices);
+  static LocalSearchCandidate FindCandidate(
+      const IGraph &graph, const std::vector<int> &local_improvement_list,
+      ExcludeVertices exclude_vertices);
 
-  static std::vector<int> UpdateLocalImprovements(const IGraph &graph,
-                                                  const IClustPtr &cur_clustering,
-                                                  std::vector<int> &local_improvement_list,
-                                                  unsigned vertex,
-                                                  ExcludeVertices exclude_vertices);
+  static std::vector<int> UpdateLocalImprovements(
+      const IGraph &graph, const IClustPtr &cur_clustering,
+      std::vector<int> &local_improvement_list, unsigned vertex,
+      ExcludeVertices exclude_vertices);
 
-  static IClustPtr UpdateClustering(IClustPtr &cur_clustering,
-                                    unsigned vertex);
+  static IClustPtr UpdateClustering(IClustPtr &cur_clustering, unsigned vertex);
 
  public:
   /**
@@ -67,4 +62,4 @@ class LocalSearch {
                                        unsigned opposite_vertex);
 };
 
-}
+}  // namespace strict_2cc

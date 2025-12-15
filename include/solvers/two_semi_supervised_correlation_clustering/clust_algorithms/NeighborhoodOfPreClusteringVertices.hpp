@@ -3,34 +3,38 @@
 #include "../../../clustering/factories/IClusteringFactory.hpp"
 
 namespace semi_supervised_2cc {
-    class NeighborhoodOfPreClusteringVertices {
-    public:
-        NeighborhoodOfPreClusteringVertices() = delete;
+class NeighborhoodOfPreClusteringVertices {
+ public:
+  NeighborhoodOfPreClusteringVertices() = delete;
 
-        NeighborhoodOfPreClusteringVertices(const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices(
+      const NeighborhoodOfPreClusteringVertices &&) = delete;
 
-        NeighborhoodOfPreClusteringVertices &operator=(const NeighborhoodOfPreClusteringVertices &) = delete;
+  NeighborhoodOfPreClusteringVertices &operator=(
+      const NeighborhoodOfPreClusteringVertices &) = delete;
 
-        NeighborhoodOfPreClusteringVertices &operator=(const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices &operator=(
+      const NeighborhoodOfPreClusteringVertices &&) = delete;
 
-    private:
-        /**
-       * Factory that create new clustering.
-       */
-        IClustFactoryPtr clustering_factory_;
+ private:
+  /**
+   * Factory that create new clustering.
+   */
+  IClustFactoryPtr clustering_factory_;
 
-    public:
-        explicit NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
+ public:
+  explicit NeighborhoodOfPreClusteringVertices(
+      IClustFactoryPtr clustering_factory);
 
-        /**
-         * Calc best clustering.
-         * @param graph source graph.
-         * @param first_cluster_vertex
-         * @param second_cluster_vertex
-         * @return best clustering.
-         */
-        [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph,
-                                                              unsigned first_cluster_vertex,
-                                                              unsigned second_cluster_vertex) const;
-    };
-}
+  /**
+   * Calc best clustering.
+   * @param graph source graph.
+   * @param first_cluster_vertex
+   * @param second_cluster_vertex
+   * @return best clustering.
+   */
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
+      const IGraph &graph, unsigned first_cluster_vertex,
+      unsigned second_cluster_vertex) const;
+};
+}  // namespace semi_supervised_2cc

@@ -8,17 +8,17 @@
  * Factory creates new random graph by Erdos-Renyi model.
  * https://en.wikipedia.org/wiki/Erdős–Rényi_model
  */
-class ErdosRenyiRandomGraphFactory : IGraphFactory {
-    std::random_device rd_;
-    std::default_random_engine gen_{rd_()};
-    std::uniform_real_distribution<> dis_{0.0, 1.0};
-    /**
-     * Density of generated graph.
-     */
-    double density_;
+class ErdosRenyiRandomGraphFactory final : IGraphFactory {
+  std::random_device rd_;
+  std::default_random_engine gen_{rd_()};
+  std::uniform_real_distribution<> dis_{0.0, 1.0};
+  /**
+   * Density of generated graph.
+   */
+  double density_;
 
-public:
-    explicit ErdosRenyiRandomGraphFactory(double density);
+ public:
+  explicit ErdosRenyiRandomGraphFactory(double density);
 
-    IGraphPtr CreateGraph(unsigned size) override;
+  IGraphPtr CreateGraph(unsigned size) override;
 };

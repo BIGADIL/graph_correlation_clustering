@@ -8,11 +8,13 @@
  * Base factory for graphs representation.
  */
 class IGraphFactory {
-public:
-    /**
-     * Create new graph.
-     * @param size size of graph.
-     * @return new graph.
-     */
-    virtual IGraphPtr CreateGraph(unsigned size) = 0;
+ public:
+  virtual ~IGraphFactory() = default;
+
+  /**
+   * Create new graph.
+   * @param size size of graph.
+   * @return new graph.
+   */
+  virtual IGraphPtr CreateGraph(unsigned size) = 0;
 };

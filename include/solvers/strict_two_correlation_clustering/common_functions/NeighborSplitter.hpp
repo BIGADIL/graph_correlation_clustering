@@ -10,9 +10,9 @@ namespace strict_2cc {
  * @see Bansal, Blum & Chawla. Correlation Clustering.
  */
 class NeighborSplitter {
- /**
-  * Factory that create new clustering.
-  */
+  /**
+   * Factory that create new clustering.
+   */
   IClustFactoryPtr clustering_factory_;
 
  public:
@@ -29,4 +29,4 @@ class NeighborSplitter {
                                              unsigned opposite_vertex) const;
 };
 
-}
+}  // namespace strict_2cc

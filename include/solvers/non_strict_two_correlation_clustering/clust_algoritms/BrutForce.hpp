@@ -4,20 +4,20 @@
 #include "../../../clustering/factories/IClusteringFactory.hpp"
 
 namespace non_strict_2cc {
-    class BrutForce {
-        static unsigned GetDistanceToGraph(const IGraph &graph, unsigned clustering);
+class BrutForce {
+  static unsigned GetDistanceToGraph(const IGraph &graph, unsigned clustering);
 
-        IClustFactoryPtr factory_;
+  IClustFactoryPtr factory_;
 
-    public:
-        explicit BrutForce(IClustFactoryPtr factory);
+ public:
+  explicit BrutForce(IClustFactoryPtr factory);
 
-        /**
-         * Get optimal solution for source graph.
-         * @param graph source graph.
-         * @return optimal solution for source graph.
-         */
+  /**
+   * Get optimal solution for source graph.
+   * @param graph source graph.
+   * @return optimal solution for source graph.
+   */
 
-        [[nodiscard]] IClustPtr GetBestClustering(const IGraphPtr &graph) const;
-    };
-}
+  [[nodiscard]] IClustPtr GetBestClustering(const IGraphPtr &graph) const;
+};
+}  // namespace non_strict_2cc

@@ -14,7 +14,8 @@ IClustPtr strict_2cc::NeighborhoodWithManyLocalSearches::getBestNeighborhoodClus
     std::vector<std::thread> thread_vector(num_threads_);
     for (unsigned i = 0; i < num_threads_; i++) {
         thread_vector[i] = std::thread(
-            &NeighborhoodWithManyLocalSearches::BestNeighborhoodClusteringThreadWorker,
+            &NeighborhoodWithManyLocalSearches::
+                                         BestNeighborhoodClusteringThreadWorker,
             this,
             std::ref(graph),
             i,

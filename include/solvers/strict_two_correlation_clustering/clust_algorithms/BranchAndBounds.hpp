@@ -5,7 +5,7 @@
 namespace strict_2cc {
 
 class BranchAndBounds {
- /**
+  /**
    * The source graph to be clustered.
    */
   IGraphPtr graph_;
@@ -35,9 +35,8 @@ class BranchAndBounds {
    * @param initial_clustering initial clustering.
    * @return optimal solution for source graph.
    */
-  std::shared_ptr<IClustering> GetBestClustering(const IGraphPtr &graph,
-                                                 const IClustPtr &initial_clustering);
+  std::shared_ptr<IClustering> GetBestClustering(
+      const IGraphPtr &graph, const IClustPtr &initial_clustering);
 };
 
-}
-
+}  // namespace strict_2cc

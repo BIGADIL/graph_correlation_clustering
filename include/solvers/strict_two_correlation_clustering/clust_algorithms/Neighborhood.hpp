@@ -18,18 +18,17 @@ class Neighborhood {
    */
   unsigned num_threads_;
   /**
-  * Factory that create new clustering.
-  */
+   * Factory that create new clustering.
+   */
   IClustFactoryPtr clustering_factory_;
   /**
    * Neighborhood splitter.
    */
   NeighborSplitter neighbor_splitter_;
 
- private:
-  void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                              unsigned threadId,
-                                              IClustPtr &local_best_clustering) const;
+  void BestNeighborhoodClusteringThreadWorker(
+      const IGraph &graph, unsigned threadId,
+      IClustPtr &local_best_clustering) const;
 
  public:
   Neighborhood(unsigned num_threads,
@@ -39,7 +38,8 @@ class Neighborhood {
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
+      const IGraph &graph) const;
 };
 
-}
+}  // namespace strict_2cc

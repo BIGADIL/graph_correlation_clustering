@@ -31,6 +31,7 @@ set(COMMON_SRC
         include/graphs/factories/TagsGraphFactory.hpp
         include/clustering/IClustering.hpp
         include/clustering/BinaryClusteringVector.hpp
+        include/clustering/BBTripleClusteringVector.hpp
         include/clustering/factories/IClusteringFactory.hpp
         include/clustering/factories/BinaryClusteringFactory.hpp
         include/clustering/BBBinaryClusteringVector.hpp
@@ -39,7 +40,6 @@ set(COMMON_SRC
         include/clustering/factories/TripleClusteringFactory.hpp
         include/common/ExperimentParameters.hpp
 
-        include/clustering/BBTripleClusteringVector.hpp
         src/graphs/AdjacencyMatrixGraph.cpp
         src/graphs/factories/ErdosRenyiRandomGraphFactory.cpp
         src/graphs/factories/TagsGraphFactory.cpp
