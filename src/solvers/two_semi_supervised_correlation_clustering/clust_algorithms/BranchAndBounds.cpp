@@ -2,8 +2,8 @@
 
 IClustPtr semi_supervised_2cc::BranchAndBounds::GetBestClustering(const IGraphPtr &graph,
                                                                   const IClustPtr &initial_clustering,
-                                                                  unsigned first_cluster_vertex,
-                                                                  unsigned second_cluster_vertex) {
+                                                                  const unsigned first_cluster_vertex,
+                                                                  const unsigned second_cluster_vertex) {
   graph_ = graph;
   auto clustering = BBBinaryClusteringVector(graph->Size(), graph);
   clustering.SetupLabelForVertex(first_cluster_vertex, FIRST_CLUSTER);
@@ -15,25 +15,24 @@ IClustPtr semi_supervised_2cc::BranchAndBounds::GetBestClustering(const IGraphPt
 }
 
 void semi_supervised_2cc::BranchAndBounds::Branch(BBBinaryClusteringVector &clustering) {
-  auto num_clustered =
+  const auto num_clustered =
       clustering.GetNumVerticesByLabel(FIRST_CLUSTER) + clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
   if (num_clustered != graph_->Size()) {
-    auto v = clustering.Choose();
+    const auto v = clustering.Choose();
     auto right_clustering = clustering.Copy();
     right_clustering.SetupLabelForVertex(v, FIRST_CLUSTER);
     auto bound = right_clustering.Bound(record_);
-    if (bound < int(record_)) {
+    if (bound < static_cast<int>(record_)) {
       Branch(right_clustering);
     }
     auto left_clustering = clustering.Copy();
     left_clustering.SetupLabelForVertex(v, SECOND_CLUSTER);
     bound = left_clustering.Bound(record_);
-    if (bound < int(record_)) {
+    if (bound < static_cast<int>(record_)) {
       Branch(left_clustering);
     }
   } else {
-    auto bound = clustering.GetDistanceToGraph(*graph_);
-    if (bound < record_) {
+    if (const auto bound = clustering.GetDistanceToGraph(*graph_); bound < record_) {
       record_ = bound;
       best_clustering_ = std::make_shared<BBBinaryClusteringVector>(clustering);
     }

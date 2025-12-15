@@ -1,4 +1,5 @@
 #include "../../../include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
+#include "../../../include/graphs/AdjacencyMatrixGraph.hpp"
 
 IGraphPtr ErdosRenyiRandomGraphFactory::CreateGraph(const unsigned size) {
   std::vector<std::vector<bool>> adjacency_matrix(size);
@@ -13,7 +14,7 @@ IGraphPtr ErdosRenyiRandomGraphFactory::CreateGraph(const unsigned size) {
     }
   }
 
-  return IGraphPtr(new AdjacencyMatrixGraph(adjacency_matrix));
+  return std::make_shared<AdjacencyMatrixGraph>(adjacency_matrix);
 }
 ErdosRenyiRandomGraphFactory::ErdosRenyiRandomGraphFactory(const double density) : density_(density) {
 

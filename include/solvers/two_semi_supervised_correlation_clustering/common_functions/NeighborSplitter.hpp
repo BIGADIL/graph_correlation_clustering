@@ -7,8 +7,7 @@
 namespace semi_supervised_2cc {
 
 class NeighborSplitter {
- private:
-  /**
+ /**
   * Factory that create new clustering.
   */
   IClustFactoryPtr clustering_factory_;

@@ -2,6 +2,7 @@
 
 #include "../common/ClusteringLabels.hpp"
 #include "TripleClusteringVector.hpp"
+
 class BBTripleClusteringVector : public TripleClusteringVector {
  private:
   /**

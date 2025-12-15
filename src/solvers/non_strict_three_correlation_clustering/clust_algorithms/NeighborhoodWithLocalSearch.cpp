@@ -5,14 +5,14 @@
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
 void non_strict_3cc::NeighborhoodWithLocalSearch::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                                                         unsigned threadId,
+                                                                                         const unsigned threadId,
                                                                                          IClustPtr &local_best_clustering) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
     auto part_clustering = neighbor_splitter_.BuildFirstCluster(graph, i);
     for (unsigned j = 0; j < graph.Size(); ++j) {
       if (!part_clustering->IsNonClustered(j)) continue;
-      auto tmp_clustering = non_strict_3cc::NeighborSplitter::BuildSecondAndThirdClusters(graph, part_clustering, j);
+      auto tmp_clustering = NeighborSplitter::BuildSecondAndThirdClusters(graph, part_clustering, j);
       tmp_clustering = LocalSearch::ComputeLocalOptimum(
           graph,
           tmp_clustering,
@@ -31,7 +31,7 @@ non_strict_3cc::NeighborhoodWithLocalSearch::NeighborhoodWithLocalSearch(unsigne
                                                                          const IClustFactoryPtr &clustering_factory) :
     num_threads_(num_threads),
     clustering_factory_(clustering_factory),
-    neighbor_splitter_(non_strict_3cc::NeighborSplitter(clustering_factory)) {
+    neighbor_splitter_(NeighborSplitter(clustering_factory)) {
 
 }
 
@@ -56,9 +56,8 @@ IClustPtr non_strict_3cc::NeighborhoodWithLocalSearch::getBestNeighborhoodCluste
   }
   IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
   unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
-  for (auto &it: local_best_clustering_vector) {
-    auto tmp_distance = it->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
+  for (const auto &it: local_best_clustering_vector) {
+    if (const auto tmp_distance = it->GetDistanceToGraph(graph); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_neighborhood_clustering = it;
     }

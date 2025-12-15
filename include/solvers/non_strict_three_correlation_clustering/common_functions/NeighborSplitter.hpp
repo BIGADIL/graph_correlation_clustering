@@ -5,8 +5,7 @@
 namespace non_strict_3cc {
 
 class NeighborSplitter {
- private:
-  /**
+    /**
   * Factory that create new clustering.
   */
   IClustFactoryPtr clustering_factory_;

@@ -8,8 +8,7 @@
  * Representation of a graph as an adjacency matrix.
  */
 class AdjacencyMatrixGraph : public IGraph {
- private:
-  std::vector<std::vector<bool>> adjacency_matrix_;
+    std::vector<std::vector<bool>> adjacency_matrix_;
 
  public:
   AdjacencyMatrixGraph() = delete;

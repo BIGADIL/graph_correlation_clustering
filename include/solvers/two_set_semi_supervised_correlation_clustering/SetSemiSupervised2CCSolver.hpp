@@ -37,8 +37,7 @@ struct ClusteringInfo {
 };
 
 class SetSemiSupervised2CCSolver {
- private:
-  const std::vector<std::string> allowed_algorithms{
+    const std::vector<std::string> allowed_algorithms{
       "NeighborhoodWithManyLocalSearches",
       "NeighborhoodWithOneLocalSearch",
       "Neighborhood",

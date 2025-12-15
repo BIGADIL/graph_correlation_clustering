@@ -10,8 +10,7 @@ namespace strict_2cc {
  * @see Bansal, Blum & Chawla. Correlation Clustering.
  */
 class NeighborSplitter {
- private:
-  /**
+ /**
   * Factory that create new clustering.
   */
   IClustFactoryPtr clustering_factory_;

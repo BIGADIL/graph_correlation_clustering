@@ -9,7 +9,7 @@ IClustPtr non_strict_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
   auto result = cur_clustering->GetCopy();
   auto local_improvement_list = InitLocalImprovements(graph, cur_clustering);
   while (true) {
-    auto candidate = FindCandidate(graph, local_improvement_list);
+    const auto candidate = FindCandidate(graph, local_improvement_list);
     if (candidate.local_improvement <= 0) {
       break;
     }

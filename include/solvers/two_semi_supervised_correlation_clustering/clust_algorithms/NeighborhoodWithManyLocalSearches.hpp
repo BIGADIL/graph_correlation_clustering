@@ -26,7 +26,6 @@ class NeighborhoodWithManyLocalSearches {
    */
   NeighborSplitter neighbor_splitter_;
 
- private:
   void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
                                               unsigned threadId,
                                               IClustPtr &local_best_clustering,

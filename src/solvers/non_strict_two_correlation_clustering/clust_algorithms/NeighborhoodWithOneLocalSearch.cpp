@@ -6,7 +6,7 @@
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/LocalSearch.hpp"
 
 IClustPtr non_strict_2cc::NeighborhoodWithOneLocalSearch::getBestNeighborhoodClustering(const IGraph &graph) const {
-  std::vector<Solution> result = getAllSolutions(graph);
+  const std::vector<Solution> result = getAllSolutions(graph);
   unsigned best_distance = UINT_MAX;
   IClustPtr best_clustering = nullptr;
   for (auto &it: result) {
@@ -19,9 +19,9 @@ IClustPtr non_strict_2cc::NeighborhoodWithOneLocalSearch::getBestNeighborhoodClu
 }
 
 void non_strict_2cc::NeighborhoodWithOneLocalSearch::BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                                                                            const unsigned threadId,
+                                                                                            const unsigned thread_id,
                                                                                             std::vector<Solution> &local_thread_buffer) const {
-  for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
+  for (unsigned i = thread_id; i < graph.Size(); i += num_threads_) {
     auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i);
     unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
     local_thread_buffer.emplace_back(tmp_distance, tmp_neighborhood_clustering);

@@ -7,9 +7,6 @@
 namespace semi_supervised_2cc {
 
 class LocalSearch {
- private:
-
- private:
   struct ExcludeVertices {
     unsigned first_cluster_vertex;
     unsigned second_cluster_vertex;
@@ -28,14 +25,12 @@ class LocalSearch {
     unsigned vertex;
     int local_improvement;
 
-   public:
     LocalSearchCandidate(unsigned vertex, int local_improvement)
         : vertex(vertex), local_improvement(local_improvement) {
 
     }
   };
 
- private:
   static std::vector<int> InitLocalImprovements(const IGraph &graph,
                                                 const IClustPtr &cur_clustering,
                                                 ExcludeVertices exclude_vertices);

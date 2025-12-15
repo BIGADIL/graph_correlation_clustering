@@ -6,8 +6,7 @@
 namespace non_strict_2cc {
 
 class BrutForce {
- private:
-  static unsigned GetDistanceToGraph(IGraph &graph, unsigned clustering);
+ static unsigned GetDistanceToGraph(const IGraph &graph, unsigned clustering);
 
   IClustFactoryPtr factory_;
 
@@ -19,7 +18,7 @@ class BrutForce {
    * @return optimal solution for source graph.
    */
 
-  IClustPtr GetBestClustering(const IGraphPtr &graph);
+  IClustPtr GetBestClustering(const IGraphPtr &graph) const;
 };
 
 }

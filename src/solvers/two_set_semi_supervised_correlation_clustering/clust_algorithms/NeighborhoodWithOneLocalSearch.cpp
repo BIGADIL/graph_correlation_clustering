@@ -30,9 +30,8 @@ IClustPtr set_semi_supervised_2cc::NeighborhoodWithOneLocalSearch::getBestNeighb
   }
   IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
   unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
-  for (auto &it: local_best_clustering_vector) {
-    auto tmp_distance = it->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
+  for (const auto &it: local_best_clustering_vector) {
+    if (const auto tmp_distance = it->GetDistanceToGraph(graph); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_neighborhood_clustering = it;
     }
@@ -57,9 +56,8 @@ void set_semi_supervised_2cc::NeighborhoodWithOneLocalSearch::BestNeighborhoodCl
         i,
         first_cluster_vertices,
         second_cluster_vertices);
-    for (auto &clustering: tmp_neighborhood_clustering) {
-      unsigned tmp_distance = clustering->GetDistanceToGraph(graph);
-      if (tmp_distance < best_distance) {
+    for (const auto &clustering: tmp_neighborhood_clustering) {
+      if (const unsigned tmp_distance = clustering->GetDistanceToGraph(graph); tmp_distance < best_distance) {
         best_distance = tmp_distance;
         local_best_clustering = clustering;
       }

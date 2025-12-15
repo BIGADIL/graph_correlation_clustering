@@ -5,8 +5,7 @@
 namespace semi_supervised_2cc {
 
 class BranchAndBounds {
- private:
-  /**
+ /**
    * The source graph to be clustered.
    */
   IGraphPtr graph_;
@@ -21,8 +20,7 @@ class BranchAndBounds {
    */
   IClustPtr best_clustering_ = nullptr;
 
- private:
-  /**
+ /**
    * Branch out the range of feasible solutions.
    * @param clustering current vector of labels.
    */

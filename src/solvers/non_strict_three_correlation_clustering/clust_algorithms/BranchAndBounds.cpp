@@ -9,8 +9,8 @@ IClustPtr non_strict_3cc::BranchAndBounds::GetBestClustering(const IGraphPtr &gr
   best_clustering_ = initial_clustering;
   Branch(
       clustering,
-      std::vector<ClusterLabels>({FIRST_CLUSTER}),
-      std::vector<ClusterLabels>({SECOND_CLUSTER, THIRD_CLUSTER})
+      std::vector({FIRST_CLUSTER}),
+      std::vector({SECOND_CLUSTER, THIRD_CLUSTER})
   );
   return best_clustering_;
 }
@@ -37,14 +37,12 @@ void non_strict_3cc::BranchAndBounds::Branch(BBTripleClusteringVector &clusterin
       auto tmp_clustering = clustering.Copy();
       tmp_clustering.SetupLabelForVertex(v, next_used_label);
       used_labels.push_back(next_used_label);
-      auto bound = tmp_clustering.Bound(record_);
-      if (bound < int(record_)) {
+      if (const auto bound = tmp_clustering.Bound(record_); bound < static_cast<int>(record_)) {
         Branch(tmp_clustering, used_labels, not_used_labels);
       }
     }
   } else {
-    auto bound = clustering.GetDistanceToGraph(*graph_);
-    if (bound < record_) {
+    if (const auto bound = clustering.GetDistanceToGraph(*graph_); bound < record_) {
       record_ = bound;
       best_clustering_ = std::make_shared<BBTripleClusteringVector>(clustering);
     }

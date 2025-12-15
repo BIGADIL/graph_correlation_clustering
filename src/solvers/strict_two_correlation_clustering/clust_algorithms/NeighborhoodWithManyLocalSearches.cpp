@@ -26,9 +26,8 @@ IClustPtr strict_2cc::NeighborhoodWithManyLocalSearches::getBestNeighborhoodClus
   }
   IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
   unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
-  for (auto &it: local_best_clustering_vector) {
-    auto tmp_distance = it->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
+  for (const auto &it: local_best_clustering_vector) {
+    if (const auto tmp_distance = it->GetDistanceToGraph(graph); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_neighborhood_clustering = it;
     }
@@ -45,8 +44,8 @@ void strict_2cc::NeighborhoodWithManyLocalSearches::BestNeighborhoodClusteringTh
       if (i == j) continue;
       auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i, j);
       tmp_neighborhood_clustering = LocalSearch::ComputeLocalOptimum(graph, tmp_neighborhood_clustering, i, j);
-      unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
-      if (tmp_distance < best_distance) {
+      if (const unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
+        tmp_distance < best_distance) {
         best_distance = tmp_distance;
         local_best_clustering = std::move(tmp_neighborhood_clustering);
       }

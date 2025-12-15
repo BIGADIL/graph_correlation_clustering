@@ -37,8 +37,7 @@ struct ClusteringInfo {
 };
 
 class Strict2CCSolver {
- private:
-  const std::vector<std::string> allowed_algorithms{
+    const std::vector<std::string> allowed_algorithms{
       "NeighborhoodWithManyLocalSearches",
       "NeighborhoodWithOneLocalSearch",
       "Neighborhood",
@@ -46,11 +45,10 @@ class Strict2CCSolver {
   unsigned num_threads_;
   IClustFactoryPtr factory_;
 
- private:
-  static std::string FormatComputationToJson(const IGraph &graph,
-                                             const std::vector<ClusteringInfo> &computation_results,
-                                             unsigned size,
-                                             double density);
+    static std::string FormatComputationToJson(const IGraph &graph,
+                                               const std::vector<ClusteringInfo> &computation_results,
+                                               unsigned size,
+                                               double density);
 
  public:
   Strict2CCSolver(unsigned num_threads,

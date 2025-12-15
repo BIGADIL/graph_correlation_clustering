@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 #include <filesystem>
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"

@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sstream>
+
 #include "../../include/clustering/BinaryClusteringVector.hpp"
 
 void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
@@ -12,8 +13,7 @@ void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
     default:auto message = "Expected label 0 or 1, actual label = " + std::to_string(label);
       throw std::invalid_argument(message);
   }
-  auto cur_label = labels_[vertex];
-  switch (cur_label) {
+  switch (auto cur_label = labels_[vertex]) {
     case NON_CLUSTERED:num_non_clustered_vertices_--;
       break;
     case FIRST_CLUSTER:num_vertices_in_first_cluster_--;
@@ -27,7 +27,7 @@ void BinaryClusteringVector::SetupLabelForVertex(const unsigned vertex,
 
 unsigned BinaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
   if (graph.Size() != labels_.size()) {
-    auto message = "Graph size must be equal to labels length. Graph size = " + std::to_string(graph.Size())
+    const auto message = "Graph size must be equal to labels length. Graph size = " + std::to_string(graph.Size())
         + "; labels length = " + std::to_string(labels_.size());
     throw std::invalid_argument(message);
   }
@@ -43,13 +43,13 @@ unsigned BinaryClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
 }
 
 BinaryClusteringVector::BinaryClusteringVector(const unsigned size) {
-  labels_ = std::vector<ClusterLabels>(size, NON_CLUSTERED);
+  labels_ = std::vector(size, NON_CLUSTERED);
   num_non_clustered_vertices_ = size;
   num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = 0;
 }
 
 IClustPtr BinaryClusteringVector::GetCopy() const {
-  return std::shared_ptr<IClustering>(new BinaryClusteringVector(*this));
+  return std::make_shared<BinaryClusteringVector>(*this);
 }
 
 ClusterLabels BinaryClusteringVector::GetLabel(const unsigned vertex) const {
@@ -69,7 +69,7 @@ unsigned BinaryClusteringVector::GetNumNonClusteredVertices() const {
 }
 
 unsigned int BinaryClusteringVector::GetNumVerticesByLabel(const ClusterLabels label) const {
-  if (label == ClusterLabels::FIRST_CLUSTER) {
+  if (label == FIRST_CLUSTER) {
     return num_vertices_in_first_cluster_;
   }
   return num_vertices_in_second_cluster_;
@@ -89,6 +89,7 @@ std::string BinaryClusteringVector::ToJson() const {
   }
   return ss.str();
 }
+
 unsigned BinaryClusteringVector::Size() const {
   return labels_.size();
 }

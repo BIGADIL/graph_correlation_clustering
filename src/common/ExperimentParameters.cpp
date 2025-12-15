@@ -8,8 +8,8 @@ ExperimentParameters::ExperimentParameters(std::vector<unsigned> graph_size_vect
                                            std::vector<std::string> distribution_vector,
                                            std::vector<std::string> algorithms_vector,
                                            std::vector<double> parts,
-                                           unsigned num_threads,
-                                           unsigned num_graphs) :
+                                           const unsigned num_threads,
+                                           const unsigned num_graphs) :
     graph_size_vector_(std::move(graph_size_vector)),
     density_vector_(std::move(density_vector)),
     distribution_vector_(std::move(distribution_vector)),

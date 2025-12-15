@@ -11,8 +11,8 @@ IClustPtr strict_2cc::NeighborhoodWithOneLocalSearch::getBestNeighborhoodCluster
     auto instance = clustering_factory_->CreateClustering(graph.Size());
     local_best_clustering_vector.push_back(instance);
   }
-  std::vector<unsigned> vertices(num_threads_, UINT_MAX);
-  std::vector<unsigned> opposite_vertices(num_threads_, UINT_MAX);
+  std::vector vertices(num_threads_, UINT_MAX);
+  std::vector opposite_vertices(num_threads_, UINT_MAX);
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
     thread_vector[i] = std::thread(
@@ -33,8 +33,7 @@ IClustPtr strict_2cc::NeighborhoodWithOneLocalSearch::getBestNeighborhoodCluster
   unsigned vertex = vertices[0];
   unsigned opposite_vertex = opposite_vertices[0];
   for (unsigned i = 1; i < num_threads_; ++i) {
-    auto tmp_distance = local_best_clustering_vector[i]->GetDistanceToGraph(graph);
-    if (tmp_distance < best_distance) {
+    if (const auto tmp_distance = local_best_clustering_vector[i]->GetDistanceToGraph(graph); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_neighborhood_clustering = local_best_clustering_vector[i];
       vertex = vertices[i];
@@ -54,8 +53,7 @@ void strict_2cc::NeighborhoodWithOneLocalSearch::BestNeighborhoodClusteringThrea
     for (unsigned j = 0; j < graph.Size(); j++) {
       if (i == j) continue;
       auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(graph, i, j);
-      unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph);
-      if (tmp_distance < best_distance) {
+      if (const unsigned tmp_distance = tmp_neighborhood_clustering->GetDistanceToGraph(graph); tmp_distance < best_distance) {
         best_distance = tmp_distance;
         local_best_clustering = std::move(tmp_neighborhood_clustering);
         vertex = i;

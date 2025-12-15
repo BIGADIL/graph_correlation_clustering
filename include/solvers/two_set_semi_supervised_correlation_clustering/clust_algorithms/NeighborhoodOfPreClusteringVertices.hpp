@@ -21,7 +21,6 @@ class NeighborhoodOfPreClusteringVertices {
  */
   IClustFactoryPtr clustering_factory_;
 
- private:
   static bool IsJoinedWithSet(const std::vector<unsigned> &set, unsigned vertex, const IGraph &graph);
   static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned> &vertices_set);
 

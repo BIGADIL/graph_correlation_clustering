@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
-#include "include/clustering/factories/IClusteringFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"
 #include "include/solvers/two_set_semi_supervised_correlation_clustering/SetSemiSupervised2CCSolver.hpp"
 #include "include/common/ExperimentParameters.hpp"
@@ -16,13 +15,13 @@ std::pair<std::vector<unsigned>, std::vector<unsigned >> GetPreClusteredSets(con
   if (parts[0] + parts[1] > 1) {
     throw std::logic_error("to big parts");
   }
-  auto size = graph.Size();
+  const auto size = graph.Size();
   std::random_device rd_;
   std::default_random_engine gen_{rd_()};
   std::uniform_int_distribution<> dis_(0, size - 1);
 
-  unsigned first_cluster_part = std::max(unsigned(parts[0] * size), 1U);
-  unsigned second_cluster_part = std::max(unsigned(parts[1] * size), 1U);
+  const unsigned first_cluster_part = std::max(static_cast<unsigned>(parts[0] * size), 1U);
+  const unsigned second_cluster_part = std::max(static_cast<unsigned>(parts[1] * size), 1U);
 
   std::vector<unsigned> all_peeked;
   std::vector<unsigned> first_pre_cluster;
@@ -30,7 +29,7 @@ std::pair<std::vector<unsigned>, std::vector<unsigned >> GetPreClusteredSets(con
 
   while (first_pre_cluster.size() != first_cluster_part) {
     auto x = dis_(gen_);
-    if (std::find(all_peeked.begin(), all_peeked.end(), x) == all_peeked.end()) {
+    if (std::ranges::find(all_peeked, x) == all_peeked.end()) {
       all_peeked.push_back(x);
       first_pre_cluster.push_back(x);
     }
@@ -38,7 +37,7 @@ std::pair<std::vector<unsigned>, std::vector<unsigned >> GetPreClusteredSets(con
 
   while (second_pre_cluster.size() != second_cluster_part) {
     auto x = dis_(gen_);
-    if (std::find(all_peeked.begin(), all_peeked.end(), x) == all_peeked.end()) {
+    if (std::ranges::find(all_peeked, x) == all_peeked.end()) {
       all_peeked.push_back(x);
       second_pre_cluster.push_back(x);
     }
@@ -69,13 +68,13 @@ int main(int argc, char *argv[]) {
       set_semi_supervised_2cc::SetSemiSupervised2CCSolver solver(ep.GetNumThreads(), factory);
       for (unsigned i = 0; i < ep.GetNumGraphs(); ++i) {
         auto graph = graphs_factory.CreateGraph(graph_size);
-        auto pre_clusters = GetPreClusteredSets(*graph, ep.GetParts());
+        auto [fst, snd] = GetPreClusteredSets(*graph, ep.GetParts());
         auto report = solver.solve(
             graph,
             density,
             ep.GetAlgorithms(),
-            pre_clusters.first,
-            pre_clusters.second
+            fst,
+            snd
         );
         std::ofstream out;
         std::stringstream name;

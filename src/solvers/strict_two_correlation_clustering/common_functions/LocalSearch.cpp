@@ -7,10 +7,10 @@ IClustPtr strict_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
                                                        const unsigned vertex,
                                                        const unsigned opposite_vertex) {
   auto result = cur_clustering->GetCopy();
-  auto exclude_vertices = ExcludeVertices(vertex, opposite_vertex);
+  const auto exclude_vertices = ExcludeVertices(vertex, opposite_vertex);
   auto local_improvement_list = InitLocalImprovements(graph, cur_clustering, exclude_vertices);
   while (true) {
-    auto candidate = FindCandidate(graph, local_improvement_list, exclude_vertices);
+    const auto candidate = FindCandidate(graph, local_improvement_list, exclude_vertices);
     if (candidate.local_improvement <= 0) {
       break;
     }
@@ -23,15 +23,15 @@ IClustPtr strict_2cc::LocalSearch::ComputeLocalOptimum(const IGraph &graph,
 
 std::vector<int> strict_2cc::LocalSearch::InitLocalImprovements(const IGraph &graph,
                                                                 const IClustPtr &cur_clustering,
-                                                                const strict_2cc::LocalSearch::ExcludeVertices exclude_vertices) {
+                                                                const ExcludeVertices exclude_vertices) {
   std::vector<int> local_improvement_list(graph.Size());
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (exclude_vertices.contain(i)) {
       continue;
     }
     for (unsigned j = i + 1; j < graph.Size(); ++j) {
-      bool is_same_clustered = cur_clustering->IsSameClustered(i, j);
-      bool is_joined = graph.IsJoined(i, j);
+      const bool is_same_clustered = cur_clustering->IsSameClustered(i, j);
+      const bool is_joined = graph.IsJoined(i, j);
       if (is_same_clustered) {
         local_improvement_list[i] += is_joined ? -1 : 1;
         local_improvement_list[j] += is_joined ? -1 : 1;
@@ -46,7 +46,7 @@ std::vector<int> strict_2cc::LocalSearch::InitLocalImprovements(const IGraph &gr
 
 strict_2cc::LocalSearch::LocalSearchCandidate strict_2cc::LocalSearch::FindCandidate(const IGraph &graph,
                                                                                      const std::vector<int> &local_improvement_list,
-                                                                                     const strict_2cc::LocalSearch::ExcludeVertices exclude_vertices) {
+                                                                                     const ExcludeVertices exclude_vertices) {
   int local_improvement = INT_MIN;
   unsigned candidate = UINT_MAX;
   for (unsigned i = 0; i < graph.Size(); ++i) {
@@ -65,7 +65,7 @@ std::vector<int> strict_2cc::LocalSearch::UpdateLocalImprovements(const IGraph &
                                                                   const IClustPtr &cur_clustering,
                                                                   std::vector<int> &local_improvement_list,
                                                                   const unsigned int vertex,
-                                                                  const strict_2cc::LocalSearch::ExcludeVertices exclude_vertices) {
+                                                                  const ExcludeVertices exclude_vertices) {
   local_improvement_list[vertex] = 0;
   for (unsigned i = 0; i < graph.Size(); ++i) {
     if (i == vertex || exclude_vertices.contain(i)) {

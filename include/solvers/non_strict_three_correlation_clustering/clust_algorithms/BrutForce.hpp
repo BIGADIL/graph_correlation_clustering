@@ -19,7 +19,7 @@ class BrutForce {
    * @return optimal solution for source graph.
    */
 
-  IClustPtr GetBestClustering(const IGraphPtr &graph);
+  IClustPtr GetBestClustering(const IGraphPtr &graph) const;
 };
 
 }

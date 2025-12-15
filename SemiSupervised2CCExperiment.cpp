@@ -8,7 +8,7 @@
 #include "include/common/ExperimentParameters.hpp"
 
 std::pair<unsigned, unsigned> getTwoRandomVertices(const IGraph &graph) {
-  auto size = graph.Size();
+  const auto size = graph.Size();
   std::random_device rd_;
   std::default_random_engine gen_{rd_()};
   std::uniform_int_distribution<> dis_(0, size - 1);
@@ -43,13 +43,13 @@ int main(int argc, char *argv[]) {
       semi_supervised_2cc::SemiSupervised2CCSolver solver(ep.GetNumThreads(), factory);
       for (unsigned i = 0; i < ep.GetNumGraphs(); ++i) {
         auto graph = graphs_factory.CreateGraph(graph_size);
-        auto pre_clustered_vertices = getTwoRandomVertices(*graph);
+        auto [fst, snd] = getTwoRandomVertices(*graph);
         auto report = solver.solve(
             graph,
             density,
             ep.GetAlgorithms(),
-            pre_clustered_vertices.first,
-            pre_clustered_vertices.second
+            fst,
+            snd
         );
         std::ofstream out;
         std::stringstream name;

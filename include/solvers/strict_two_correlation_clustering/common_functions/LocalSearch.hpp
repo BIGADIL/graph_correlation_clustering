@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+
 #include "../../../clustering/factories/IClusteringFactory.hpp"
 
 namespace strict_2cc {
@@ -11,9 +12,6 @@ namespace strict_2cc {
  * @see Coleman, Saunderson and Wirth. A Local-Search 2-Approximation for 2-Correlation-Clustering.
  */
 class LocalSearch {
- private:
-
- private:
   struct ExcludeVertices {
     unsigned vertex;
     unsigned opposite_vertex;
@@ -32,14 +30,12 @@ class LocalSearch {
     unsigned vertex;
     int local_improvement;
 
-   public:
     LocalSearchCandidate(unsigned vertex, int local_improvement)
         : vertex(vertex), local_improvement(local_improvement) {
 
     }
   };
 
- private:
   static std::vector<int> InitLocalImprovements(const IGraph &graph,
                                                 const IClustPtr &cur_clustering,
                                                 ExcludeVertices exclude_vertices);

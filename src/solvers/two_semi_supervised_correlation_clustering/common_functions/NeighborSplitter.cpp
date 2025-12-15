@@ -5,12 +5,12 @@ semi_supervised_2cc::NeighborSplitter::NeighborSplitter(IClustFactoryPtr cluster
 }
 
 std::vector<IClustPtr> semi_supervised_2cc::NeighborSplitter::SplitGraphByVertex(const IGraph &graph,
-                                                                                 unsigned int vertex,
-                                                                                 unsigned int first_cluster_vertex,
-                                                                                 unsigned int second_cluster_vertex) const {
+                                                                                 const unsigned int vertex,
+                                                                                 const unsigned int first_cluster_vertex,
+                                                                                 const unsigned int second_cluster_vertex) const {
   std::vector<IClustPtr> result;
   if (vertex == first_cluster_vertex) {
-    IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
+    const IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
     for (unsigned i = 0; i < graph.Size(); ++i) {
       if ((i == vertex || graph.IsJoined(i, vertex)) && i != second_cluster_vertex) {
         split_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
@@ -20,7 +20,7 @@ std::vector<IClustPtr> semi_supervised_2cc::NeighborSplitter::SplitGraphByVertex
     }
     result.push_back(split_clustering);
   } else if (vertex == second_cluster_vertex) {
-    IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
+    const IClustPtr split_clustering = clustering_factory_->CreateClustering(graph.Size());
     for (unsigned i = 0; i < graph.Size(); ++i) {
       if ((i == vertex || graph.IsJoined(i, vertex)) && i != first_cluster_vertex) {
         split_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);
@@ -30,8 +30,8 @@ std::vector<IClustPtr> semi_supervised_2cc::NeighborSplitter::SplitGraphByVertex
     }
     result.push_back(split_clustering);
   } else {
-    IClustPtr first_clustering = clustering_factory_->CreateClustering(graph.Size());
-    IClustPtr second_clustering = clustering_factory_->CreateClustering(graph.Size());
+    const IClustPtr first_clustering = clustering_factory_->CreateClustering(graph.Size());
+    const IClustPtr second_clustering = clustering_factory_->CreateClustering(graph.Size());
     for (unsigned i = 0; i < graph.Size(); ++i) {
       if (i == first_cluster_vertex) {
         first_clustering->SetupLabelForVertex(i, FIRST_CLUSTER);

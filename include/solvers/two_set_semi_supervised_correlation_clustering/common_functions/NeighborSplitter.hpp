@@ -8,14 +8,12 @@
 namespace set_semi_supervised_2cc {
 
 class NeighborSplitter {
- private:
-  /**
+ /**
   * Factory that create new clustering.
   */
   IClustFactoryPtr clustering_factory_;
 
- private:
-  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned> &vertices_set);
+ static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned> &vertices_set);
 
  public:
   explicit NeighborSplitter(IClustFactoryPtr clustering_factory);

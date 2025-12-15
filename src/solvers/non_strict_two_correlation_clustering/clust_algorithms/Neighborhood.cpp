@@ -5,7 +5,7 @@
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/Neighborhood.hpp"
 
 IClustPtr non_strict_2cc::Neighborhood::getBestNeighborhoodClustering(const IGraph &graph) const {
-  std::vector<Solution> result = getAllSolutions(graph);
+  const std::vector<Solution> result = getAllSolutions(graph);
   unsigned best_distance = UINT_MAX;
   IClustPtr best_clustering = nullptr;
   for (auto &it: result) {

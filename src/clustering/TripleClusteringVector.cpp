@@ -13,8 +13,7 @@ void TripleClusteringVector::SetupLabelForVertex(const unsigned vertex,
     default:auto message = "Expected label 0 or 1, actual label = " + std::to_string(label);
       throw std::invalid_argument(message);
   }
-  auto cur_label = labels_[vertex];
-  switch (cur_label) {
+  switch (auto cur_label = labels_[vertex]) {
     case NON_CLUSTERED:num_non_clustered_vertices_--;
       break;
     case FIRST_CLUSTER:num_vertices_in_first_cluster_--;
@@ -46,13 +45,13 @@ unsigned TripleClusteringVector::GetDistanceToGraph(const IGraph &graph) const {
 }
 
 TripleClusteringVector::TripleClusteringVector(const unsigned size) {
-  labels_ = std::vector<ClusterLabels>(size, NON_CLUSTERED);
+  labels_ = std::vector(size, NON_CLUSTERED);
   num_non_clustered_vertices_ = size;
   num_vertices_in_first_cluster_ = num_vertices_in_second_cluster_ = num_vertices_in_third_cluster_ = 0;
 }
 
 IClustPtr TripleClusteringVector::GetCopy() const {
-  return std::shared_ptr<IClustering>(new TripleClusteringVector(*this));
+  return std::make_shared<TripleClusteringVector>(*this);
 }
 
 ClusterLabels TripleClusteringVector::GetLabel(const unsigned vertex) const {

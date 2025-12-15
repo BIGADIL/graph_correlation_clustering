@@ -1,7 +1,6 @@
 #include <filesystem>
 #include <fstream>
 
-#include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/common/ExperimentParameters.hpp"
 #include "include/graphs/factories/TagsGraphFactory.hpp"
 #include "include/clustering/factories/BinaryClusteringFactory.hpp"

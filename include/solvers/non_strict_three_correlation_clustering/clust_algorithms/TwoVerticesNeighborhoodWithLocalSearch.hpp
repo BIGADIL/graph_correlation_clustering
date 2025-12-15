@@ -29,7 +29,7 @@ class TwoVerticesNeighborhoodWithLocalSearch {
 
  private:
   void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                              unsigned threadId,
+                                              unsigned thread_id,
                                               std::vector<Solution> &local_thread_buffer) const;
 
  public:

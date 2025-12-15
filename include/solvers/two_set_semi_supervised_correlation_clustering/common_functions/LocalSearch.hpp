@@ -7,8 +7,7 @@
 namespace set_semi_supervised_2cc {
 
 class LocalSearch {
- private:
-  /**
+    /**
    * Compute local improvement of tossing vertex from one cluster to another.
    *
    * @param graph source graph.

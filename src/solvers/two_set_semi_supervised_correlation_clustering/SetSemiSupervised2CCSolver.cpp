@@ -14,7 +14,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
                                                                        const std::vector<unsigned> &first_cluster_vertices,
                                                                        const std::vector<unsigned> &second_cluster_vertices) const {
   std::vector<ClusteringInfo> infos;
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithManyLocalSearches")
+  if (std::ranges::find(used_algorithms, "NeighborhoodWithManyLocalSearches")
       != used_algorithms.end()) {
     NeighborhoodWithManyLocalSearches nmls(num_threads_, factory_);
     auto start_time = std::chrono::steady_clock::now();
@@ -29,7 +29,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodWithOneLocalSearch")
+  if (std::ranges::find(used_algorithms, "NeighborhoodWithOneLocalSearch")
       != used_algorithms.end()) {
     NeighborhoodWithOneLocalSearch nols(num_threads_, factory_);
     auto start_time = std::chrono::steady_clock::now();
@@ -44,7 +44,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "NeighborhoodOfPreClusteringVertices")
+  if (std::ranges::find(used_algorithms, "NeighborhoodOfPreClusteringVertices")
       != used_algorithms.end()) {
     NeighborhoodOfPreClusteringVertices npcv(factory_);
     auto start_time = std::chrono::steady_clock::now();
@@ -59,7 +59,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "Neighborhood") != used_algorithms.end()) {
+  if (std::ranges::find(used_algorithms, "Neighborhood") != used_algorithms.end()) {
     Neighborhood n(num_threads_, factory_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = n.getBestNeighborhoodClustering(
@@ -73,7 +73,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "BranchAndBounds") != used_algorithms.end()) {
+  if (std::ranges::find(used_algorithms, "BranchAndBounds") != used_algorithms.end()) {
     NeighborhoodWithManyLocalSearches nmls(num_threads_, factory_);
     auto approximate_clustering = nmls.getBestNeighborhoodClustering(
         *graph,
@@ -93,7 +93,7 @@ std::string set_semi_supervised_2cc::SetSemiSupervised2CCSolver::solve(const IGr
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
     );
   }
-  if (std::find(used_algorithms.begin(), used_algorithms.end(), "BrutForce") != used_algorithms.end()) {
+  if (std::ranges::find(used_algorithms, "BrutForce") != used_algorithms.end()) {
     BrutForce bf(factory_);
     auto start_time = std::chrono::steady_clock::now();
     auto clustering = bf.GetBestClustering(

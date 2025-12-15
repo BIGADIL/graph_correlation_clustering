@@ -5,8 +5,7 @@
 namespace strict_2cc {
 
 class BranchAndBounds {
- private:
-  /**
+ /**
    * The source graph to be clustered.
    */
   IGraphPtr graph_;

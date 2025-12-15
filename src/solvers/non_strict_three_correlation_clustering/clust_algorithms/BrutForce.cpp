@@ -5,10 +5,9 @@
 
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BrutForce.hpp"
 
-IClustPtr non_strict_3cc::BrutForce::GetBestClustering(const IGraphPtr &graph) {
-  int base = 3;
-  std::vector<int> clustering(graph->Size(), 0);
-  std::vector<int> one(graph->Size(), 0);
+IClustPtr non_strict_3cc::BrutForce::GetBestClustering(const IGraphPtr &graph) const {
+  std::vector clustering(graph->Size(), 0);
+  std::vector one(graph->Size(), 0);
   one[0] = 1;
   std::vector<int> best_clustering;
   unsigned best_distance = UINT_MAX;
@@ -19,6 +18,7 @@ IClustPtr non_strict_3cc::BrutForce::GetBestClustering(const IGraphPtr &graph) {
       best_clustering = clustering;
     }
     for (unsigned i = 0; i < clustering.size(); ++i) {
+      constexpr int base = 3;
       clustering[i] += one[i];
       if (i != clustering.size() - 1) {
         clustering[i + 1] += clustering[i] / base;

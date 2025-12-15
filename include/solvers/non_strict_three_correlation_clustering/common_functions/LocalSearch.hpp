@@ -7,12 +7,10 @@
 namespace non_strict_3cc {
 
 class LocalSearch {
- private:
-  struct LocalSearchCandidate {
+    struct LocalSearchCandidate {
     unsigned vertex;
     int local_improvement;
 
-   public:
     LocalSearchCandidate(unsigned vertex, int local_improvement)
         : vertex(vertex), local_improvement(local_improvement) {
 

@@ -44,10 +44,10 @@ Solution non_strict_3cc::IPLSAlgorithm::Perturbation(const Solution &solution, d
     ClusterLabels label = NON_CLUSTERED;
     int best_imp = INT_MIN;
     for (unsigned j = 0; j < imp.size(); j++) {
-      if ((ClusterLabels) j == label_i) continue;
+      if (static_cast<ClusterLabels>(j) == label_i) continue;
       if (imp[j] > best_imp) {
         best_imp = imp[j];
-        label = (ClusterLabels) j;
+        label = static_cast<ClusterLabels>(j);
       }
     }
     copy->SetupLabelForVertex(i, label);
@@ -116,7 +116,7 @@ void non_strict_3cc::IPLSAlgorithm::OnIterationEnd() {
   }
 }
 
-Solution non_strict_3cc::IPLSAlgorithm::Train(std::shared_ptr<IGraph> graph) {
+Solution non_strict_3cc::IPLSAlgorithm::Train(const std::shared_ptr<IGraph> &graph) {
   record_ = nullptr;
   graph_ = graph;
   GenerateInitPopulation(population_size_);
@@ -173,9 +173,9 @@ Solution non_strict_3cc::IPLSAlgorithm::Train(std::shared_ptr<IGraph> graph) {
 }
 
 void non_strict_3cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buffer,
-                                                unsigned thread_id,
-                                                unsigned max_capacity,
-                                                std::vector<Solution> &local_optimum) {
+                                                const unsigned thread_id,
+                                                const unsigned max_capacity,
+                                                std::vector<Solution> &local_optimum) const {
   Solution solution{UINT_MAX, nullptr};
   for (unsigned i = thread_id; i < max_capacity; i += num_threads_) {
     auto x = Selection(population_);
@@ -186,7 +186,7 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buf
     }
   }
   std::vector<Solution> tmp_buffer;
-  for (auto &it: local_buffer) {
+  for (const auto &it: local_buffer) {
     auto x = it;
     x = Perturbation(x, p_perturbation_);
     tmp_buffer.emplace_back(x);
@@ -200,9 +200,9 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buf
 }
 
 void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution> &local_buffer,
-                                                    unsigned thread_id,
-                                                    unsigned int max_capacity,
-                                                    std::vector<Solution> &local_optimum) {
+                                                    const unsigned thread_id,
+                                                    const unsigned int max_capacity,
+                                                    std::vector<Solution> &local_optimum) const {
   while (true) {
     barrier_->arrive_and_wait();
     if (stop_training_.load(std::memory_order_acquire)) {
@@ -216,16 +216,15 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution> &local
 
 void non_strict_3cc::IPLSAlgorithm::InitPopulationWorker(std::vector<Solution> &local_buffer,
                                                          unsigned int thread_id,
-                                                         unsigned int population_size) {
+                                                         unsigned int population_size) const {
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
   std::uniform_int_distribution<> dis(0, 2);
 
   for (unsigned i = thread_id; i < population_size; i += num_threads_) {
-    auto clustering = factory_->CreateClustering(graph_->Size());
+    const auto clustering = factory_->CreateClustering(graph_->Size());
     for (unsigned j = 0; j < graph_->Size(); ++j) {
-      auto rnd = dis(gen);
-      if (rnd == 0) {
+      if (const auto rnd = dis(gen); rnd == 0) {
         clustering->SetupLabelForVertex(j, FIRST_CLUSTER);
       } else if (rnd == 1) {
         clustering->SetupLabelForVertex(j, SECOND_CLUSTER);

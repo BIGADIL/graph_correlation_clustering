@@ -1,7 +1,6 @@
 #pragma once
 
 #include <random>
-#include <climits>
 #include <atomic>
 #include <barrier>
 
@@ -38,14 +37,14 @@ class IPLSAlgorithm {
   void TrainWorkerLoop(std::vector<Solution> &local_buffer,
                        unsigned thread_id,
                        unsigned max_capacity,
-                       std::vector<Solution> &local_optimum);
+                       std::vector<Solution> &local_optimum) const;
   void TrainWorker(std::vector<Solution> &local_buffer,
                    unsigned thread_id,
                    unsigned max_capacity,
-                   std::vector<Solution> &local_optimum);
+                   std::vector<Solution> &local_optimum) const;
   void InitPopulationWorker(std::vector<Solution> &local_buffer,
                             unsigned thread_id,
-                            unsigned population_size);
+                            unsigned population_size) const;
 
  public:
   IPLSAlgorithm() = delete;
@@ -61,7 +60,7 @@ class IPLSAlgorithm {
                 double p_perturbation,
                 unsigned num_threads);
 
-  Solution Train(std::shared_ptr<IGraph> graph);
+  Solution Train(const std::shared_ptr<IGraph> &graph);
 };
 
 }

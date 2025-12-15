@@ -5,7 +5,7 @@
 #include "../../../../include/clustering/BinaryClusteringVector.hpp"
 
 IClustPtr non_strict_2cc::NeighborhoodWithManyLocalSearches::getBestNeighborhoodClustering(const IGraph &graph) const {
-  std::vector<Solution> result = getAllSolutions(graph);
+  const std::vector<Solution> result = getAllSolutions(graph);
   unsigned best_distance = UINT_MAX;
   IClustPtr best_clustering = nullptr;
   for (auto &it: result) {

@@ -2,7 +2,6 @@
 
 #include <random>
 
-#include "../AdjacencyMatrixGraph.hpp"
 #include "IGraphFactory.hpp"
 
 /**

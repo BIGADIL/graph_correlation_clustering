@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../../clustering/factories/IClusteringFactory.hpp"
 #include "../../../clustering/BBBinaryClusteringVector.hpp"
 #include "../../../clustering/IClustering.hpp"
 

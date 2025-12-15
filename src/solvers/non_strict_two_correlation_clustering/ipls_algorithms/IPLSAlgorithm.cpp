@@ -6,13 +6,13 @@
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/LocalSearch.hpp"
 
-non_strict_2cc::IPLSAlgorithm::IPLSAlgorithm(unsigned iterations,
-                                             unsigned early_stop_num,
+non_strict_2cc::IPLSAlgorithm::IPLSAlgorithm(const unsigned iterations,
+                                             const unsigned early_stop_num,
                                              IClustFactoryPtr factory,
-                                             unsigned population_size,
-                                             unsigned tournament_size,
-                                             double p_perturbation,
-                                             unsigned num_threads) :
+                                             const unsigned population_size,
+                                             const unsigned tournament_size,
+                                             const double p_perturbation,
+                                             const unsigned num_threads) :
     iterations_(iterations),
     early_stop_num_(early_stop_num),
     factory_(std::move(factory)),
@@ -24,12 +24,12 @@ non_strict_2cc::IPLSAlgorithm::IPLSAlgorithm(unsigned iterations,
 }
 
 Solution non_strict_2cc::IPLSAlgorithm::LocalSearch(const Solution &solution) const {
-  auto copy = solution.clustering->GetCopy();
+  const auto copy = solution.clustering->GetCopy();
   auto lo = LocalSearch::ComputeLocalOptimum(*graph_, copy);
   return {lo->GetDistanceToGraph(*graph_), lo};
 }
 
-Solution non_strict_2cc::IPLSAlgorithm::Perturbation(const Solution &solution, double p_perturbation) const {
+Solution non_strict_2cc::IPLSAlgorithm::Perturbation(const Solution &solution, const double p_perturbation) const {
   auto copy = solution.clustering->GetCopy();
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
@@ -39,8 +39,7 @@ Solution non_strict_2cc::IPLSAlgorithm::Perturbation(const Solution &solution, d
     if (p > p_perturbation) {
       continue;
     }
-    auto label = copy->GetLabel(i);
-    if (label == FIRST_CLUSTER) {
+    if (const auto label = copy->GetLabel(i); label == FIRST_CLUSTER) {
       copy->SetupLabelForVertex(i, SECOND_CLUSTER);
     } else {
       copy->SetupLabelForVertex(i, FIRST_CLUSTER);
@@ -110,7 +109,7 @@ void non_strict_2cc::IPLSAlgorithm::OnIterationEnd() {
   }
 }
 
-Solution non_strict_2cc::IPLSAlgorithm::Train(std::shared_ptr<IGraph> graph) {
+Solution non_strict_2cc::IPLSAlgorithm::Train(const std::shared_ptr<IGraph> &graph) {
   record_ = nullptr;
   graph_ = graph;
   GenerateInitPopulation(population_size_);
@@ -167,9 +166,9 @@ Solution non_strict_2cc::IPLSAlgorithm::Train(std::shared_ptr<IGraph> graph) {
 }
 
 void non_strict_2cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buffer,
-                                                unsigned thread_id,
-                                                unsigned max_capacity,
-                                                std::vector<Solution> &local_optimum) {
+                                                const unsigned thread_id,
+                                                const unsigned max_capacity,
+                                                std::vector<Solution> &local_optimum) const {
   Solution solution{UINT_MAX, nullptr};
   for (unsigned i = thread_id; i < max_capacity; i += num_threads_) {
     auto x = Selection(population_);
@@ -180,7 +179,7 @@ void non_strict_2cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buf
     }
   }
   std::vector<Solution> tmp_buffer;
-  for (auto &it: local_buffer) {
+  for (const auto &it: local_buffer) {
     auto x = it;
     x = Perturbation(x, p_perturbation_);
     tmp_buffer.emplace_back(x);
@@ -194,9 +193,9 @@ void non_strict_2cc::IPLSAlgorithm::TrainWorker(std::vector<Solution> &local_buf
 }
 
 void non_strict_2cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution> &local_buffer,
-                                                    unsigned thread_id,
-                                                    unsigned int max_capacity,
-                                                    std::vector<Solution> &local_optimum) {
+                                                    const unsigned thread_id,
+                                                    const unsigned int max_capacity,
+                                                    std::vector<Solution> &local_optimum) const {
   while (true) {
     barrier_->arrive_and_wait();
     if (stop_training_.load(std::memory_order_acquire)) {
@@ -209,17 +208,16 @@ void non_strict_2cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution> &local
 }
 
 void non_strict_2cc::IPLSAlgorithm::InitPopulationWorker(std::vector<Solution> &local_buffer,
-                                                         unsigned int thread_id,
-                                                         unsigned int population_size) {
+                                                         const unsigned int thread_id,
+                                                         const unsigned int population_size) const {
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
   std::uniform_int_distribution<> dis(0, 1);
 
   for (unsigned i = thread_id; i < population_size; i += num_threads_) {
-    auto clustering = factory_->CreateClustering(graph_->Size());
+    const auto clustering = factory_->CreateClustering(graph_->Size());
     for (unsigned j = 0; j < graph_->Size(); ++j) {
-      auto rnd = dis(gen);
-      if (rnd == 0) {
+      if (const auto rnd = dis(gen); rnd == 0) {
         clustering->SetupLabelForVertex(j, FIRST_CLUSTER);
       } else {
         clustering->SetupLabelForVertex(j, SECOND_CLUSTER);

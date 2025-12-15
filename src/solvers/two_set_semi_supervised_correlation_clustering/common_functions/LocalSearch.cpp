@@ -13,8 +13,7 @@ IClustPtr set_semi_supervised_2cc::LocalSearch::ComputeLocalOptimum(const IGraph
     unsigned candidate = UINT_MAX;
     for (unsigned i = 0; i < graph.Size(); i++) {
       if (IsVertexInSet(i, first_cluster_vertices) || IsVertexInSet(i, second_cluster_vertices)) continue;
-      auto tmp_local_improvement = ComputeLocalImprovement(graph, result, i);
-      if (tmp_local_improvement > local_improvement) {
+      if (const auto tmp_local_improvement = ComputeLocalImprovement(graph, result, i); tmp_local_improvement > local_improvement) {
         local_improvement = tmp_local_improvement;
         candidate = i;
       }
@@ -39,8 +38,8 @@ int set_semi_supervised_2cc::LocalSearch::ComputeLocalImprovement(const IGraph &
     if (i == vertex) {
       continue;
     }
-    bool is_same_clustered = cur_clustering->IsSameClustered(i, vertex);
-    bool is_joined = graph.IsJoined(i, vertex);
+    const bool is_same_clustered = cur_clustering->IsSameClustered(i, vertex);
+    const bool is_joined = graph.IsJoined(i, vertex);
     if (is_same_clustered) {
       local_improvement += is_joined ? -1 : 1;
     } else {
@@ -51,6 +50,6 @@ int set_semi_supervised_2cc::LocalSearch::ComputeLocalImprovement(const IGraph &
 }
 
 bool set_semi_supervised_2cc::LocalSearch::IsVertexInSet(const unsigned int vertex,
-                                                         const std::vector<unsigned int> &vertices_set) {
-  return std::find(vertices_set.begin(), vertices_set.end(), vertex) != vertices_set.end();
+                                                         const std::vector<unsigned> &vertices_set) {
+  return std::ranges::find(vertices_set, vertex) != vertices_set.end();
 }

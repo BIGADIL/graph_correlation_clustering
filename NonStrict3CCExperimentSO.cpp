@@ -1,7 +1,6 @@
 #include <filesystem>
 #include <fstream>
 
-#include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/clustering/factories/TripleClusteringFactory.hpp"
 #include "include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp"
 #include "include/common/ExperimentParameters.hpp"

@@ -16,7 +16,7 @@ class TagsGraphFactory : IGraphFactory {
   std::default_random_engine gen_{rd_()};
   std::string distribution_;
 
-  double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2);
+  double Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2) const;
 
  public:
   explicit TagsGraphFactory(const std::string &path, std::string distribution_);
