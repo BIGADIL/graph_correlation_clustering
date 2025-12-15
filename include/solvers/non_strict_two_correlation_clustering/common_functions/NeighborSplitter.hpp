@@ -5,28 +5,27 @@
 #include "../../../clustering/factories/IClusteringFactory.hpp"
 
 namespace non_strict_2cc {
+    /**
+     * Graph splitter by neighbor.
+     * @see Bansal, Blum & Chawla. Correlation Clustering.
+     */
+    class NeighborSplitter {
+        /**
+         * Factory that create new clustering.
+         */
+        IClustFactoryPtr clustering_factory_;
 
-/**
- * Graph splitter by neighbor.
- * @see Bansal, Blum & Chawla. Correlation Clustering.
- */
-class NeighborSplitter {
- private:
-  /**
-  * Factory that create new clustering.
-  */
-  IClustFactoryPtr clustering_factory_;
+    public:
+        explicit NeighborSplitter(IClustFactoryPtr clustering_factory);
 
- public:
-  explicit NeighborSplitter(IClustFactoryPtr clustering_factory);
-  /**
-   * Split source graph by vertex based on its neighborhood.
-   *
-   * @param graph source graph.
-   * @param vertex source vertex.
-   * @return clustering based on vertex neighborhood.
-   */
-  [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph &graph,
-                                             unsigned vertex) const;
-};
+        /**
+         * Split source graph by vertex based on its neighborhood.
+         *
+         * @param graph source graph.
+         * @param vertex source vertex.
+         * @return clustering based on vertex neighborhood.
+         */
+        [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph &graph,
+                                                   unsigned vertex) const;
+    };
 }

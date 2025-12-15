@@ -11,139 +11,135 @@
 #include "../../../include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
 
 std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(const IGraph &graph,
-                                                                        const std::vector<ClusteringInfo> &computation_results,
+                                                                        const std::vector<ClusteringInfo> &
+                                                                        computation_results,
                                                                         const unsigned int size,
                                                                         const double density,
-                                                                        const std::string& distribution) {
-  std::stringstream ss;
-  ss << "{ " << std::endl;
-  ss << "\"size\": " << size << "," << std::endl;
-  if (density != -1) {
-    ss << "\"density\": " << density << "," << std::endl;
-  }
-  if (!distribution.empty()) {
-    ss << "\"distribution\": " << "\"" << distribution << "\"," << std::endl;
-  }
-  ss << graph.ToJson() << "," << std::endl;
-  unsigned idx = 0;
-  for (const auto &computation_result: computation_results) {
-    idx++;
-    if (idx == computation_results.size()) {
-      ss << computation_result.ToJson() << std::endl;
-    } else {
-      ss << computation_result.ToJson() << "," << std::endl;
+                                                                        const std::string &distribution) {
+    std::stringstream ss;
+    ss << "{ " << std::endl;
+    ss << "\"size\": " << size << "," << std::endl;
+    if (density != -1) {
+        ss << "\"density\": " << density << "," << std::endl;
     }
-  }
-  ss << "}" << std::endl;
-  return ss.str();
+    if (!distribution.empty()) {
+        ss << "\"distribution\": " << "\"" << distribution << "\"," << std::endl;
+    }
+    ss << graph.ToJson() << "," << std::endl;
+    unsigned idx = 0;
+    for (const auto &computation_result: computation_results) {
+        idx++;
+        if (idx == computation_results.size()) {
+            ss << computation_result.ToJson() << std::endl;
+        } else {
+            ss << computation_result.ToJson() << "," << std::endl;
+        }
+    }
+    ss << "}" << std::endl;
+    return ss.str();
 }
 
-non_strict_3cc::NonStrict3CCSolver::NonStrict3CCSolver(unsigned int num_threads,
-                                                       IClustFactoryPtr factory) :
-    num_threads_(num_threads),
+non_strict_3cc::NonStrict3CCSolver::NonStrict3CCSolver(const unsigned int num_threads,
+                                                       IClustFactoryPtr factory) : num_threads_(num_threads),
     factory_(std::move(factory)) {
-
 }
 
 std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
-                                                      const std::string& distribution,
+                                                      const std::string &distribution,
                                                       double density,
                                                       std::vector<std::string> used_algorithms) const {
-  std::vector<ClusteringInfo> infos;
-  if (std::ranges::find(used_algorithms, "NeighborhoodWithLocalSearch")
-      != used_algorithms.end()) {
-    NeighborhoodWithLocalSearch nls(num_threads_, factory_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = nls.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back(
-        "NeighborhoodWithLocalSearch",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhood")
-      != used_algorithms.end()) {
-    TwoVerticesNeighborhood twn(num_threads_, factory_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = twn.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back(
-        "TwoVerticesNeighborhood",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodWithLocalSearch")
-      != used_algorithms.end()) {
-    TwoVerticesNeighborhoodWithLocalSearch twnls(num_threads_, factory_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = twnls.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back(
-        "TwoVerticesNeighborhoodWithLocalSearch",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodWithManyLocalSearches")
-      != used_algorithms.end()) {
-    TwoVerticesNeighborhoodWithManyLocalSearches twnls(num_threads_, factory_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = twnls.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back(
-        "TwoVerticesNeighborhoodWithManyLocalSearches",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "Genetic") != used_algorithms.end()) {
-    IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = genetic.Train(graph);
-    infos.emplace_back(
-        "Genetic",
-        clustering.clustering,
-        clustering.distance,
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "BranchAndBounds") != used_algorithms.end()) {
-    IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
-    auto sol = genetic.Train(graph);
-    BranchAndBounds bb;
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = bb.GetBestClustering(graph, sol.clustering);
-    infos.emplace_back(
-        "BranchAndBounds",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  if (std::ranges::find(used_algorithms, "BrutForce") != used_algorithms.end()) {
-    BrutForce bf(factory_);
-    auto start_time = std::chrono::steady_clock::now();
-    auto clustering = bf.GetBestClustering(graph);
-    infos.emplace_back(
-        "BrutForce",
-        clustering,
-        clustering->GetDistanceToGraph(*graph),
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
-    );
-  }
-  return FormatComputationToJson(*graph, infos, graph->Size(), density, distribution);
+    std::vector<ClusteringInfo> infos;
+    if (std::ranges::find(used_algorithms, "NeighborhoodWithLocalSearch") != used_algorithms.end()) {
+        NeighborhoodWithLocalSearch nls(num_threads_, factory_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = nls.getBestNeighborhoodClustering(*graph);
+        infos.emplace_back(
+            "NeighborhoodWithLocalSearch",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhood")
+        != used_algorithms.end()) {
+        TwoVerticesNeighborhood twn(num_threads_, factory_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = twn.getBestNeighborhoodClustering(*graph);
+        infos.emplace_back(
+            "TwoVerticesNeighborhood",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodWithLocalSearch") != used_algorithms.end()) {
+        TwoVerticesNeighborhoodWithLocalSearch twnls(num_threads_, factory_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = twnls.getBestNeighborhoodClustering(*graph);
+        infos.emplace_back(
+            "TwoVerticesNeighborhoodWithLocalSearch",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodWithManyLocalSearches") != used_algorithms.end()) {
+        TwoVerticesNeighborhoodWithManyLocalSearches twnls(num_threads_, factory_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = twnls.getBestNeighborhoodClustering(*graph);
+        infos.emplace_back(
+            "TwoVerticesNeighborhoodWithManyLocalSearches",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "Genetic") != used_algorithms.end()) {
+        IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = genetic.Train(graph);
+        infos.emplace_back(
+            "Genetic",
+            clustering.clustering,
+            clustering.distance,
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "BranchAndBounds") != used_algorithms.end()) {
+        IPLSAlgorithm genetic(100, 6, factory_, 128, 5, 0.4, num_threads_);
+        auto sol = genetic.Train(graph);
+        BranchAndBounds bb;
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = bb.GetBestClustering(graph, sol.clustering);
+        infos.emplace_back(
+            "BranchAndBounds",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    if (std::ranges::find(used_algorithms, "BrutForce") != used_algorithms.end()) {
+        BrutForce bf(factory_);
+        auto start_time = std::chrono::steady_clock::now();
+        auto clustering = bf.GetBestClustering(graph);
+        infos.emplace_back(
+            "BrutForce",
+            clustering,
+            clustering->GetDistanceToGraph(*graph),
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_time)
+        );
+    }
+    return FormatComputationToJson(*graph, infos, graph->Size(), density, distribution);
 }
 
 std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
                                                       const double density,
                                                       std::vector<std::string> used_algorithms) const {
-  return solve(graph, "", density, std::move(used_algorithms));
+    return solve(graph, "", density, std::move(used_algorithms));
 }
 
 std::string non_strict_3cc::NonStrict3CCSolver::solve(const IGraphPtr &graph,
-                                                      const std::string& distribution,
+                                                      const std::string &distribution,
                                                       std::vector<std::string> used_algorithms) const {
-  return solve(graph, distribution, -1, std::move(used_algorithms));
+    return solve(graph, distribution, -1, std::move(used_algorithms));
 }

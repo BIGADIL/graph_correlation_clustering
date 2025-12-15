@@ -2,5 +2,5 @@
 #include "../../../include/clustering/BinaryClusteringVector.hpp"
 
 IClustPtr BinaryClusteringFactory::CreateClustering(const unsigned size) const {
-  return IClustPtr(new BinaryClusteringVector(size));
+    return std::make_shared<BinaryClusteringVector>(size);
 }

@@ -8,57 +8,57 @@
 #include "../../clustering/factories/IClusteringFactory.hpp"
 
 namespace semi_supervised_2cc {
+    struct ClusteringInfo {
+        std::string name;
+        std::shared_ptr<IClustering> clustering;
+        unsigned objective_function_value;
+        std::chrono::seconds computation_time;
 
-struct ClusteringInfo {
-  std::string name;
-  std::shared_ptr<IClustering> clustering;
-  unsigned objective_function_value;
-  std::chrono::seconds computation_time;
+        ClusteringInfo(std::string name,
+                       std::shared_ptr<IClustering> clustering,
+                       const unsigned int objective_function_value,
+                       const std::chrono::seconds computation_time)
+            : name(std::move(name)),
+              clustering(std::move(clustering)),
+              objective_function_value(objective_function_value),
+              computation_time(computation_time) {
+        }
 
-  ClusteringInfo(std::string name,
-                 std::shared_ptr<IClustering> clustering,
-                 unsigned int objective_function_value,
-                 std::chrono::seconds computation_time)
-      : name(std::move(name)),
-        clustering(std::move(clustering)),
-        objective_function_value(objective_function_value),
-        computation_time(computation_time) {}
+        std::string ToJson() const {
+            std::stringstream ss;
+            ss << "\"" << name << "\": {\n";
+            ss << clustering->ToJson() << "," << std::endl;
+            ss << "\"objective function value\": " << objective_function_value << "," << std::endl;
+            ss << "\"computation time seconds\": " << computation_time.count() << "}";
+            return ss.str();
+        }
+    };
 
-  std::string ToJson() const {
-    std::stringstream ss;
-    ss << "\"" << name << "\": {\n";
-    ss << clustering->ToJson() << "," << std::endl;
-    ss << "\"objective function value\": " << objective_function_value << "," << std::endl;
-    ss << "\"computation time seconds\": " << computation_time.count() << "}";
-    return ss.str();
-  }
-};
+    class SemiSupervised2CCSolver {
+        const std::vector<std::string> allowed_algorithms{
+            "NeighborhoodWithManyLocalSearches",
+            "NeighborhoodWithOneLocalSearch",
+            "Neighborhood",
+            "BranchAndBounds"
+        };
+        unsigned num_threads_;
+        IClustFactoryPtr factory_;
 
-class SemiSupervised2CCSolver {
-    const std::vector<std::string> allowed_algorithms{
-      "NeighborhoodWithManyLocalSearches",
-      "NeighborhoodWithOneLocalSearch",
-      "Neighborhood",
-      "BranchAndBounds"};
-  unsigned num_threads_;
-  IClustFactoryPtr factory_;
+        static std::string FormatComputationToJson(const IGraph &graph,
+                                                   const std::vector<ClusteringInfo> &computation_results,
+                                                   unsigned size,
+                                                   double density,
+                                                   unsigned first_cluster_vertex,
+                                                   unsigned second_cluster_vertex);
 
-    static std::string FormatComputationToJson(const IGraph &graph,
-                                               const std::vector<ClusteringInfo> &computation_results,
-                                               unsigned size,
-                                               double density,
-                                               unsigned first_cluster_vertex,
-                                               unsigned second_cluster_vertex);
+    public:
+        SemiSupervised2CCSolver(unsigned num_threads,
+                                IClustFactoryPtr factory);
 
- public:
-  SemiSupervised2CCSolver(unsigned num_threads,
-                          IClustFactoryPtr factory);
-
-  [[nodiscard]] std::string solve(const IGraphPtr &graph,
-                                  double density,
-                                  std::vector<std::string> used_algorithms,
-                                  unsigned first_cluster_vertex,
-                                  unsigned second_cluster_vertex) const;
-};
-
+        [[nodiscard]] std::string solve(const IGraphPtr &graph,
+                                        double density,
+                                        std::vector<std::string> used_algorithms,
+                                        unsigned first_cluster_vertex,
+                                        unsigned second_cluster_vertex) const;
+    };
 }

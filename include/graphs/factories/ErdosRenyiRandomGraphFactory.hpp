@@ -9,16 +9,16 @@
  * https://en.wikipedia.org/wiki/Erdős–Rényi_model
  */
 class ErdosRenyiRandomGraphFactory : IGraphFactory {
- private:
-  std::random_device rd_;
-  std::default_random_engine gen_{rd_()};
-  std::uniform_real_distribution<> dis_{0.0, 1.0};
-  /**
-   * Density of generated graph.
-   */
-  double density_;
+    std::random_device rd_;
+    std::default_random_engine gen_{rd_()};
+    std::uniform_real_distribution<> dis_{0.0, 1.0};
+    /**
+     * Density of generated graph.
+     */
+    double density_;
 
- public:
-  explicit ErdosRenyiRandomGraphFactory(double density);
-  IGraphPtr CreateGraph(unsigned size) override;
+public:
+    explicit ErdosRenyiRandomGraphFactory(double density);
+
+    IGraphPtr CreateGraph(unsigned size) override;
 };
