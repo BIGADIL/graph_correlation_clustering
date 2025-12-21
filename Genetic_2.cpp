@@ -20,17 +20,17 @@ std::vector<IGraphPtr> generate_graphs(TagsGraphFactory &graph_factory,
 
 int main() {
     TagsGraphFactory
-            graphs_factory(R"(D:\run\graph_correlation_clustering\non_strict_2cc\Tags_so.json)", "jaccard_threshold");
+            graphs_factory(R"(D:\run\graph_correlation_clustering\non_strict_2cc\Tags_so.json)", "dice_0.25");
 
     std::shared_ptr<TripleClusteringFactory> factory(new TripleClusteringFactory);
     auto graphs = generate_graphs(graphs_factory, 100, 100);
 
     for (auto early_stops = {6}; auto &early_stop: early_stops) {
-        for (auto population_sizes = {128, 256, 512}; auto &population_size: population_sizes) {
+        for (auto population_sizes = {8, 16, 32, 64}; auto &population_size: population_sizes) {
             for (auto tournament_sizes = {5, 10, 15}; auto &tournament_size: tournament_sizes) {
                 for (auto mutations = {1e-2, 1e-1, 2e-1, 3e-1, 4e-1}; auto &mutation: mutations) {
                     unsigned num_threads = 8;
-                    auto algo_g = non_strict_3cc::IPLSAlgorithm(5000,
+                    auto algo_g = non_strict_3cc::IPLSAlgorithm(100,
                                                                 early_stop,
                                                                 factory,
                                                                 population_size,
