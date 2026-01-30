@@ -13,7 +13,7 @@ class TagsGraphFactory final : IGraphFactory {
   std::unordered_map<std::string, std::vector<std::string> > data_;
   std::vector<std::string> keys_;
   std::random_device rd_;
-  std::default_random_engine gen_{rd_()};
+  std::default_random_engine gen_{123};
   std::string distribution_;
 
   double Chance(const std::vector<std::string> &vec1,
