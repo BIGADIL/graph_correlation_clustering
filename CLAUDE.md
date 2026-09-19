@@ -19,7 +19,9 @@ cmake --build .
 cmake --build cmake-build-release --target NonStrict2CCExperiment
 ```
 
-There are no tests or linter configured. Verify changes by building successfully.
+CUDA is optional: if `nvcc` is found, CMake enables it, compiles `*.cu` sources and defines `GCC_HAS_CUDA`; pass `-DGCC_ENABLE_CUDA=OFF` to build without it. GCC 15 needs `-Wno-template-body` for the pinned RapidJSON revision (added automatically).
+
+There are no tests or linter configured. Verify changes by building successfully. For GPU code, compare against the CPU implementation (`IPLSCudaAlgorithm::ComputeLocalOptimum` must reproduce the variant's `LocalSearch::ComputeLocalOptimum` bit-exactly).
 
 ## Running Experiments
 
@@ -60,6 +62,9 @@ Algorithms are duplicated per problem variant (not shared across variants). Each
 - **Neighborhood** — O(n^3) greedy heuristic based on vertex neighborhood splitting
 - **NeighborhoodWithOneLocalSearch / NeighborhoodWithManyLocalSearches** — neighborhood + local search refinement
 - **IPLS** (non-strict 2CC and 3CC only) — population-based meta-heuristic with multi-threaded workers, barrier synchronization, and tournament selection
+- **NeighborhoodCuda / NeighborhoodWithManyLocalSearchesCuda** (non-strict 2CC only, same algorithm names in config) — GPU versions of Neighborhood and NeighborhoodWithManyLocalSearches: thin classes in `clust_algoritms/*Cuda.hpp` over `common_functions/CudaNeighborhood.{hpp,cu}`, one CUDA block per split vertex. Device building blocks shared with IPLS (improvements, local search, neighborhood split) are in `common_functions/CudaLocalSearch.cuh`. Results equal the CPU versions; ties between vertices go to the smallest index.
+- **TwoVerticesNeighborhoodCuda / TwoVerticesNeighborhoodWithManyLocalSearchesCuda** (non-strict 3CC only, same algorithm names in config) — GPU versions of the TwoVertices algorithms: thin classes in `clust_algorithms/*Cuda.hpp` over `common_functions/CudaTwoVerticesNeighborhood.{hpp,cu}`, one CUDA block per ordered pair of vertices, pairs processed in chunks. 3CC device building blocks shared with IPLS (gains, local search, splits) are in `common_functions/CudaLocalSearch.cuh`. Results equal the CPU versions; ties go to the lexicographically smallest pair.
+- **IPLSCudaAlgorithm** (non-strict 2CC and 3CC, algorithm name `GeneticCuda`) — CUDA port of IPLS in `ipls_algorithms/IPLSCudaAlgorithm.cu` of each variant: one block per individual, threads split vertices; population stays in GPU memory. Same parameters as `IPLSAlgorithm` minus `num_threads`. CPU IPLS is dispatched as `Genetic`. Shared device/host helpers (device arrays, block reductions, RNG, tournament) live in `include/common/CudaCommon.cuh`. The 3CC version keeps per-vertex move gains for all 3 labels and updates them incrementally in both local search and perturbation.
 
 3CC additionally has `TwoVerticesNeighborhood*` variants that consider vertex pairs. Semi-supervised variants add `NeighborhoodOfPreClusteringVertices`.
 

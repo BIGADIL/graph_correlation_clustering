@@ -39,7 +39,9 @@ struct ClusteringInfo {
 class NonStrict2CCSolver {
   const std::vector<std::string> allowed_algorithms{
       "NeighborhoodWithManyLocalSearches", "NeighborhoodWithOneLocalSearch",
-      "Neighborhood", "BranchAndBounds"};
+      "Neighborhood", "BranchAndBounds", "Genetic", "GeneticCuda",
+      "NeighborhoodCuda", "NeighborhoodWithManyLocalSearchesCuda",
+      "BrutForce"};
   unsigned num_threads_;
   IClustFactoryPtr factory_;
 

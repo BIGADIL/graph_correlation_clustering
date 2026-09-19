@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 project(graph_correlation_clustering)
 
+if (POLICY CMP0104)
+    cmake_policy(SET CMP0104 NEW)
+endif ()
+
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     message(" ")
     message("CMAKE IN DEBUG MODE")
@@ -18,6 +22,39 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -lstdc++fs")
 
 find_package(Threads)
+
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-Wno-template-body GCC_CXX_HAS_WNO_TEMPLATE_BODY)
+if (GCC_CXX_HAS_WNO_TEMPLATE_BODY)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Wno-template-body>)
+endif ()
+
+# Optional CUDA support. Disable with -DGCC_ENABLE_CUDA=OFF.
+option(GCC_ENABLE_CUDA "Build CUDA implementations of the algorithms" ON)
+set(GCC_HAS_CUDA OFF)
+if (GCC_ENABLE_CUDA)
+    include(CheckLanguage)
+    check_language(CUDA)
+    if (CMAKE_CUDA_COMPILER)
+        if (NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+            if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+                set(CMAKE_CUDA_ARCHITECTURES native)
+            else ()
+                set(CMAKE_CUDA_ARCHITECTURES 75)
+            endif ()
+        endif ()
+        enable_language(CUDA)
+        set(CMAKE_CUDA_STANDARD 20)
+        set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+        set(CMAKE_CUDA_FLAGS_DEBUG "-g -lineinfo")
+        set(CMAKE_CUDA_FLAGS_RELEASE "-O3")
+        set(GCC_HAS_CUDA ON)
+        add_compile_definitions(GCC_HAS_CUDA)
+        message(STATUS "CUDA enabled: ${CMAKE_CUDA_COMPILER} (${CMAKE_CUDA_COMPILER_VERSION}), architectures: ${CMAKE_CUDA_ARCHITECTURES}")
+    else ()
+        message(STATUS "CUDA compiler not found, CUDA algorithms are disabled")
+    endif ()
+endif ()
 
 include(ExternalProject)
 include("${CMAKE_SOURCE_DIR}/vendor/rapidjson.cmake")
@@ -72,6 +109,19 @@ set(NS2CC_SRC
         src/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.cpp
         src/solvers/non_strict_two_correlation_clustering/clust_algorithms/BrutForce.cpp
         src/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.cpp)
+if (GCC_HAS_CUDA)
+    list(APPEND NS2CC_SRC
+            include/common/CudaCommon.cuh
+            include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.hpp
+            include/solvers/non_strict_two_correlation_clustering/common_functions/CudaLocalSearch.cuh
+            include/solvers/non_strict_two_correlation_clustering/common_functions/CudaNeighborhood.hpp
+            include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodCuda.hpp
+            include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithManyLocalSearchesCuda.hpp
+            src/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.cu
+            src/solvers/non_strict_two_correlation_clustering/common_functions/CudaNeighborhood.cu
+            src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodCuda.cpp
+            src/solvers/non_strict_two_correlation_clustering/clust_algorithms/NeighborhoodWithManyLocalSearchesCuda.cpp)
+endif ()
 
 set(S2CC_SCR
         include/solvers/strict_two_correlation_clustering/common_functions/NeighborSplitter.hpp
@@ -138,6 +188,18 @@ set(NS3CC_SRC
         src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.cpp
         src/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.cpp
         )
+if (GCC_HAS_CUDA)
+    list(APPEND NS3CC_SRC
+            include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.hpp
+            include/solvers/non_strict_three_correlation_clustering/common_functions/CudaLocalSearch.cuh
+            include/solvers/non_strict_three_correlation_clustering/common_functions/CudaTwoVerticesNeighborhood.hpp
+            include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodCuda.hpp
+            include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearchesCuda.hpp
+            src/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.cu
+            src/solvers/non_strict_three_correlation_clustering/common_functions/CudaTwoVerticesNeighborhood.cu
+            src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodCuda.cpp
+            src/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearchesCuda.cpp)
+endif ()
 
 set(2SSCC_SRC
         include/solvers/two_set_semi_supervised_correlation_clustering/common_functions/NeighborSplitter.hpp

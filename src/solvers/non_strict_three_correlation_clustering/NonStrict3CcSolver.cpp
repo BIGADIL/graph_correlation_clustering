@@ -1,6 +1,7 @@
 #include "../../../include/solvers/non_strict_three_correlation_clustering/NonStrict3CcSolver.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 #include <utility>
 
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
@@ -10,6 +11,11 @@
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithLocalSearch.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearches.hpp"
 #include "../../../include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
+#ifdef GCC_HAS_CUDA
+#include "../../../include/solvers/non_strict_three_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.hpp"
+#include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodCuda.hpp"
+#include "../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/TwoVerticesNeighborhoodWithManyLocalSearchesCuda.hpp"
+#endif
 
 std::string non_strict_3cc::NonStrict3CCSolver::FormatComputationToJson(
     const IGraph &graph, const std::vector<ClusteringInfo> &computation_results,
@@ -95,6 +101,54 @@ std::string non_strict_3cc::NonStrict3CCSolver::solve(
     infos.emplace_back("Genetic", clustering.clustering, clustering.distance,
                        std::chrono::duration_cast<std::chrono::seconds>(
                            std::chrono::steady_clock::now() - start_time));
+  }
+  if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    TwoVerticesNeighborhoodCuda algo(factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = algo.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back("TwoVerticesNeighborhoodCuda", clustering,
+                       clustering->GetDistanceToGraph(*graph),
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm TwoVerticesNeighborhoodCuda requested, but the project was built without "
+        "CUDA support");
+#endif
+  }
+  if (std::ranges::find(used_algorithms, "TwoVerticesNeighborhoodWithManyLocalSearchesCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    TwoVerticesNeighborhoodWithManyLocalSearchesCuda algo(factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = algo.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back("TwoVerticesNeighborhoodWithManyLocalSearchesCuda", clustering,
+                       clustering->GetDistanceToGraph(*graph),
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm TwoVerticesNeighborhoodWithManyLocalSearchesCuda requested, but the project was built without "
+        "CUDA support");
+#endif
+  }
+  if (std::ranges::find(used_algorithms, "GeneticCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    IPLSCudaAlgorithm genetic(100, 6, factory_, 128, 5, 0.4);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = genetic.Train(graph);
+    infos.emplace_back("GeneticCuda", clustering.clustering,
+                       clustering.distance,
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm GeneticCuda requested, but the project was built without "
+        "CUDA support");
+#endif
   }
   if (std::ranges::find(used_algorithms, "BranchAndBounds") !=
       used_algorithms.end()) {

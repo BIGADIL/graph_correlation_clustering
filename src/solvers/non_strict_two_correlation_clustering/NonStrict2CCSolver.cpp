@@ -1,6 +1,7 @@
 #include "../../../include/solvers/non_strict_two_correlation_clustering/NonStrict2CCSolver.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 #include <utility>
 
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/BranchAndBounds.hpp"
@@ -9,6 +10,11 @@
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithManyLocalSearches.hpp"
 #include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithOneLocalSearch.hpp"
 #include "../../../include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSAlgorithm.hpp"
+#ifdef GCC_HAS_CUDA
+#include "../../../include/solvers/non_strict_two_correlation_clustering/ipls_algorithms/IPLSCudaAlgorithm.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodCuda.hpp"
+#include "../../../include/solvers/non_strict_two_correlation_clustering/clust_algoritms/NeighborhoodWithManyLocalSearchesCuda.hpp"
+#endif
 
 std::string non_strict_2cc::NonStrict2CCSolver::solve(
     const IGraphPtr &graph, const std::string &distribution, double density,
@@ -64,6 +70,54 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(
                        std::chrono::duration_cast<std::chrono::seconds>(
                            std::chrono::steady_clock::now() - start_time));
   }
+  if (std::ranges::find(used_algorithms, "NeighborhoodWithManyLocalSearchesCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    NeighborhoodWithManyLocalSearchesCuda algo(factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = algo.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back("NeighborhoodWithManyLocalSearchesCuda", clustering,
+                       clustering->GetDistanceToGraph(*graph),
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm NeighborhoodWithManyLocalSearchesCuda requested, but the project was built without "
+        "CUDA support");
+#endif
+  }
+  if (std::ranges::find(used_algorithms, "NeighborhoodCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    NeighborhoodCuda algo(factory_);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = algo.getBestNeighborhoodClustering(*graph);
+    infos.emplace_back("NeighborhoodCuda", clustering,
+                       clustering->GetDistanceToGraph(*graph),
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm NeighborhoodCuda requested, but the project was built without "
+        "CUDA support");
+#endif
+  }
+  if (std::ranges::find(used_algorithms, "GeneticCuda") !=
+      used_algorithms.end()) {
+#ifdef GCC_HAS_CUDA
+    IPLSCudaAlgorithm genetic(100, 6, factory_, 128, 5, 0.4);
+    auto start_time = std::chrono::steady_clock::now();
+    auto clustering = genetic.Train(graph);
+    infos.emplace_back("GeneticCuda", clustering.clustering,
+                       clustering.distance,
+                       std::chrono::duration_cast<std::chrono::seconds>(
+                           std::chrono::steady_clock::now() - start_time));
+#else
+    throw std::runtime_error(
+        "algorithm GeneticCuda requested, but the project was built without "
+        "CUDA support");
+#endif
+  }
   if (std::ranges::find(used_algorithms, "BrutForce") !=
       used_algorithms.end()) {
     BrutForce bf(factory_);
@@ -107,7 +161,7 @@ std::string non_strict_2cc::NonStrict2CCSolver::FormatComputationToJson(
   if (!distribution.empty()) {
     ss << "\"distribution\": " << "\"" << distribution << "\"," << std::endl;
   }
-  ss << graph.ToJson() << "," << std::endl;
+  // ss << graph.ToJson() << "," << std::endl;
   unsigned idx = 0;
   for (const auto &computation_result : computation_results) {
     idx++;
