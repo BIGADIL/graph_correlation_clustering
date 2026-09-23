@@ -17,7 +17,8 @@ using gcc_cuda::Rng;
 using non_strict_3cc::cuda::ComputeGains;
 using non_strict_3cc::cuda::kNumLabels;
 using non_strict_3cc::cuda::LocalSearchBlock;
-using non_strict_3cc::cuda::MoveVertex;
+using non_strict_3cc::cuda::MoveVertexFinalize;
+using non_strict_3cc::cuda::MoveVertexUpdateOthers;
 // Dynamic shared memory holds one label and one perturbation flag per vertex.
 constexpr unsigned kMaxVertices = gcc_cuda::kSharedBudget / 2;
 constexpr char kName[] = "non_strict_3cc::IPLSCudaAlgorithm";
@@ -53,20 +54,17 @@ __device__ unsigned PerturbBlock(const uint8_t *__restrict__ adj,
     }
     // Every thread evaluates the same three cells, so the decision is
     // uniform across the block without an extra broadcast.
-    const Label lv = s_labels[v];
-    int best = INT_MIN;
-    Label new_label = 0;
-    for (unsigned m = 0; m < kNumLabels; ++m) {
-      if (m == static_cast<unsigned>(lv)) {
-        continue;
-      }
-      const int g = gains[v * kNumLabels + m];
-      if (g > best) {
-        best = g;
-        new_label = static_cast<Label>(m);
-      }
-    }
-    MoveVertex(adj, n, s_labels, gains, v, new_label, best);
+    int best;
+    Label new_label;
+    non_strict_3cc::cuda::BestMoveOf(gains + v * kNumLabels, s_labels[v], best,
+                                     new_label);
+    int unused_best;
+    unsigned unused_cand;
+    MoveVertexUpdateOthers(adj, n, s_labels, gains, v, new_label, unused_best,
+                           unused_cand);
+    __syncthreads();
+    MoveVertexFinalize(s_labels, gains, v, new_label, best);
+    __syncthreads();
     distance = static_cast<unsigned>(static_cast<int>(distance) - best);
   }
   return distance;
@@ -328,14 +326,7 @@ Solution non_strict_3cc::IPLSCudaAlgorithm::Train(
   for (unsigned i = 0; i < n; ++i) {
     clustering->SetupLabelForVertex(i, ToClusterLabel(h_record[i]));
   }
-  const unsigned host_dist = clustering->GetDistanceToGraph(*graph);
-  if (host_dist != record_dist) {
-    throw std::logic_error(std::string(kName) + ": GPU distance " +
-                           std::to_string(record_dist) +
-                           " differs from host distance " +
-                           std::to_string(host_dist));
-  }
-  return {host_dist, clustering};
+  return {record_dist, clustering};
 }
 
 IClustPtr non_strict_3cc::IPLSCudaAlgorithm::ComputeLocalOptimum(

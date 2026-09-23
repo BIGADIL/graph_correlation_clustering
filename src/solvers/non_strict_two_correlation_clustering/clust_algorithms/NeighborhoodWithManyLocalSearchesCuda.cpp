@@ -9,5 +9,10 @@ non_strict_2cc::NeighborhoodWithManyLocalSearchesCuda::NeighborhoodWithManyLocal
 
 IClustPtr non_strict_2cc::NeighborhoodWithManyLocalSearchesCuda::getBestNeighborhoodClustering(
     const IGraph &graph) const {
-  return CudaNeighborhood::Run(graph, clustering_factory_, true).clustering;
+  return getBestSolution(graph).clustering;
+}
+
+Solution non_strict_2cc::NeighborhoodWithManyLocalSearchesCuda::getBestSolution(const IGraph &graph) const {
+  auto result = CudaNeighborhood::Run(graph, clustering_factory_, true);
+  return {result.distance, std::move(result.clustering)};
 }

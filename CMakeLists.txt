@@ -44,6 +44,7 @@ if (GCC_ENABLE_CUDA)
             endif ()
         endif ()
         enable_language(CUDA)
+        find_package(CUDAToolkit REQUIRED)
         set(CMAKE_CUDA_STANDARD 20)
         set(CMAKE_CUDA_STANDARD_REQUIRED ON)
         set(CMAKE_CUDA_FLAGS_DEBUG "-g -lineinfo")
@@ -229,6 +230,9 @@ add_executable(NonStrict2CCExperiment
         ${NS2CC_SRC}
         )
 target_link_libraries(NonStrict2CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+if (GCC_HAS_CUDA)
+    target_link_libraries(NonStrict2CCExperiment CUDA::cublas)
+endif ()
 target_compile_features(NonStrict2CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict2CCExperiment rapidjson)
 
@@ -238,6 +242,9 @@ add_executable(NonStrict2CCExperimentSO
         ${NS2CC_SRC}
         )
 target_link_libraries(NonStrict2CCExperimentSO ${CMAKE_THREAD_LIBS_INIT})
+if (GCC_HAS_CUDA)
+    target_link_libraries(NonStrict2CCExperimentSO CUDA::cublas)
+endif ()
 target_compile_features(NonStrict2CCExperimentSO PUBLIC cxx_std_20)
 add_dependencies(NonStrict2CCExperimentSO rapidjson)
 
@@ -265,6 +272,9 @@ add_executable(NonStrict3CCExperiment
         ${NS3CC_SRC}
         )
 target_link_libraries(NonStrict3CCExperiment ${CMAKE_THREAD_LIBS_INIT})
+if (GCC_HAS_CUDA)
+    target_link_libraries(NonStrict3CCExperiment CUDA::cublas)
+endif ()
 target_compile_features(NonStrict3CCExperiment PUBLIC cxx_std_20)
 add_dependencies(NonStrict3CCExperiment rapidjson)
 
@@ -274,6 +284,9 @@ add_executable(NonStrict3CCExperimentSO
         ${NS3CC_SRC}
         )
 target_link_libraries(NonStrict3CCExperimentSO ${CMAKE_THREAD_LIBS_INIT})
+if (GCC_HAS_CUDA)
+    target_link_libraries(NonStrict3CCExperimentSO CUDA::cublas)
+endif ()
 target_compile_features(NonStrict3CCExperimentSO PUBLIC cxx_std_20)
 add_dependencies(NonStrict3CCExperimentSO rapidjson)
 
@@ -293,5 +306,8 @@ add_executable(Genetic_2
         ${NS3CC_SRC}
         )
 target_link_libraries(Genetic_2 ${CMAKE_THREAD_LIBS_INIT})
+if (GCC_HAS_CUDA)
+    target_link_libraries(Genetic_2 CUDA::cublas)
+endif ()
 target_compile_features(Genetic_2 PUBLIC cxx_std_20)
 add_dependencies(Genetic_2 rapidjson)

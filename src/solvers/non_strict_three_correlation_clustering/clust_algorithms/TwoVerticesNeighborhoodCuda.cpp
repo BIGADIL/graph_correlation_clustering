@@ -9,6 +9,10 @@ non_strict_3cc::TwoVerticesNeighborhoodCuda::TwoVerticesNeighborhoodCuda(IClustF
 
 IClustPtr non_strict_3cc::TwoVerticesNeighborhoodCuda::getBestNeighborhoodClustering(
     const IGraph &graph) const {
-  return CudaTwoVerticesNeighborhood::Run(graph, clustering_factory_, false)
-      .clustering;
+  return getBestSolution(graph).clustering;
+}
+
+Solution non_strict_3cc::TwoVerticesNeighborhoodCuda::getBestSolution(const IGraph &graph) const {
+  auto result = CudaTwoVerticesNeighborhood::Run(graph, clustering_factory_, false);
+  return {result.distance, std::move(result.clustering)};
 }

@@ -33,5 +33,13 @@ class NeighborhoodCuda {
    */
   [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
       const IGraph &graph) const;
+
+  /**
+   * Calc best clustering together with its distance (computed on the GPU, no
+   * extra O(n^2) pass on the host).
+   * @param graph source graph.
+   * @return best solution.
+   */
+  [[nodiscard]] Solution getBestSolution(const IGraph &graph) const;
 };
 }  // namespace non_strict_2cc

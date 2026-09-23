@@ -75,9 +75,8 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(
 #ifdef GCC_HAS_CUDA
     NeighborhoodWithManyLocalSearchesCuda algo(factory_);
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = algo.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back("NeighborhoodWithManyLocalSearchesCuda", clustering,
-                       clustering->GetDistanceToGraph(*graph),
+    auto solution = algo.getBestSolution(*graph);
+    infos.emplace_back("NeighborhoodWithManyLocalSearchesCuda", solution.clustering, solution.distance,
                        std::chrono::duration_cast<std::chrono::seconds>(
                            std::chrono::steady_clock::now() - start_time));
 #else
@@ -91,9 +90,8 @@ std::string non_strict_2cc::NonStrict2CCSolver::solve(
 #ifdef GCC_HAS_CUDA
     NeighborhoodCuda algo(factory_);
     auto start_time = std::chrono::steady_clock::now();
-    auto clustering = algo.getBestNeighborhoodClustering(*graph);
-    infos.emplace_back("NeighborhoodCuda", clustering,
-                       clustering->GetDistanceToGraph(*graph),
+    auto solution = algo.getBestSolution(*graph);
+    infos.emplace_back("NeighborhoodCuda", solution.clustering, solution.distance,
                        std::chrono::duration_cast<std::chrono::seconds>(
                            std::chrono::steady_clock::now() - start_time));
 #else

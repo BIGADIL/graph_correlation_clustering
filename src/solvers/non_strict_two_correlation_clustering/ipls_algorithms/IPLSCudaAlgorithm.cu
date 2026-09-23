@@ -15,6 +15,7 @@ using gcc_cuda::DevArray;
 using gcc_cuda::Label;
 using gcc_cuda::Rng;
 using non_strict_2cc::cuda::ComputeImprovements;
+using non_strict_2cc::cuda::ImprovementsFromGemm;
 using non_strict_2cc::cuda::LocalSearchBlock;
 
 // Dynamic shared memory holds one label per vertex.
@@ -23,31 +24,42 @@ constexpr char kName[] = "non_strict_2cc::IPLSCudaAlgorithm";
 
 // ---------------------------------------------------------------------------
 // Kernels. One block per individual; blockIdx.x is the slot in the population.
+//
+// The O(n^2) computation of the improvements after the initial labeling and
+// after every perturbation is done by one int8 GEMM for the whole population:
+// the kernels only write the +-1 label columns, and FinishFromGemmKernel turns
+// the GEMM output into improvements and distances.
 // ---------------------------------------------------------------------------
 
-__global__ void InitPopulationKernel(const uint8_t *__restrict__ adj,
-                                     const unsigned n,
+__global__ void InitPopulationKernel(const unsigned n, const unsigned n_pad,
                                      Label *__restrict__ pop_labels,
-                                     int *__restrict__ pop_impr,
-                                     unsigned *__restrict__ pop_dist,
+                                     int8_t *__restrict__ smat,
                                      Rng *__restrict__ rng) {
-  extern __shared__ Label s_labels[];
   const unsigned slot = blockIdx.x;
   const unsigned rng_id = slot * blockDim.x + threadIdx.x;
   Rng state = rng[rng_id];
 
+  Label *labels = pop_labels + static_cast<size_t>(slot) * n;
+  int8_t *s_column = smat + static_cast<size_t>(slot) * n_pad;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
-    s_labels[i] = static_cast<Label>(curand(&state) & 1u);
+    const Label label = static_cast<Label>(curand(&state) & 1u);
+    labels[i] = label;
+    s_column[i] = label == 0 ? 1 : -1;
   }
   rng[rng_id] = state;
-  __syncthreads();
+}
 
-  Label *labels = pop_labels + static_cast<size_t>(slot) * n;
-  int *impr = pop_impr + static_cast<size_t>(slot) * n;
-  const unsigned distance = ComputeImprovements(adj, n, s_labels, impr);
-  for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
-    labels[i] = s_labels[i];
-  }
+/** Improvements and distance of every individual from the GEMM output. */
+__global__ void FinishFromGemmKernel(const unsigned n, const unsigned n_pad,
+                                     const Label *__restrict__ pop_labels,
+                                     const int *__restrict__ gmat,
+                                     int *__restrict__ pop_impr,
+                                     unsigned *__restrict__ pop_dist) {
+  const unsigned slot = blockIdx.x;
+  const unsigned distance = ImprovementsFromGemm(
+      n, pop_labels + static_cast<size_t>(slot) * n,
+      gmat + static_cast<size_t>(slot) * n_pad,
+      pop_impr + static_cast<size_t>(slot) * n);
   if (threadIdx.x == 0) {
     pop_dist[slot] = distance;
   }
@@ -100,41 +112,32 @@ __global__ void SelectAndLocalSearchKernel(
 }
 
 /**
- * Flip every vertex with probability p, then recompute improvements and the
- * distance. The result becomes the population of the next iteration.
+ * Flip every vertex with probability p. Writes the new labels and their +-1
+ * column for the GEMM; the result becomes the population of the next
+ * iteration once FinishFromGemmKernel has run.
  */
-__global__ void PerturbationKernel(const uint8_t *__restrict__ adj,
-                                   const unsigned n, const float p,
+__global__ void PerturbationKernel(const unsigned n, const unsigned n_pad,
+                                   const float p,
                                    const Label *__restrict__ ls_labels,
                                    Label *__restrict__ pop_labels,
-                                   int *__restrict__ pop_impr,
-                                   unsigned *__restrict__ pop_dist,
+                                   int8_t *__restrict__ smat,
                                    Rng *__restrict__ rng) {
-  extern __shared__ Label s_labels[];
   const unsigned slot = blockIdx.x;
   const unsigned rng_id = slot * blockDim.x + threadIdx.x;
   Rng state = rng[rng_id];
 
   const Label *src = ls_labels + static_cast<size_t>(slot) * n;
+  Label *labels = pop_labels + static_cast<size_t>(slot) * n;
+  int8_t *s_column = smat + static_cast<size_t>(slot) * n_pad;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     Label label = src[i];
     if (curand_uniform(&state) <= p) {
       label = label == 0 ? 1 : 0;
     }
-    s_labels[i] = label;
+    labels[i] = label;
+    s_column[i] = label == 0 ? 1 : -1;
   }
   rng[rng_id] = state;
-  __syncthreads();
-
-  Label *labels = pop_labels + static_cast<size_t>(slot) * n;
-  int *impr = pop_impr + static_cast<size_t>(slot) * n;
-  const unsigned distance = ComputeImprovements(adj, n, s_labels, impr);
-  for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
-    labels[i] = s_labels[i];
-  }
-  if (threadIdx.x == 0) {
-    pop_dist[slot] = distance;
-  }
 }
 
 /** Single local search from given labels (for ComputeLocalOptimum). */
@@ -188,12 +191,22 @@ Solution non_strict_2cc::IPLSCudaAlgorithm::Train(
     const std::shared_ptr<IGraph> &graph) {
   const unsigned n = graph->Size();
   gcc_cuda::CheckGraphSize(n, kMaxVertices, kName);
+  const unsigned n_pad = gcc_cuda::PadTo4(n);
   const unsigned threads = gcc_cuda::ThreadsForSize(n);
   const size_t shared_bytes = static_cast<size_t>(n) * sizeof(Label);
   const size_t pop_cells = static_cast<size_t>(population_size_) * n;
+  const size_t pop_cells_pad = static_cast<size_t>(population_size_) * n_pad;
 
   DevArray<uint8_t> d_adj(static_cast<size_t>(n) * n);
   d_adj.Upload(gcc_cuda::FlattenGraph(*graph));
+  // +-1 adjacency with zero diagonal, padded, for the GEMM.
+  DevArray<int8_t> d_bmat(static_cast<size_t>(n_pad) * n_pad);
+  gcc_cuda::BuildPaddedMatrix(d_adj.Get(), n, n_pad, 1, -1, 0, d_bmat.Get());
+  // +-1 label columns (padding rows stay zero) and the GEMM output.
+  DevArray<int8_t> d_smat(pop_cells_pad);
+  GCC_CUDA_CHECK(cudaMemset(d_smat.Get(), 0, pop_cells_pad));
+  DevArray<int> d_gmat(pop_cells_pad);
+  gcc_cuda::CublasHandle cublas;
 
   DevArray<Label> d_pop_labels(pop_cells), d_ls_labels(pop_cells);
   DevArray<int> d_pop_impr(pop_cells), d_ls_impr(pop_cells);
@@ -201,13 +214,22 @@ Solution non_strict_2cc::IPLSCudaAlgorithm::Train(
   DevArray<Label> d_record(n);
   DevArray<Rng> d_rng(static_cast<size_t>(population_size_) * threads);
 
+  auto finish_from_gemm = [&] {
+    gcc_cuda::GemmInt8(cublas, n_pad, population_size_, n_pad, d_bmat.Get(),
+                       d_smat.Get(), d_gmat.Get());
+    FinishFromGemmKernel<<<population_size_, threads>>>(
+        n, n_pad, d_pop_labels.Get(), d_gmat.Get(), d_pop_impr.Get(),
+        d_pop_dist.Get());
+    GCC_CUDA_CHECK(cudaGetLastError());
+  };
+
   gcc_cuda::InitRngKernel<<<population_size_, threads>>>(
       d_rng.Get(), gcc_cuda::RandomSeed());
   GCC_CUDA_CHECK(cudaGetLastError());
-  InitPopulationKernel<<<population_size_, threads, shared_bytes>>>(
-      d_adj.Get(), n, d_pop_labels.Get(), d_pop_impr.Get(), d_pop_dist.Get(),
-      d_rng.Get());
+  InitPopulationKernel<<<population_size_, threads>>>(
+      n, n_pad, d_pop_labels.Get(), d_smat.Get(), d_rng.Get());
   GCC_CUDA_CHECK(cudaGetLastError());
+  finish_from_gemm();
 
   std::vector<unsigned> h_ls_dist, h_pop_dist;
   unsigned record_dist = UINT_MAX;
@@ -220,11 +242,11 @@ Solution non_strict_2cc::IPLSCudaAlgorithm::Train(
         d_pop_labels.Get(), d_pop_impr.Get(), d_pop_dist.Get(),
         d_ls_labels.Get(), d_ls_impr.Get(), d_ls_dist.Get(), d_rng.Get());
     GCC_CUDA_CHECK(cudaGetLastError());
-    PerturbationKernel<<<population_size_, threads, shared_bytes>>>(
-        d_adj.Get(), n, static_cast<float>(p_perturbation_),
-        d_ls_labels.Get(), d_pop_labels.Get(), d_pop_impr.Get(),
-        d_pop_dist.Get(), d_rng.Get());
+    PerturbationKernel<<<population_size_, threads>>>(
+        n, n_pad, static_cast<float>(p_perturbation_), d_ls_labels.Get(),
+        d_pop_labels.Get(), d_smat.Get(), d_rng.Get());
     GCC_CUDA_CHECK(cudaGetLastError());
+    finish_from_gemm();
 
     d_ls_dist.Download(h_ls_dist);
     d_pop_dist.Download(h_pop_dist);
@@ -268,14 +290,7 @@ Solution non_strict_2cc::IPLSCudaAlgorithm::Train(
     clustering->SetupLabelForVertex(
         i, h_record[i] == 0 ? FIRST_CLUSTER : SECOND_CLUSTER);
   }
-  const unsigned host_dist = clustering->GetDistanceToGraph(*graph);
-  if (host_dist != record_dist) {
-    throw std::logic_error(std::string(kName) + ": GPU distance " +
-                           std::to_string(record_dist) +
-                           " differs from host distance " +
-                           std::to_string(host_dist));
-  }
-  return {host_dist, clustering};
+  return {record_dist, clustering};
 }
 
 IClustPtr non_strict_2cc::IPLSCudaAlgorithm::ComputeLocalOptimum(
