@@ -19,11 +19,11 @@ class NeighborhoodWithManyLocalSearchesCuda {
  public:
   NeighborhoodWithManyLocalSearchesCuda() = delete;
 
-  NeighborhoodWithManyLocalSearchesCuda(const NeighborhoodWithManyLocalSearchesCuda &&) = delete;
+  NeighborhoodWithManyLocalSearchesCuda(const NeighborhoodWithManyLocalSearchesCuda&&) = delete;
 
-  NeighborhoodWithManyLocalSearchesCuda &operator=(const NeighborhoodWithManyLocalSearchesCuda &) = delete;
+  NeighborhoodWithManyLocalSearchesCuda& operator=(const NeighborhoodWithManyLocalSearchesCuda&) = delete;
 
-  NeighborhoodWithManyLocalSearchesCuda &operator=(const NeighborhoodWithManyLocalSearchesCuda &&) = delete;
+  NeighborhoodWithManyLocalSearchesCuda& operator=(const NeighborhoodWithManyLocalSearchesCuda&&) = delete;
 
   explicit NeighborhoodWithManyLocalSearchesCuda(IClustFactoryPtr clustering_factory);
 
@@ -32,8 +32,7 @@ class NeighborhoodWithManyLocalSearchesCuda {
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 
   /**
    * Calc best clustering together with its distance (computed on the GPU, no
@@ -41,6 +40,6 @@ class NeighborhoodWithManyLocalSearchesCuda {
    * @param graph source graph.
    * @return best solution.
    */
-  [[nodiscard]] Solution getBestSolution(const IGraph &graph) const;
+  [[nodiscard]] Solution getBestSolution(const IGraph& graph) const;
 };
 }  // namespace non_strict_2cc

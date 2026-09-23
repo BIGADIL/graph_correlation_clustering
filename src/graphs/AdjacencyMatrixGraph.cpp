@@ -7,7 +7,7 @@ std::string AdjacencyMatrixGraph::ToJson() const {
   std::stringstream ss;
   ss << "\"graph\": " << "[" << std::endl;
   unsigned row_idx = 0;
-  for (const auto &row : adjacency_matrix_) {
+  for (const auto& row : adjacency_matrix_) {
     row_idx++;
     ss << "[";
     unsigned elem_idx = 0;
@@ -29,7 +29,7 @@ std::string AdjacencyMatrixGraph::ToJson() const {
   return ss.str();
 }
 
-bool AdjacencyMatrixGraph::operator==(IGraph &other) const {
+bool AdjacencyMatrixGraph::operator==(IGraph& other) const {
   bool eq = true;
   for (unsigned i = 0; i < Size(); i++) {
     for (unsigned j = i + 1; j < Size(); j++) {

@@ -8,14 +8,11 @@ class NeighborhoodWithManyLocalSearches {
  public:
   NeighborhoodWithManyLocalSearches() = delete;
 
-  NeighborhoodWithManyLocalSearches(
-      const NeighborhoodWithManyLocalSearches &&) = delete;
+  NeighborhoodWithManyLocalSearches(const NeighborhoodWithManyLocalSearches&&) = delete;
 
-  NeighborhoodWithManyLocalSearches &operator=(
-      const NeighborhoodWithManyLocalSearches &) = delete;
+  NeighborhoodWithManyLocalSearches& operator=(const NeighborhoodWithManyLocalSearches&) = delete;
 
-  NeighborhoodWithManyLocalSearches &operator=(
-      const NeighborhoodWithManyLocalSearches &&) = delete;
+  NeighborhoodWithManyLocalSearches& operator=(const NeighborhoodWithManyLocalSearches&&) = delete;
 
  private:
   /**
@@ -31,14 +28,12 @@ class NeighborhoodWithManyLocalSearches {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(
-      const IGraph &graph, unsigned threadId, IClustPtr &local_best_clustering,
-      const std::vector<unsigned> &first_cluster_vertices,
-      const std::vector<unsigned> &second_cluster_vertices) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId, IClustPtr& local_best_clustering,
+                                              const std::vector<unsigned>& first_cluster_vertices,
+                                              const std::vector<unsigned>& second_cluster_vertices) const;
 
  public:
-  NeighborhoodWithManyLocalSearches(unsigned num_threads,
-                                    const IClustFactoryPtr &clustering_factory);
+  NeighborhoodWithManyLocalSearches(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
 
   /**
    * Calc best clustering.
@@ -47,8 +42,8 @@ class NeighborhoodWithManyLocalSearches {
    * @param second_cluster_vertices
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph, const std::vector<unsigned> &first_cluster_vertices,
-      const std::vector<unsigned> &second_cluster_vertices) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph,
+                                                        const std::vector<unsigned>& first_cluster_vertices,
+                                                        const std::vector<unsigned>& second_cluster_vertices) const;
 };
 }  // namespace set_semi_supervised_2cc

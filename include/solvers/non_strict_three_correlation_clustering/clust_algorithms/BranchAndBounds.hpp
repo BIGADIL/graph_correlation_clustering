@@ -27,8 +27,7 @@ class BranchAndBounds {
    * @param used_labels
    * @param not_used_labels
    */
-  void Branch(BBTripleClusteringVector &clustering,
-              std::vector<ClusterLabels> used_labels,
+  void Branch(BBTripleClusteringVector& clustering, std::vector<ClusterLabels> used_labels,
               std::vector<ClusterLabels> not_used_labels);
 
  public:
@@ -40,7 +39,6 @@ class BranchAndBounds {
    * @param initial_clustering initial clustering.
    * @return optimal solution for source graph.
    */
-  IClustPtr GetBestClustering(const IGraphPtr &graph,
-                              const IClustPtr &initial_clustering);
+  IClustPtr GetBestClustering(const IGraphPtr& graph, const IClustPtr& initial_clustering);
 };
 }  // namespace non_strict_3cc

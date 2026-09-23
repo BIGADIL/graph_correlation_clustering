@@ -8,12 +8,9 @@ namespace strict_2cc {
 class NeighborhoodWithOneLocalSearch {
  public:
   NeighborhoodWithOneLocalSearch() = delete;
-  NeighborhoodWithOneLocalSearch(const NeighborhoodWithOneLocalSearch &&) =
-      delete;
-  NeighborhoodWithOneLocalSearch &operator=(
-      const NeighborhoodWithOneLocalSearch &) = delete;
-  NeighborhoodWithOneLocalSearch &operator=(
-      const NeighborhoodWithOneLocalSearch &&) = delete;
+  NeighborhoodWithOneLocalSearch(const NeighborhoodWithOneLocalSearch&&) = delete;
+  NeighborhoodWithOneLocalSearch& operator=(const NeighborhoodWithOneLocalSearch&) = delete;
+  NeighborhoodWithOneLocalSearch& operator=(const NeighborhoodWithOneLocalSearch&&) = delete;
 
  private:
   /**
@@ -29,22 +26,17 @@ class NeighborhoodWithOneLocalSearch {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(const IGraph &graph,
-                                              unsigned threadId,
-                                              IClustPtr &local_best_clustering,
-                                              unsigned &vertex,
-                                              unsigned &opposite_vertex) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId, IClustPtr& local_best_clustering,
+                                              unsigned& vertex, unsigned& opposite_vertex) const;
 
  public:
-  NeighborhoodWithOneLocalSearch(unsigned num_threads,
-                                 const IClustFactoryPtr &clustering_factory);
+  NeighborhoodWithOneLocalSearch(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 };
 
 }  // namespace strict_2cc

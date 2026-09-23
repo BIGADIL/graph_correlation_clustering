@@ -23,7 +23,7 @@ class BranchAndBounds {
    * Branch out the range of feasible solutions.
    * @param clustering current vector of labels.
    */
-  void Branch(BBBinaryClusteringVector &clustering);
+  void Branch(BBBinaryClusteringVector& clustering);
 
  public:
   explicit BranchAndBounds() = default;
@@ -36,9 +36,7 @@ class BranchAndBounds {
    * @param second_cluster_vertex
    * @return optimal solution for source graph.
    */
-  IClustPtr GetBestClustering(const IGraphPtr &graph,
-                              const IClustPtr &initial_clustering,
-                              unsigned first_cluster_vertex,
-                              unsigned second_cluster_vertex);
+  IClustPtr GetBestClustering(const IGraphPtr& graph, const IClustPtr& initial_clustering,
+                              unsigned first_cluster_vertex, unsigned second_cluster_vertex);
 };
 }  // namespace semi_supervised_2cc

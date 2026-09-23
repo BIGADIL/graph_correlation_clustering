@@ -40,17 +40,15 @@ class BBBinaryClusteringVector final : public BinaryClusteringVector {
  public:
   BBBinaryClusteringVector() = delete;
 
-  BBBinaryClusteringVector(const BBBinaryClusteringVector &&) = delete;
+  BBBinaryClusteringVector(const BBBinaryClusteringVector&&) = delete;
 
-  BBBinaryClusteringVector &operator=(const BBBinaryClusteringVector &&) =
-      delete;
+  BBBinaryClusteringVector& operator=(const BBBinaryClusteringVector&&) = delete;
 
-  BBBinaryClusteringVector(const BBBinaryClusteringVector &) = default;
+  BBBinaryClusteringVector(const BBBinaryClusteringVector&) = default;
 
-  BBBinaryClusteringVector &operator=(const BBBinaryClusteringVector &) =
-      default;
+  BBBinaryClusteringVector& operator=(const BBBinaryClusteringVector&) = default;
 
-  BBBinaryClusteringVector(unsigned size, const IGraphPtr &graph);
+  BBBinaryClusteringVector(unsigned size, const IGraphPtr& graph);
 
   void SetupLabelForVertex(unsigned vertex, ClusterLabels label) override;
 

@@ -12,8 +12,7 @@ class LocalSearch {
     unsigned second_cluster_vertex;
 
     ExcludeVertices(const unsigned vertex, const unsigned opposite_vertex)
-        : first_cluster_vertex(vertex),
-          second_cluster_vertex(opposite_vertex) {}
+        : first_cluster_vertex(vertex), second_cluster_vertex(opposite_vertex) {}
 
     [[nodiscard]] bool contain(const unsigned i) const {
       return i == first_cluster_vertex || i == second_cluster_vertex;
@@ -28,20 +27,17 @@ class LocalSearch {
         : vertex(vertex), local_improvement(local_improvement) {}
   };
 
-  static std::vector<int> InitLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      ExcludeVertices exclude_vertices);
+  static std::vector<int> InitLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                ExcludeVertices exclude_vertices);
 
-  static LocalSearchCandidate FindCandidate(
-      const IGraph &graph, const std::vector<int> &local_improvement_list,
-      ExcludeVertices exclude_vertices);
+  static LocalSearchCandidate FindCandidate(const IGraph& graph, const std::vector<int>& local_improvement_list,
+                                            ExcludeVertices exclude_vertices);
 
-  static std::vector<int> UpdateLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      std::vector<int> &local_improvement_list, unsigned vertex,
-      ExcludeVertices exclude_vertices);
+  static std::vector<int> UpdateLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                  std::vector<int>& local_improvement_list, unsigned vertex,
+                                                  ExcludeVertices exclude_vertices);
 
-  static IClustPtr UpdateClustering(IClustPtr &cur_clustering, unsigned vertex);
+  static IClustPtr UpdateClustering(IClustPtr& cur_clustering, unsigned vertex);
 
  public:
   /**
@@ -53,9 +49,7 @@ class LocalSearch {
    * @param second_cluster_vertex
    * @return local optimal clustering.
    */
-  static IClustPtr ComputeLocalOptimum(const IGraph &graph,
-                                       const IClustPtr &cur_clustering,
-                                       unsigned first_cluster_vertex,
-                                       unsigned second_cluster_vertex);
+  static IClustPtr ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering,
+                                       unsigned first_cluster_vertex, unsigned second_cluster_vertex);
 };
 }  // namespace semi_supervised_2cc

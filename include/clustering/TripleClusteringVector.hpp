@@ -30,19 +30,19 @@ class TripleClusteringVector : public IClustering {
  public:
   TripleClusteringVector() = delete;
 
-  TripleClusteringVector(const TripleClusteringVector &) = default;
+  TripleClusteringVector(const TripleClusteringVector&) = default;
 
-  TripleClusteringVector(const TripleClusteringVector &&) = delete;
+  TripleClusteringVector(const TripleClusteringVector&&) = delete;
 
-  TripleClusteringVector &operator=(const TripleClusteringVector &) = default;
+  TripleClusteringVector& operator=(const TripleClusteringVector&) = default;
 
-  TripleClusteringVector &operator=(const TripleClusteringVector &&) = delete;
+  TripleClusteringVector& operator=(const TripleClusteringVector&&) = delete;
 
   explicit TripleClusteringVector(unsigned size);
 
   void SetupLabelForVertex(unsigned vertex, ClusterLabels label) override;
 
-  [[nodiscard]] unsigned GetDistanceToGraph(const IGraph &graph) const override;
+  [[nodiscard]] unsigned GetDistanceToGraph(const IGraph& graph) const override;
 
   [[nodiscard]] IClustPtr GetCopy() const override;
 
@@ -54,8 +54,7 @@ class TripleClusteringVector : public IClustering {
 
   [[nodiscard]] unsigned GetNumNonClusteredVertices() const override;
 
-  [[nodiscard]] unsigned int GetNumVerticesByLabel(
-      ClusterLabels label) const override;
+  [[nodiscard]] unsigned int GetNumVerticesByLabel(ClusterLabels label) const override;
 
   [[nodiscard]] std::string ToJson() const override;
 

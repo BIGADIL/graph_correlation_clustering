@@ -17,12 +17,9 @@ class LocalSearch {
     unsigned vertex;
     unsigned opposite_vertex;
 
-    ExcludeVertices(unsigned vertex, unsigned opposite_vertex)
-        : vertex(vertex), opposite_vertex(opposite_vertex) {}
+    ExcludeVertices(unsigned vertex, unsigned opposite_vertex) : vertex(vertex), opposite_vertex(opposite_vertex) {}
 
-    [[nodiscard]] bool contain(unsigned i) const {
-      return i == vertex || i == opposite_vertex;
-    }
+    [[nodiscard]] bool contain(unsigned i) const { return i == vertex || i == opposite_vertex; }
   };
 
   struct LocalSearchCandidate {
@@ -33,20 +30,17 @@ class LocalSearch {
         : vertex(vertex), local_improvement(local_improvement) {}
   };
 
-  static std::vector<int> InitLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      ExcludeVertices exclude_vertices);
+  static std::vector<int> InitLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                ExcludeVertices exclude_vertices);
 
-  static LocalSearchCandidate FindCandidate(
-      const IGraph &graph, const std::vector<int> &local_improvement_list,
-      ExcludeVertices exclude_vertices);
+  static LocalSearchCandidate FindCandidate(const IGraph& graph, const std::vector<int>& local_improvement_list,
+                                            ExcludeVertices exclude_vertices);
 
-  static std::vector<int> UpdateLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      std::vector<int> &local_improvement_list, unsigned vertex,
-      ExcludeVertices exclude_vertices);
+  static std::vector<int> UpdateLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                  std::vector<int>& local_improvement_list, unsigned vertex,
+                                                  ExcludeVertices exclude_vertices);
 
-  static IClustPtr UpdateClustering(IClustPtr &cur_clustering, unsigned vertex);
+  static IClustPtr UpdateClustering(IClustPtr& cur_clustering, unsigned vertex);
 
  public:
   /**
@@ -56,9 +50,7 @@ class LocalSearch {
    * @param cur_clustering init clustering.
    * @return local optimal clustering.
    */
-  static IClustPtr ComputeLocalOptimum(const IGraph &graph,
-                                       const IClustPtr &cur_clustering,
-                                       unsigned vertex,
+  static IClustPtr ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering, unsigned vertex,
                                        unsigned opposite_vertex);
 };
 

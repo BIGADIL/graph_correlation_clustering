@@ -1,8 +1,9 @@
 #include "../../../../include/solvers/two_semi_supervised_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
 
-IClustPtr semi_supervised_2cc::BranchAndBounds::GetBestClustering(
-    const IGraphPtr &graph, const IClustPtr &initial_clustering,
-    const unsigned first_cluster_vertex, const unsigned second_cluster_vertex) {
+IClustPtr semi_supervised_2cc::BranchAndBounds::GetBestClustering(const IGraphPtr& graph,
+                                                                  const IClustPtr& initial_clustering,
+                                                                  const unsigned first_cluster_vertex,
+                                                                  const unsigned second_cluster_vertex) {
   graph_ = graph;
   auto clustering = BBBinaryClusteringVector(graph->Size(), graph);
   clustering.SetupLabelForVertex(first_cluster_vertex, FIRST_CLUSTER);
@@ -13,10 +14,9 @@ IClustPtr semi_supervised_2cc::BranchAndBounds::GetBestClustering(
   return best_clustering_;
 }
 
-void semi_supervised_2cc::BranchAndBounds::Branch(
-    BBBinaryClusteringVector &clustering) {
-  const auto num_clustered = clustering.GetNumVerticesByLabel(FIRST_CLUSTER) +
-                             clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
+void semi_supervised_2cc::BranchAndBounds::Branch(BBBinaryClusteringVector& clustering) {
+  const auto num_clustered =
+      clustering.GetNumVerticesByLabel(FIRST_CLUSTER) + clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
   if (num_clustered != graph_->Size()) {
     const auto v = clustering.Choose();
     auto right_clustering = clustering.Copy();
@@ -32,8 +32,7 @@ void semi_supervised_2cc::BranchAndBounds::Branch(
       Branch(left_clustering);
     }
   } else {
-    if (const auto bound = clustering.GetDistanceToGraph(*graph_);
-        bound < record_) {
+    if (const auto bound = clustering.GetDistanceToGraph(*graph_); bound < record_) {
       record_ = bound;
       best_clustering_ = std::make_shared<BBBinaryClusteringVector>(clustering);
     }

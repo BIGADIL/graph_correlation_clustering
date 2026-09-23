@@ -6,7 +6,7 @@
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/solvers/two_semi_supervised_correlation_clustering/SemiSupervised2CCSolver.hpp"
 
-std::pair<unsigned, unsigned> getTwoRandomVertices(const IGraph &graph) {
+std::pair<unsigned, unsigned> getTwoRandomVertices(const IGraph& graph) {
   const auto size = graph.Size();
   std::random_device rd_;
   std::default_random_engine gen_{rd_()};
@@ -19,7 +19,7 @@ std::pair<unsigned, unsigned> getTwoRandomVertices(const IGraph &graph) {
   return std::make_pair(x, y);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc != 2) {
     throw std::logic_error("expected 2 args, actual = " + std::to_string(argc));
   }
@@ -34,23 +34,19 @@ int main(int argc, char *argv[]) {
   std::filesystem::current_path(path);
 
   std::shared_ptr<BinaryClusteringFactory> factory(new BinaryClusteringFactory);
-  for (const auto &graph_size : ep.GetGraphSize()) {
-    for (const auto &density : ep.GetDensity()) {
+  for (const auto& graph_size : ep.GetGraphSize()) {
+    for (const auto& density : ep.GetDensity()) {
       ErdosRenyiRandomGraphFactory graphs_factory(density);
-      const auto dir_name = "n-" + std::to_string(graph_size) + "-p-" +
-                            std::to_string(density) + "/";
+      const auto dir_name = "n-" + std::to_string(graph_size) + "-p-" + std::to_string(density) + "/";
       std::filesystem::create_directory(dir_name);
-      semi_supervised_2cc::SemiSupervised2CCSolver solver(ep.GetNumThreads(),
-                                                          factory);
+      semi_supervised_2cc::SemiSupervised2CCSolver solver(ep.GetNumThreads(), factory);
       for (unsigned i = 0; i < ep.GetNumGraphs(); ++i) {
         auto graph = graphs_factory.CreateGraph(graph_size);
         auto [fst, snd] = getTwoRandomVertices(*graph);
-        auto report =
-            solver.solve(graph, density, ep.GetAlgorithms(), fst, snd);
+        auto report = solver.solve(graph, density, ep.GetAlgorithms(), fst, snd);
         std::ofstream out;
         std::stringstream name;
-        name << dir_name << "n-" << graph_size << "-p-" << density << "-"
-             << dis_(gen_) << ".json";
+        name << dir_name << "n-" << graph_size << "-p-" << density << "-" << dis_(gen_) << ".json";
         out.open(name.str());
         out << report;
         out.close();

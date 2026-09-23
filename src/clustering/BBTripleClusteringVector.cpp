@@ -3,12 +3,10 @@
 #include <climits>
 #include <stdexcept>
 
-BBTripleClusteringVector::BBTripleClusteringVector(
-    const unsigned size, const std::shared_ptr<IGraph> &graph)
+BBTripleClusteringVector::BBTripleClusteringVector(const unsigned size, const std::shared_ptr<IGraph>& graph)
     : TripleClusteringVector(size), graph_(graph) {
   obj_func_value_increase_relatively_to_first_cluster_ = std::vector<int>(size);
-  obj_func_value_increase_relatively_to_second_cluster_ =
-      std::vector<int>(size);
+  obj_func_value_increase_relatively_to_second_cluster_ = std::vector<int>(size);
   obj_func_value_increase_relatively_to_third_cluster_ = std::vector<int>(size);
   number_of_neighbours_in_non_clustered_graph_ = std::vector<int>(size);
   obj_func_value_on_partially_built_clustering_ = 0;
@@ -23,8 +21,7 @@ BBTripleClusteringVector::BBTripleClusteringVector(
   }
 }
 
-void BBTripleClusteringVector::SetupLabelForVertex(const unsigned vertex,
-                                                   const ClusterLabels label) {
+void BBTripleClusteringVector::SetupLabelForVertex(const unsigned vertex, const ClusterLabels label) {
   TripleClusteringVector::SetupLabelForVertex(vertex, label);
   obj_func_value_increase_relatively_to_first_cluster_[vertex] =
       obj_func_value_increase_relatively_to_second_cluster_[vertex] =
@@ -80,12 +77,10 @@ unsigned BBTripleClusteringVector::Choose() const {
   int best_dist = INT_MIN;
   for (unsigned long i = 0; i < labels_.size(); i++) {
     if (labels_[i] != NON_CLUSTERED) continue;
-    const auto tmp_dist =
-        std::min(
-            std::min(obj_func_value_increase_relatively_to_first_cluster_[i],
-                     obj_func_value_increase_relatively_to_second_cluster_[i]),
-            obj_func_value_increase_relatively_to_third_cluster_[i]) +
-        number_of_neighbours_in_non_clustered_graph_[i];
+    const auto tmp_dist = std::min(std::min(obj_func_value_increase_relatively_to_first_cluster_[i],
+                                            obj_func_value_increase_relatively_to_second_cluster_[i]),
+                                   obj_func_value_increase_relatively_to_third_cluster_[i]) +
+                          number_of_neighbours_in_non_clustered_graph_[i];
     if (tmp_dist > best_dist) {
       best_dist = tmp_dist;
       candidate = i;
@@ -106,10 +101,9 @@ unsigned BBTripleClusteringVector::Bound(const unsigned record) const {
     return result;
   }
   for (unsigned long i = 0; i < labels_.size(); i++) {
-    result += std::min(
-        std::min(obj_func_value_increase_relatively_to_first_cluster_[i],
-                 obj_func_value_increase_relatively_to_second_cluster_[i]),
-        obj_func_value_increase_relatively_to_third_cluster_[i]);
+    result += std::min(std::min(obj_func_value_increase_relatively_to_first_cluster_[i],
+                                obj_func_value_increase_relatively_to_second_cluster_[i]),
+                       obj_func_value_increase_relatively_to_third_cluster_[i]);
     if (result >= record) {
       return result;
     }
@@ -117,6 +111,4 @@ unsigned BBTripleClusteringVector::Bound(const unsigned record) const {
   return result;
 }
 
-BBTripleClusteringVector BBTripleClusteringVector::Copy() const {
-  return {*this};
-}
+BBTripleClusteringVector BBTripleClusteringVector::Copy() const { return {*this}; }

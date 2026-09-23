@@ -4,8 +4,8 @@
 #include <thread>
 
 IClustPtr set_semi_supervised_2cc::Neighborhood::getBestNeighborhoodClustering(
-    const IGraph &graph, const std::vector<unsigned> &first_cluster_vertices,
-    const std::vector<unsigned> &second_cluster_vertices) const {
+    const IGraph& graph, const std::vector<unsigned>& first_cluster_vertices,
+    const std::vector<unsigned>& second_cluster_vertices) const {
   std::vector<IClustPtr> local_best_clustering_vector;
   for (unsigned i = 0; i < num_threads_; i++) {
     auto instance = clustering_factory_->CreateClustering(graph.Size());
@@ -13,20 +13,17 @@ IClustPtr set_semi_supervised_2cc::Neighborhood::getBestNeighborhoodClustering(
   }
   std::vector<std::thread> thread_vector(num_threads_);
   for (unsigned i = 0; i < num_threads_; i++) {
-    thread_vector[i] = std::thread(
-        &Neighborhood::BestNeighborhoodClusteringThreadWorker, this,
-        std::ref(graph), i, std::ref(local_best_clustering_vector[i]),
-        first_cluster_vertices, second_cluster_vertices);
+    thread_vector[i] =
+        std::thread(&Neighborhood::BestNeighborhoodClusteringThreadWorker, this, std::ref(graph), i,
+                    std::ref(local_best_clustering_vector[i]), first_cluster_vertices, second_cluster_vertices);
   }
-  for (auto &it : thread_vector) {
+  for (auto& it : thread_vector) {
     it.join();
   }
   IClustPtr best_neighborhood_clustering = local_best_clustering_vector[0];
-  unsigned best_distance =
-      best_neighborhood_clustering->GetDistanceToGraph(graph);
-  for (const auto &it : local_best_clustering_vector) {
-    if (const auto tmp_distance = it->GetDistanceToGraph(graph);
-        tmp_distance < best_distance) {
+  unsigned best_distance = best_neighborhood_clustering->GetDistanceToGraph(graph);
+  for (const auto& it : local_best_clustering_vector) {
+    if (const auto tmp_distance = it->GetDistanceToGraph(graph); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_neighborhood_clustering = it;
     }
@@ -34,19 +31,15 @@ IClustPtr set_semi_supervised_2cc::Neighborhood::getBestNeighborhoodClustering(
   return best_neighborhood_clustering;
 }
 
-void set_semi_supervised_2cc::Neighborhood::
-    BestNeighborhoodClusteringThreadWorker(
-        const IGraph &graph, const unsigned threadId,
-        IClustPtr &local_best_clustering,
-        const std::vector<unsigned> &first_cluster_vertices,
-        const std::vector<unsigned> &second_cluster_vertices) const {
+void set_semi_supervised_2cc::Neighborhood::BestNeighborhoodClusteringThreadWorker(
+    const IGraph& graph, const unsigned threadId, IClustPtr& local_best_clustering,
+    const std::vector<unsigned>& first_cluster_vertices, const std::vector<unsigned>& second_cluster_vertices) const {
   unsigned best_distance = UINT_MAX;
   for (unsigned i = threadId; i < graph.Size(); i += num_threads_) {
-    auto tmp_neighborhood_clustering = neighbor_splitter_.SplitGraphByVertex(
-        graph, i, first_cluster_vertices, second_cluster_vertices);
-    for (const auto &clustering : tmp_neighborhood_clustering) {
-      if (const unsigned tmp_distance = clustering->GetDistanceToGraph(graph);
-          tmp_distance < best_distance) {
+    auto tmp_neighborhood_clustering =
+        neighbor_splitter_.SplitGraphByVertex(graph, i, first_cluster_vertices, second_cluster_vertices);
+    for (const auto& clustering : tmp_neighborhood_clustering) {
+      if (const unsigned tmp_distance = clustering->GetDistanceToGraph(graph); tmp_distance < best_distance) {
         best_distance = tmp_distance;
         local_best_clustering = clustering;
       }
@@ -54,8 +47,8 @@ void set_semi_supervised_2cc::Neighborhood::
   }
 }
 
-set_semi_supervised_2cc::Neighborhood::Neighborhood(
-    const unsigned num_threads, const IClustFactoryPtr &clustering_factory)
+set_semi_supervised_2cc::Neighborhood::Neighborhood(const unsigned num_threads,
+                                                    const IClustFactoryPtr& clustering_factory)
     : num_threads_(num_threads),
       clustering_factory_(clustering_factory),
       neighbor_splitter_(NeighborSplitter(clustering_factory)) {}

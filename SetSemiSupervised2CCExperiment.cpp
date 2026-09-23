@@ -7,8 +7,8 @@
 #include "include/graphs/factories/ErdosRenyiRandomGraphFactory.hpp"
 #include "include/solvers/two_set_semi_supervised_correlation_clustering/SetSemiSupervised2CCSolver.hpp"
 
-std::pair<std::vector<unsigned>, std::vector<unsigned> > GetPreClusteredSets(
-    const IGraph &graph, const std::vector<double> &parts) {
+std::pair<std::vector<unsigned>, std::vector<unsigned>> GetPreClusteredSets(const IGraph& graph,
+                                                                            const std::vector<double>& parts) {
   if (parts.size() != 2) {
     throw std::logic_error("expect size = 2");
   }
@@ -20,10 +20,8 @@ std::pair<std::vector<unsigned>, std::vector<unsigned> > GetPreClusteredSets(
   std::default_random_engine gen_{rd_()};
   std::uniform_int_distribution<> dis_(0, size - 1);
 
-  const unsigned first_cluster_part =
-      std::max(static_cast<unsigned>(parts[0] * size), 1U);
-  const unsigned second_cluster_part =
-      std::max(static_cast<unsigned>(parts[1] * size), 1U);
+  const unsigned first_cluster_part = std::max(static_cast<unsigned>(parts[0] * size), 1U);
+  const unsigned second_cluster_part = std::max(static_cast<unsigned>(parts[1] * size), 1U);
 
   std::vector<unsigned> all_peeked;
   std::vector<unsigned> first_pre_cluster;
@@ -47,7 +45,7 @@ std::pair<std::vector<unsigned>, std::vector<unsigned> > GetPreClusteredSets(
   return std::make_pair(first_pre_cluster, second_pre_cluster);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc != 2) {
     throw std::logic_error("expected 2 args, actual = " + std::to_string(argc));
   }
@@ -62,24 +60,20 @@ int main(int argc, char *argv[]) {
   std::filesystem::current_path(path);
 
   std::shared_ptr<BinaryClusteringFactory> factory(new BinaryClusteringFactory);
-  for (const auto &graph_size : ep.GetGraphSize()) {
-    for (const auto &density : ep.GetDensity()) {
+  for (const auto& graph_size : ep.GetGraphSize()) {
+    for (const auto& density : ep.GetDensity()) {
       ErdosRenyiRandomGraphFactory graphs_factory(density);
-      const auto dir_name = "n-" + std::to_string(graph_size) + "-p-" +
-                            std::to_string(density) + "/";
+      const auto dir_name = "n-" + std::to_string(graph_size) + "-p-" + std::to_string(density) + "/";
       std::filesystem::create_directory(dir_name);
-      set_semi_supervised_2cc::SetSemiSupervised2CCSolver solver(
-          ep.GetNumThreads(), factory);
+      set_semi_supervised_2cc::SetSemiSupervised2CCSolver solver(ep.GetNumThreads(), factory);
       for (unsigned i = 0; i < ep.GetNumGraphs(); ++i) {
         auto graph = graphs_factory.CreateGraph(graph_size);
         auto [fst, snd] = GetPreClusteredSets(*graph, ep.GetParts());
-        auto report =
-            solver.solve(graph, density, ep.GetAlgorithms(), fst, snd);
+        auto report = solver.solve(graph, density, ep.GetAlgorithms(), fst, snd);
         std::ofstream out;
         std::stringstream name;
-        name << dir_name << "n-" << graph_size << "-p-" << density << "-c1-"
-             << ep.GetParts()[0] << "-c2-" << ep.GetParts()[1] << "-"
-             << dis_(gen_) << ".json";
+        name << dir_name << "n-" << graph_size << "-p-" << density << "-c1-" << ep.GetParts()[0] << "-c2-"
+             << ep.GetParts()[1] << "-" << dis_(gen_) << ".json";
         out.open(name.str());
         out << report;
         out.close();

@@ -4,16 +4,14 @@
 #include <stdexcept>
 #include <utility>
 
-IClustPtr non_strict_3cc::BrutForce::GetBestClustering(
-    const IGraphPtr &graph) const {
+IClustPtr non_strict_3cc::BrutForce::GetBestClustering(const IGraphPtr& graph) const {
   std::vector clustering(graph->Size(), 0);
   std::vector one(graph->Size(), 0);
   one[0] = 1;
   std::vector<int> best_clustering;
   unsigned best_distance = UINT_MAX;
   while (clustering.back() != 1) {
-    if (const auto tmp_distance = GetDistanceToGraph(*graph, clustering);
-        tmp_distance < best_distance) {
+    if (const auto tmp_distance = GetDistanceToGraph(*graph, clustering); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_clustering = clustering;
     }
@@ -45,11 +43,9 @@ IClustPtr non_strict_3cc::BrutForce::GetBestClustering(
   return result;
 }
 
-non_strict_3cc::BrutForce::BrutForce(IClustFactoryPtr factory)
-    : factory_(std::move(factory)) {}
+non_strict_3cc::BrutForce::BrutForce(IClustFactoryPtr factory) : factory_(std::move(factory)) {}
 
-unsigned non_strict_3cc::BrutForce::GetDistanceToGraph(
-    const IGraph &graph, const std::vector<int> &clustering) {
+unsigned non_strict_3cc::BrutForce::GetDistanceToGraph(const IGraph& graph, const std::vector<int>& clustering) {
   unsigned distance = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     for (unsigned j = i + 1; j < graph.Size(); j++) {

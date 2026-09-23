@@ -3,20 +3,18 @@
 #include <climits>
 
 IClustPtr set_semi_supervised_2cc::BrutForce::GetBestClustering(
-    const IGraphPtr &graph, const std::vector<unsigned> &first_cluster_vertices,
-    const std::vector<unsigned> &second_cluster_vertices) const {
+    const IGraphPtr& graph, const std::vector<unsigned>& first_cluster_vertices,
+    const std::vector<unsigned>& second_cluster_vertices) const {
   unsigned best_clustering = UINT_MAX;
   unsigned best_distance = UINT_MAX;
   unsigned init_clustering = 0;
   const unsigned last_bit = 1U << (graph->Size() - 1);
   while ((init_clustering & last_bit) == 0) {
-    if (!IsValidClustering(first_cluster_vertices, second_cluster_vertices,
-                           init_clustering)) {
+    if (!IsValidClustering(first_cluster_vertices, second_cluster_vertices, init_clustering)) {
       init_clustering++;
       continue;
     }
-    if (const auto tmp_distance = GetDistanceToGraph(*graph, init_clustering);
-        tmp_distance < best_distance) {
+    if (const auto tmp_distance = GetDistanceToGraph(*graph, init_clustering); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_clustering = init_clustering;
     }
@@ -33,8 +31,7 @@ IClustPtr set_semi_supervised_2cc::BrutForce::GetBestClustering(
   return result;
 }
 
-unsigned set_semi_supervised_2cc::BrutForce::GetDistanceToGraph(
-    const IGraph &graph, const unsigned int clustering) {
+unsigned set_semi_supervised_2cc::BrutForce::GetDistanceToGraph(const IGraph& graph, const unsigned int clustering) {
   unsigned distance = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     for (unsigned j = i + 1; j < graph.Size(); j++) {
@@ -49,39 +46,29 @@ unsigned set_semi_supervised_2cc::BrutForce::GetDistanceToGraph(
   return distance;
 }
 
-set_semi_supervised_2cc::BrutForce::BrutForce(IClustFactoryPtr factory)
-    : factory_(std::move(factory)) {}
+set_semi_supervised_2cc::BrutForce::BrutForce(IClustFactoryPtr factory) : factory_(std::move(factory)) {}
 
-bool set_semi_supervised_2cc::BrutForce::IsValidClustering(
-    const std::vector<unsigned int> &first_cluster_vertices,
-    const std::vector<unsigned int> &second_cluster_vertices,
-    const unsigned int clustering) {
+bool set_semi_supervised_2cc::BrutForce::IsValidClustering(const std::vector<unsigned int>& first_cluster_vertices,
+                                                           const std::vector<unsigned int>& second_cluster_vertices,
+                                                           const unsigned int clustering) {
   for (unsigned i = 0; i < first_cluster_vertices.size(); ++i) {
     for (unsigned j = i + 1; j < first_cluster_vertices.size(); ++j) {
-      const bool first_label =
-          (clustering & (1U << first_cluster_vertices[i])) == 0;
-      if (const bool second_label =
-              (clustering & (1U << first_cluster_vertices[j])) == 0;
-          first_label != second_label)
+      const bool first_label = (clustering & (1U << first_cluster_vertices[i])) == 0;
+      if (const bool second_label = (clustering & (1U << first_cluster_vertices[j])) == 0; first_label != second_label)
         return false;
     }
   }
   for (unsigned i = 0; i < second_cluster_vertices.size(); ++i) {
     for (unsigned j = i + 1; j < second_cluster_vertices.size(); ++j) {
-      const bool first_label =
-          (clustering & (1U << second_cluster_vertices[i])) == 0;
-      if (const bool second_label =
-              (clustering & (1U << second_cluster_vertices[j])) == 0;
-          first_label != second_label)
+      const bool first_label = (clustering & (1U << second_cluster_vertices[i])) == 0;
+      if (const bool second_label = (clustering & (1U << second_cluster_vertices[j])) == 0; first_label != second_label)
         return false;
     }
   }
   for (const unsigned int first_cluster_vertex : first_cluster_vertices) {
     for (const unsigned int second_cluster_vertex : second_cluster_vertices) {
       const bool first_label = (clustering & (1U << first_cluster_vertex)) == 0;
-      if (const bool second_label =
-              (clustering & (1U << second_cluster_vertex)) == 0;
-          first_label == second_label)
+      if (const bool second_label = (clustering & (1U << second_cluster_vertex)) == 0; first_label == second_label)
         return false;
     }
   }

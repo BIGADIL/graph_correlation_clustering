@@ -10,11 +10,11 @@ class TwoVerticesNeighborhood {
  public:
   TwoVerticesNeighborhood() = delete;
 
-  TwoVerticesNeighborhood(const TwoVerticesNeighborhood &&) = delete;
+  TwoVerticesNeighborhood(const TwoVerticesNeighborhood&&) = delete;
 
-  TwoVerticesNeighborhood &operator=(const TwoVerticesNeighborhood &) = delete;
+  TwoVerticesNeighborhood& operator=(const TwoVerticesNeighborhood&) = delete;
 
-  TwoVerticesNeighborhood &operator=(const TwoVerticesNeighborhood &&) = delete;
+  TwoVerticesNeighborhood& operator=(const TwoVerticesNeighborhood&&) = delete;
 
  private:
   /**
@@ -30,23 +30,19 @@ class TwoVerticesNeighborhood {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(
-      const IGraph &graph, unsigned threadId,
-      std::vector<Solution> &local_thread_buffer) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId,
+                                              std::vector<Solution>& local_thread_buffer) const;
 
  public:
-  TwoVerticesNeighborhood(unsigned num_threads,
-                          const IClustFactoryPtr &clustering_factory);
+  TwoVerticesNeighborhood(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
 
   /**
    * Calc best clustering.
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 
-  [[nodiscard]] std::vector<Solution> getAllSolutions(
-      const IGraph &graph) const;
+  [[nodiscard]] std::vector<Solution> getAllSolutions(const IGraph& graph) const;
 };
 }  // namespace non_strict_3cc

@@ -3,15 +3,13 @@
 #include <climits>
 #include <iostream>
 
-IClustPtr non_strict_2cc::BrutForce::GetBestClustering(
-    const IGraphPtr &graph) const {
+IClustPtr non_strict_2cc::BrutForce::GetBestClustering(const IGraphPtr& graph) const {
   unsigned best_clustering = UINT_MAX;
   unsigned best_distance = UINT_MAX;
   unsigned init_clustering = 0;
   const unsigned last_bit = 1U << (graph->Size() - 1);
   while ((init_clustering & last_bit) == 0) {
-    if (const auto tmp_distance = GetDistanceToGraph(*graph, init_clustering);
-        tmp_distance < best_distance) {
+    if (const auto tmp_distance = GetDistanceToGraph(*graph, init_clustering); tmp_distance < best_distance) {
       best_distance = tmp_distance;
       best_clustering = init_clustering;
     }
@@ -28,8 +26,7 @@ IClustPtr non_strict_2cc::BrutForce::GetBestClustering(
   return result;
 }
 
-unsigned non_strict_2cc::BrutForce::GetDistanceToGraph(
-    const IGraph &graph, const unsigned clustering) {
+unsigned non_strict_2cc::BrutForce::GetDistanceToGraph(const IGraph& graph, const unsigned clustering) {
   unsigned distance = 0;
   for (unsigned i = 0; i < graph.Size(); i++) {
     for (unsigned j = i + 1; j < graph.Size(); j++) {
@@ -44,5 +41,4 @@ unsigned non_strict_2cc::BrutForce::GetDistanceToGraph(
   return distance;
 }
 
-non_strict_2cc::BrutForce::BrutForce(IClustFactoryPtr factory)
-    : factory_(std::move(factory)) {}
+non_strict_2cc::BrutForce::BrutForce(IClustFactoryPtr factory) : factory_(std::move(factory)) {}

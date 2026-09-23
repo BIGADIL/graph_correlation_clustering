@@ -44,8 +44,8 @@ class CudaTwoVerticesNeighborhood {
    * @return best clustering. Ties between pairs are broken towards the
    * lexicographically smallest pair.
    */
-  static Result Run(const IGraph &graph, const IClustFactoryPtr &factory,
-                    bool with_local_search, bool keep_distances = false);
+  static Result Run(const IGraph& graph, const IClustFactoryPtr& factory, bool with_local_search,
+                    bool keep_distances = false);
 
   /**
    * @return @code true, if at least one CUDA device is usable.

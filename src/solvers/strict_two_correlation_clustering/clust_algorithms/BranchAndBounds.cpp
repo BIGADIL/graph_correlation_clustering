@@ -1,7 +1,6 @@
 #include "../../../../include/solvers/strict_two_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
 
-IClustPtr strict_2cc::BranchAndBounds::GetBestClustering(
-    const IGraphPtr &graph, const IClustPtr &initial_clustering) {
+IClustPtr strict_2cc::BranchAndBounds::GetBestClustering(const IGraphPtr& graph, const IClustPtr& initial_clustering) {
   graph_ = graph;
   auto clustering = BBBinaryClusteringVector(graph->Size(), graph);
   clustering.SetupLabelForVertex(0, FIRST_CLUSTER);
@@ -11,14 +10,11 @@ IClustPtr strict_2cc::BranchAndBounds::GetBestClustering(
   return best_clustering_;
 }
 
-void strict_2cc::BranchAndBounds::Branch(BBBinaryClusteringVector &clustering) {
-  const auto num_vertices_in_first_cluster =
-      clustering.GetNumVerticesByLabel(FIRST_CLUSTER);
-  const auto num_vertices_in_second_cluster =
-      clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
+void strict_2cc::BranchAndBounds::Branch(BBBinaryClusteringVector& clustering) {
+  const auto num_vertices_in_first_cluster = clustering.GetNumVerticesByLabel(FIRST_CLUSTER);
+  const auto num_vertices_in_second_cluster = clustering.GetNumVerticesByLabel(SECOND_CLUSTER);
   if (const auto graph_size = graph_->Size();
-      num_vertices_in_first_cluster + num_vertices_in_second_cluster !=
-      graph_size) {
+      num_vertices_in_first_cluster + num_vertices_in_second_cluster != graph_size) {
     const auto v = clustering.Choose();
     auto right_clustering = clustering.Copy();
     right_clustering.SetupLabelForVertex(v, FIRST_CLUSTER);

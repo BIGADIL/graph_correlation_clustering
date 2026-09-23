@@ -20,17 +20,14 @@ class LocalSearch {
         : vertex(vertex), local_improvement(local_improvement) {}
   };
 
-  static std::vector<int> InitLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering);
+  static std::vector<int> InitLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering);
 
-  static LocalSearchCandidate FindCandidate(
-      const IGraph &graph, const std::vector<int> &local_improvement_list);
+  static LocalSearchCandidate FindCandidate(const IGraph& graph, const std::vector<int>& local_improvement_list);
 
-  static std::vector<int> UpdateLocalImprovements(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      std::vector<int> &local_improvement_list, unsigned vertex);
+  static std::vector<int> UpdateLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                  std::vector<int>& local_improvement_list, unsigned vertex);
 
-  static IClustPtr UpdateClustering(IClustPtr &cur_clustering, unsigned vertex);
+  static IClustPtr UpdateClustering(IClustPtr& cur_clustering, unsigned vertex);
 
  public:
   /**
@@ -40,7 +37,6 @@ class LocalSearch {
    * @param cur_clustering init clustering.
    * @return local optimal clustering.
    */
-  static IClustPtr ComputeLocalOptimum(const IGraph &graph,
-                                       const IClustPtr &cur_clustering);
+  static IClustPtr ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering);
 };
 }  // namespace non_strict_2cc

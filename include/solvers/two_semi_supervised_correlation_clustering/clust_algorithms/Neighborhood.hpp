@@ -9,11 +9,11 @@ class Neighborhood {
  public:
   Neighborhood() = delete;
 
-  Neighborhood(const Neighborhood &&) = delete;
+  Neighborhood(const Neighborhood&&) = delete;
 
-  Neighborhood &operator=(const Neighborhood &) = delete;
+  Neighborhood& operator=(const Neighborhood&) = delete;
 
-  Neighborhood &operator=(const Neighborhood &&) = delete;
+  Neighborhood& operator=(const Neighborhood&&) = delete;
 
  private:
   /**
@@ -29,13 +29,11 @@ class Neighborhood {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(
-      const IGraph &graph, unsigned threadId, IClustPtr &local_best_clustering,
-      unsigned first_cluster_vertex, unsigned second_cluster_vertex) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId, IClustPtr& local_best_clustering,
+                                              unsigned first_cluster_vertex, unsigned second_cluster_vertex) const;
 
  public:
-  Neighborhood(unsigned num_threads,
-               const IClustFactoryPtr &clustering_factory);
+  Neighborhood(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
 
   /**
    * Calc best clustering.
@@ -44,8 +42,7 @@ class Neighborhood {
    * @param second_cluster_vertex
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph, unsigned first_cluster_vertex,
-      unsigned second_cluster_vertex) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph, unsigned first_cluster_vertex,
+                                                        unsigned second_cluster_vertex) const;
 };
 }  // namespace semi_supervised_2cc

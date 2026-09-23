@@ -7,12 +7,11 @@
 non_strict_2cc::NeighborhoodCuda::NeighborhoodCuda(IClustFactoryPtr clustering_factory)
     : clustering_factory_(std::move(clustering_factory)) {}
 
-IClustPtr non_strict_2cc::NeighborhoodCuda::getBestNeighborhoodClustering(
-    const IGraph &graph) const {
+IClustPtr non_strict_2cc::NeighborhoodCuda::getBestNeighborhoodClustering(const IGraph& graph) const {
   return getBestSolution(graph).clustering;
 }
 
-Solution non_strict_2cc::NeighborhoodCuda::getBestSolution(const IGraph &graph) const {
+Solution non_strict_2cc::NeighborhoodCuda::getBestSolution(const IGraph& graph) const {
   auto result = CudaNeighborhood::Run(graph, clustering_factory_, false);
   return {result.distance, std::move(result.clustering)};
 }

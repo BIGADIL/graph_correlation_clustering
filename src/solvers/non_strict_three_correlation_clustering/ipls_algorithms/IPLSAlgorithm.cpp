@@ -6,12 +6,9 @@
 
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/common_functions/LocalSearch.hpp"
 
-non_strict_3cc::IPLSAlgorithm::IPLSAlgorithm(const unsigned iterations,
-                                             const unsigned early_stop_num,
-                                             IClustFactoryPtr factory,
-                                             const unsigned population_size,
-                                             const unsigned tournament_size,
-                                             const double p_perturbation,
+non_strict_3cc::IPLSAlgorithm::IPLSAlgorithm(const unsigned iterations, const unsigned early_stop_num,
+                                             IClustFactoryPtr factory, const unsigned population_size,
+                                             const unsigned tournament_size, const double p_perturbation,
                                              const unsigned num_threads)
     : iterations_(iterations),
       early_stop_num_(early_stop_num),
@@ -21,15 +18,13 @@ non_strict_3cc::IPLSAlgorithm::IPLSAlgorithm(const unsigned iterations,
       p_perturbation_(p_perturbation),
       num_threads_(num_threads) {}
 
-Solution non_strict_3cc::IPLSAlgorithm::LocalSearch(
-    const Solution &solution) const {
+Solution non_strict_3cc::IPLSAlgorithm::LocalSearch(const Solution& solution) const {
   const auto copy = solution.clustering->GetCopy();
   auto lo = LocalSearch::ComputeLocalOptimum(*graph_, copy);
   return {lo->GetDistanceToGraph(*graph_), lo};
 }
 
-Solution non_strict_3cc::IPLSAlgorithm::Perturbation(
-    const Solution &solution, const double p_perturbation) const {
+Solution non_strict_3cc::IPLSAlgorithm::Perturbation(const Solution& solution, const double p_perturbation) const {
   auto copy = solution.clustering->GetCopy();
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
@@ -55,8 +50,7 @@ Solution non_strict_3cc::IPLSAlgorithm::Perturbation(
   return {copy->GetDistanceToGraph(*graph_), copy};
 }
 
-Solution non_strict_3cc::IPLSAlgorithm::Selection(
-    std::vector<Solution> population) const {
+Solution non_strict_3cc::IPLSAlgorithm::Selection(std::vector<Solution> population) const {
   std::vector<Solution> solutions;
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
@@ -73,19 +67,18 @@ Solution non_strict_3cc::IPLSAlgorithm::Selection(
   return best;
 }
 
-void non_strict_3cc::IPLSAlgorithm::GenerateInitPopulation(
-    unsigned int population_size) {
-  std::vector<std::vector<Solution> > local_buffers(num_threads_);
+void non_strict_3cc::IPLSAlgorithm::GenerateInitPopulation(unsigned int population_size) {
+  std::vector<std::vector<Solution>> local_buffers(num_threads_);
   std::vector<std::thread> threads(num_threads_);
   for (unsigned i = 0; i < num_threads_; ++i) {
-    threads[i] = std::thread(&IPLSAlgorithm::InitPopulationWorker, this,
-                             std::ref(local_buffers[i]), i, population_size);
+    threads[i] =
+        std::thread(&IPLSAlgorithm::InitPopulationWorker, this, std::ref(local_buffers[i]), i, population_size);
   }
-  for (auto &item : threads) {
+  for (auto& item : threads) {
     item.join();
   }
   population_.clear();
-  for (auto &it : local_buffers) {
+  for (auto& it : local_buffers) {
     population_.insert(population_.end(), it.begin(), it.end());
   }
 }
@@ -112,8 +105,7 @@ void non_strict_3cc::IPLSAlgorithm::OnIterationEnd() {
   }
 }
 
-Solution non_strict_3cc::IPLSAlgorithm::Train(
-    const std::shared_ptr<IGraph> &graph) {
+Solution non_strict_3cc::IPLSAlgorithm::Train(const std::shared_ptr<IGraph>& graph) {
   record_ = nullptr;
   graph_ = graph;
   GenerateInitPopulation(population_size_);
@@ -122,13 +114,12 @@ Solution non_strict_3cc::IPLSAlgorithm::Train(
   stop_training_.store(false, std::memory_order_release);
 
   std::vector<std::thread> threads(num_threads_);
-  std::vector<std::vector<Solution> > local_buffers(num_threads_);
-  std::vector<std::vector<Solution> > local_optimum(num_threads_);
-  barrier_ = std::make_unique<std::barrier<> >(num_threads_ + 1);
+  std::vector<std::vector<Solution>> local_buffers(num_threads_);
+  std::vector<std::vector<Solution>> local_optimum(num_threads_);
+  barrier_ = std::make_unique<std::barrier<>>(num_threads_ + 1);
 
   for (unsigned i = 0; i < num_threads_; i++) {
-    threads[i] = std::thread(&IPLSAlgorithm::TrainWorkerLoop, this,
-                             std::ref(local_buffers[i]), i, population_size_,
+    threads[i] = std::thread(&IPLSAlgorithm::TrainWorkerLoop, this, std::ref(local_buffers[i]), i, population_size_,
                              std::ref(local_optimum[i]));
   }
 
@@ -139,12 +130,12 @@ Solution non_strict_3cc::IPLSAlgorithm::Train(
     barrier_->arrive_and_wait();
 
     population_.clear();
-    for (auto &it : local_buffers) {
+    for (auto& it : local_buffers) {
       population_.insert(population_.end(), it.begin(), it.end());
       it.clear();
     }
     buffer_.clear();
-    for (auto &it : local_optimum) {
+    for (auto& it : local_optimum) {
       buffer_.insert(buffer_.end(), it.begin(), it.end());
       it.clear();
     }
@@ -157,16 +148,16 @@ Solution non_strict_3cc::IPLSAlgorithm::Train(
 
   stop_training_ = true;
   barrier_->arrive_and_drop();
-  for (auto &it : threads) {
+  for (auto& it : threads) {
     it.join();
   }
 
   return *record_;
 }
 
-void non_strict_3cc::IPLSAlgorithm::TrainWorker(
-    std::vector<Solution> &local_buffer, const unsigned thread_id,
-    const unsigned max_capacity, std::vector<Solution> &local_optimum) const {
+void non_strict_3cc::IPLSAlgorithm::TrainWorker(std::vector<Solution>& local_buffer, const unsigned thread_id,
+                                                const unsigned max_capacity,
+                                                std::vector<Solution>& local_optimum) const {
   Solution solution{UINT_MAX, nullptr};
   for (unsigned i = thread_id; i < max_capacity; i += num_threads_) {
     auto x = Selection(population_);
@@ -177,7 +168,7 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorker(
     }
   }
   std::vector<Solution> tmp_buffer;
-  for (const auto &it : local_buffer) {
+  for (const auto& it : local_buffer) {
     auto x = it;
     x = Perturbation(x, p_perturbation_);
     tmp_buffer.emplace_back(x);
@@ -190,10 +181,9 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorker(
   local_optimum.emplace_back(solution);
 }
 
-void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(
-    std::vector<Solution> &local_buffer, const unsigned thread_id,
-    const unsigned int max_capacity,
-    std::vector<Solution> &local_optimum) const {
+void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(std::vector<Solution>& local_buffer, const unsigned thread_id,
+                                                    const unsigned int max_capacity,
+                                                    std::vector<Solution>& local_optimum) const {
   while (true) {
     barrier_->arrive_and_wait();
     if (stop_training_.load(std::memory_order_acquire)) {
@@ -205,9 +195,9 @@ void non_strict_3cc::IPLSAlgorithm::TrainWorkerLoop(
   }
 }
 
-void non_strict_3cc::IPLSAlgorithm::InitPopulationWorker(
-    std::vector<Solution> &local_buffer, const unsigned int thread_id,
-    const unsigned int population_size) const {
+void non_strict_3cc::IPLSAlgorithm::InitPopulationWorker(std::vector<Solution>& local_buffer,
+                                                         const unsigned int thread_id,
+                                                         const unsigned int population_size) const {
   std::random_device rd_;
   std::default_random_engine gen{rd_()};
   std::uniform_int_distribution<> dis(0, 2);

@@ -23,8 +23,8 @@ class NeighborSplitter {
    * @param second_cluster_vertex
    * @return clustering based on vertex neighborhood.
    */
-  [[nodiscard]] std::vector<IClustPtr> SplitGraphByVertex(
-      const IGraph &graph, unsigned vertex, unsigned first_cluster_vertex,
-      unsigned second_cluster_vertex) const;
+  [[nodiscard]] std::vector<IClustPtr> SplitGraphByVertex(const IGraph& graph, unsigned vertex,
+                                                          unsigned first_cluster_vertex,
+                                                          unsigned second_cluster_vertex) const;
 };
 }  // namespace semi_supervised_2cc

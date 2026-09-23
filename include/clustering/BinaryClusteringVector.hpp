@@ -32,19 +32,19 @@ class BinaryClusteringVector : public IClustering {
  public:
   BinaryClusteringVector() = delete;
 
-  BinaryClusteringVector(const BinaryClusteringVector &) = default;
+  BinaryClusteringVector(const BinaryClusteringVector&) = default;
 
-  BinaryClusteringVector(const BinaryClusteringVector &&) = delete;
+  BinaryClusteringVector(const BinaryClusteringVector&&) = delete;
 
-  BinaryClusteringVector &operator=(const BinaryClusteringVector &) = default;
+  BinaryClusteringVector& operator=(const BinaryClusteringVector&) = default;
 
-  BinaryClusteringVector &operator=(const BinaryClusteringVector &&) = delete;
+  BinaryClusteringVector& operator=(const BinaryClusteringVector&&) = delete;
 
   explicit BinaryClusteringVector(unsigned size);
 
   void SetupLabelForVertex(unsigned vertex, ClusterLabels label) override;
 
-  [[nodiscard]] unsigned GetDistanceToGraph(const IGraph &graph) const override;
+  [[nodiscard]] unsigned GetDistanceToGraph(const IGraph& graph) const override;
 
   [[nodiscard]] IClustPtr GetCopy() const override;
 
@@ -56,8 +56,7 @@ class BinaryClusteringVector : public IClustering {
 
   [[nodiscard]] unsigned GetNumNonClusteredVertices() const override;
 
-  [[nodiscard]] unsigned int GetNumVerticesByLabel(
-      ClusterLabels label) const override;
+  [[nodiscard]] unsigned int GetNumVerticesByLabel(ClusterLabels label) const override;
 
   [[nodiscard]] std::string ToJson() const override;
 

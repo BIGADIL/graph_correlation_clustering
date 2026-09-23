@@ -6,7 +6,8 @@
 
 namespace non_strict_3cc {
 /**
- * CUDA implementation of TwoVerticesNeighborhoodWithManyLocalSearches for NS3CC.
+ * CUDA implementation of TwoVerticesNeighborhoodWithManyLocalSearches for
+ * NS3CC.
  *
  * For every ordered pair of vertices the graph is split by their
  * neighborhoods and driven to a local optimum on the GPU; the local optimum
@@ -19,11 +20,13 @@ class TwoVerticesNeighborhoodWithManyLocalSearchesCuda {
  public:
   TwoVerticesNeighborhoodWithManyLocalSearchesCuda() = delete;
 
-  TwoVerticesNeighborhoodWithManyLocalSearchesCuda(const TwoVerticesNeighborhoodWithManyLocalSearchesCuda &&) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearchesCuda(const TwoVerticesNeighborhoodWithManyLocalSearchesCuda&&) = delete;
 
-  TwoVerticesNeighborhoodWithManyLocalSearchesCuda &operator=(const TwoVerticesNeighborhoodWithManyLocalSearchesCuda &) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearchesCuda& operator=(const TwoVerticesNeighborhoodWithManyLocalSearchesCuda&) =
+      delete;
 
-  TwoVerticesNeighborhoodWithManyLocalSearchesCuda &operator=(const TwoVerticesNeighborhoodWithManyLocalSearchesCuda &&) = delete;
+  TwoVerticesNeighborhoodWithManyLocalSearchesCuda& operator=(
+      const TwoVerticesNeighborhoodWithManyLocalSearchesCuda&&) = delete;
 
   explicit TwoVerticesNeighborhoodWithManyLocalSearchesCuda(IClustFactoryPtr clustering_factory);
 
@@ -32,8 +35,7 @@ class TwoVerticesNeighborhoodWithManyLocalSearchesCuda {
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 
   /**
    * Calc best clustering together with its distance (computed on the GPU, no
@@ -41,6 +43,6 @@ class TwoVerticesNeighborhoodWithManyLocalSearchesCuda {
    * @param graph source graph.
    * @return best solution.
    */
-  [[nodiscard]] Solution getBestSolution(const IGraph &graph) const;
+  [[nodiscard]] Solution getBestSolution(const IGraph& graph) const;
 };
 }  // namespace non_strict_3cc

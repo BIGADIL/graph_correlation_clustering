@@ -37,13 +37,13 @@ class IPLSCudaAlgorithm {
  public:
   IPLSCudaAlgorithm() = delete;
 
-  IPLSCudaAlgorithm(const IPLSCudaAlgorithm &) = delete;
+  IPLSCudaAlgorithm(const IPLSCudaAlgorithm&) = delete;
 
-  IPLSCudaAlgorithm(IPLSCudaAlgorithm &&) = delete;
+  IPLSCudaAlgorithm(IPLSCudaAlgorithm&&) = delete;
 
-  IPLSCudaAlgorithm &operator=(const IPLSCudaAlgorithm &) = delete;
+  IPLSCudaAlgorithm& operator=(const IPLSCudaAlgorithm&) = delete;
 
-  IPLSCudaAlgorithm &operator=(IPLSCudaAlgorithm &&) = delete;
+  IPLSCudaAlgorithm& operator=(IPLSCudaAlgorithm&&) = delete;
 
   /**
    * @param iterations maximum number of iterations.
@@ -54,8 +54,7 @@ class IPLSCudaAlgorithm {
    * @param tournament_size number of candidates in tournament selection.
    * @param p_perturbation probability to flip each vertex in perturbation.
    */
-  IPLSCudaAlgorithm(unsigned iterations, unsigned early_stop_num,
-                    IClustFactoryPtr factory, unsigned population_size,
+  IPLSCudaAlgorithm(unsigned iterations, unsigned early_stop_num, IClustFactoryPtr factory, unsigned population_size,
                     unsigned tournament_size, double p_perturbation);
 
   /**
@@ -64,7 +63,7 @@ class IPLSCudaAlgorithm {
    * @param graph source graph.
    * @return best found solution.
    */
-  Solution Train(const std::shared_ptr<IGraph> &graph);
+  Solution Train(const std::shared_ptr<IGraph>& graph);
 
   /**
    * Compute the local optimum of a single clustering on the GPU.
@@ -77,8 +76,7 @@ class IPLSCudaAlgorithm {
    * @param cur_clustering init clustering; every vertex must be labeled.
    * @return local optimal clustering.
    */
-  static IClustPtr ComputeLocalOptimum(const IGraph &graph,
-                                       const IClustPtr &cur_clustering);
+  static IClustPtr ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering);
 
   /**
    * @return @code true, if at least one CUDA device is usable.

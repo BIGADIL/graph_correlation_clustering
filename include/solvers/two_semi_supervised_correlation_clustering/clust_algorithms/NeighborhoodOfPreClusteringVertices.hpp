@@ -7,14 +7,11 @@ class NeighborhoodOfPreClusteringVertices {
  public:
   NeighborhoodOfPreClusteringVertices() = delete;
 
-  NeighborhoodOfPreClusteringVertices(
-      const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices(const NeighborhoodOfPreClusteringVertices&&) = delete;
 
-  NeighborhoodOfPreClusteringVertices &operator=(
-      const NeighborhoodOfPreClusteringVertices &) = delete;
+  NeighborhoodOfPreClusteringVertices& operator=(const NeighborhoodOfPreClusteringVertices&) = delete;
 
-  NeighborhoodOfPreClusteringVertices &operator=(
-      const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices& operator=(const NeighborhoodOfPreClusteringVertices&&) = delete;
 
  private:
   /**
@@ -23,8 +20,7 @@ class NeighborhoodOfPreClusteringVertices {
   IClustFactoryPtr clustering_factory_;
 
  public:
-  explicit NeighborhoodOfPreClusteringVertices(
-      IClustFactoryPtr clustering_factory);
+  explicit NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
 
   /**
    * Calc best clustering.
@@ -33,8 +29,7 @@ class NeighborhoodOfPreClusteringVertices {
    * @param second_cluster_vertex
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph, unsigned first_cluster_vertex,
-      unsigned second_cluster_vertex) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph, unsigned first_cluster_vertex,
+                                                        unsigned second_cluster_vertex) const;
 };
 }  // namespace semi_supervised_2cc

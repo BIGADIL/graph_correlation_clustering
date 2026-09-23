@@ -1,27 +1,25 @@
 #include "../../../../include/solvers/non_strict_three_correlation_clustering/clust_algorithms/BranchAndBounds.hpp"
 
-IClustPtr non_strict_3cc::BranchAndBounds::GetBestClustering(
-    const IGraphPtr &graph, const IClustPtr &initial_clustering) {
+IClustPtr non_strict_3cc::BranchAndBounds::GetBestClustering(const IGraphPtr& graph,
+                                                             const IClustPtr& initial_clustering) {
   graph_ = graph;
   auto clustering = BBTripleClusteringVector(graph->Size(), graph);
   clustering.SetupLabelForVertex(0, FIRST_CLUSTER);
   record_ = initial_clustering->GetDistanceToGraph(*graph);
   best_clustering_ = initial_clustering;
-  Branch(clustering, std::vector({FIRST_CLUSTER}),
-         std::vector({SECOND_CLUSTER, THIRD_CLUSTER}));
+  Branch(clustering, std::vector({FIRST_CLUSTER}), std::vector({SECOND_CLUSTER, THIRD_CLUSTER}));
   return best_clustering_;
 }
 
-void non_strict_3cc::BranchAndBounds::Branch(
-    BBTripleClusteringVector &clustering,
-    std::vector<ClusterLabels> used_labels,
-    std::vector<ClusterLabels> not_used_labels) {
+void non_strict_3cc::BranchAndBounds::Branch(BBTripleClusteringVector& clustering,
+                                             std::vector<ClusterLabels> used_labels,
+                                             std::vector<ClusterLabels> not_used_labels) {
   const auto num_clustered = clustering.GetNumVerticesByLabel(FIRST_CLUSTER) +
                              clustering.GetNumVerticesByLabel(SECOND_CLUSTER) +
                              clustering.GetNumVerticesByLabel(THIRD_CLUSTER);
   if (num_clustered != graph_->Size()) {
     const auto v = clustering.Choose();
-    for (const auto &next_label : used_labels) {
+    for (const auto& next_label : used_labels) {
       auto tmp_clustering = clustering.Copy();
       tmp_clustering.SetupLabelForVertex(v, next_label);
       if (const auto bound = tmp_clustering.Bound(record_); bound < record_) {
@@ -39,8 +37,7 @@ void non_strict_3cc::BranchAndBounds::Branch(
       }
     }
   } else {
-    if (const auto bound = clustering.GetDistanceToGraph(*graph_);
-        bound < record_) {
+    if (const auto bound = clustering.GetDistanceToGraph(*graph_); bound < record_) {
       record_ = bound;
       best_clustering_ = std::make_shared<BBTripleClusteringVector>(clustering);
     }

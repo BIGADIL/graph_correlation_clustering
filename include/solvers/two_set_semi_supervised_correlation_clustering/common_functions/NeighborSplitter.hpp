@@ -12,8 +12,7 @@ class NeighborSplitter {
    */
   IClustFactoryPtr clustering_factory_;
 
-  static bool IsVertexInSet(unsigned vertex,
-                            const std::vector<unsigned> &vertices_set);
+  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned>& vertices_set);
 
  public:
   explicit NeighborSplitter(IClustFactoryPtr clustering_factory);
@@ -27,9 +26,8 @@ class NeighborSplitter {
    * @param second_cluster_vertices
    * @return clustering based on vertex neighborhood.
    */
-  [[nodiscard]] std::vector<IClustPtr> SplitGraphByVertex(
-      const IGraph &graph, unsigned vertex,
-      const std::vector<unsigned> &first_cluster_vertices,
-      const std::vector<unsigned> &second_cluster_vertices) const;
+  [[nodiscard]] std::vector<IClustPtr> SplitGraphByVertex(const IGraph& graph, unsigned vertex,
+                                                          const std::vector<unsigned>& first_cluster_vertices,
+                                                          const std::vector<unsigned>& second_cluster_vertices) const;
 };
 }  // namespace set_semi_supervised_2cc

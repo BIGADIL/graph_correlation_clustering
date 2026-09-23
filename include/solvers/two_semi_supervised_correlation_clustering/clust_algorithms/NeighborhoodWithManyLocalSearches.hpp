@@ -8,14 +8,11 @@ class NeighborhoodWithManyLocalSearches {
  public:
   NeighborhoodWithManyLocalSearches() = delete;
 
-  NeighborhoodWithManyLocalSearches(
-      const NeighborhoodWithManyLocalSearches &&) = delete;
+  NeighborhoodWithManyLocalSearches(const NeighborhoodWithManyLocalSearches&&) = delete;
 
-  NeighborhoodWithManyLocalSearches &operator=(
-      const NeighborhoodWithManyLocalSearches &) = delete;
+  NeighborhoodWithManyLocalSearches& operator=(const NeighborhoodWithManyLocalSearches&) = delete;
 
-  NeighborhoodWithManyLocalSearches &operator=(
-      const NeighborhoodWithManyLocalSearches &&) = delete;
+  NeighborhoodWithManyLocalSearches& operator=(const NeighborhoodWithManyLocalSearches&&) = delete;
 
  private:
   /**
@@ -31,13 +28,11 @@ class NeighborhoodWithManyLocalSearches {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(
-      const IGraph &graph, unsigned threadId, IClustPtr &local_best_clustering,
-      unsigned first_cluster_vertex, unsigned second_cluster_vertex) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId, IClustPtr& local_best_clustering,
+                                              unsigned first_cluster_vertex, unsigned second_cluster_vertex) const;
 
  public:
-  NeighborhoodWithManyLocalSearches(unsigned num_threads,
-                                    const IClustFactoryPtr &clustering_factory);
+  NeighborhoodWithManyLocalSearches(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
 
   /**
    * Calc best clustering.
@@ -46,8 +41,7 @@ class NeighborhoodWithManyLocalSearches {
    * @param second_cluster_vertex
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph, unsigned first_cluster_vertex,
-      unsigned second_cluster_vertex) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph, unsigned first_cluster_vertex,
+                                                        unsigned second_cluster_vertex) const;
 };
 }  // namespace semi_supervised_2cc

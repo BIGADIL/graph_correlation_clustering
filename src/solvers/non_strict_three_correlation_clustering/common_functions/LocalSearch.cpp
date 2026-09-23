@@ -3,18 +3,15 @@
 #include <climits>
 #include <stdexcept>
 
-std::vector<int> non_strict_3cc::LocalSearch::InitLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    const ClusterLabels first_label, const ClusterLabels second_label) {
+std::vector<int> non_strict_3cc::LocalSearch::InitLocalImprovements(const IGraph& graph,
+                                                                    const IClustPtr& cur_clustering,
+                                                                    const ClusterLabels first_label,
+                                                                    const ClusterLabels second_label) {
   std::vector<int> local_improvement_list(graph.Size());
   for (unsigned i = 0; i < graph.Size(); i++) {
-    if (const auto label = cur_clustering->GetLabel(i);
-        label != first_label && label != second_label)
-      continue;
+    if (const auto label = cur_clustering->GetLabel(i); label != first_label && label != second_label) continue;
     for (unsigned j = i + 1; j < graph.Size(); ++j) {
-      if (const auto label_j = cur_clustering->GetLabel(j);
-          label_j != first_label && label_j != second_label)
-        continue;
+      if (const auto label_j = cur_clustering->GetLabel(j); label_j != first_label && label_j != second_label) continue;
       const bool is_same_clustered = cur_clustering->IsSameClustered(i, j);
       const bool is_joined = graph.IsJoined(i, j);
       if (is_same_clustered) {
@@ -29,17 +26,13 @@ std::vector<int> non_strict_3cc::LocalSearch::InitLocalImprovements(
   return local_improvement_list;
 }
 
-non_strict_3cc::LocalSearch::LocalSearchCandidate
-non_strict_3cc::LocalSearch::FindCandidate(
-    const IGraph &graph, const std::vector<int> &local_improvement_list,
-    const IClustPtr &cur_clustering, const ClusterLabels first_label,
-    const ClusterLabels second_label) {
+non_strict_3cc::LocalSearch::LocalSearchCandidate non_strict_3cc::LocalSearch::FindCandidate(
+    const IGraph& graph, const std::vector<int>& local_improvement_list, const IClustPtr& cur_clustering,
+    const ClusterLabels first_label, const ClusterLabels second_label) {
   int local_improvement = INT_MIN;
   unsigned candidate = UINT_MAX;
   for (unsigned i = 0; i < graph.Size(); ++i) {
-    if (const auto label = cur_clustering->GetLabel(i);
-        label != first_label && label != second_label)
-      continue;
+    if (const auto label = cur_clustering->GetLabel(i); label != first_label && label != second_label) continue;
     if (local_improvement_list[i] > local_improvement) {
       local_improvement = local_improvement_list[i];
       candidate = i;
@@ -49,19 +42,16 @@ non_strict_3cc::LocalSearch::FindCandidate(
 }
 
 std::vector<int> non_strict_3cc::LocalSearch::UpdateLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    std::vector<int> &local_improvement_list, const unsigned int vertex,
-    const ClusterLabels first_label, const ClusterLabels second_label) {
+    const IGraph& graph, const IClustPtr& cur_clustering, std::vector<int>& local_improvement_list,
+    const unsigned int vertex, const ClusterLabels first_label, const ClusterLabels second_label) {
   local_improvement_list[vertex] = 0;
   for (unsigned i = 0; i < graph.Size(); ++i) {
     if (const auto label = cur_clustering->GetLabel(i);
         i == vertex || (label != first_label && label != second_label)) {
       continue;
     }
-    if ((graph.IsJoined(i, vertex) &&
-         cur_clustering->IsSameClustered(i, vertex)) ||
-        (!graph.IsJoined(i, vertex) &&
-         !cur_clustering->IsSameClustered(i, vertex))) {
+    if ((graph.IsJoined(i, vertex) && cur_clustering->IsSameClustered(i, vertex)) ||
+        (!graph.IsJoined(i, vertex) && !cur_clustering->IsSameClustered(i, vertex))) {
       local_improvement_list[i] += 2;
       local_improvement_list[vertex] += 1;
     } else {
@@ -72,8 +62,8 @@ std::vector<int> non_strict_3cc::LocalSearch::UpdateLocalImprovements(
   return local_improvement_list;
 }
 
-std::vector<std::vector<int>> non_strict_3cc::LocalSearch::InitLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering) {
+std::vector<std::vector<int>> non_strict_3cc::LocalSearch::InitLocalImprovements(const IGraph& graph,
+                                                                                 const IClustPtr& cur_clustering) {
   std::vector<std::vector<int>> cache(graph.Size());
   for (unsigned i = 0; i < graph.Size(); ++i) {
     cache[i] = ComputeLocalImprovement(graph, cur_clustering, i);
@@ -81,10 +71,8 @@ std::vector<std::vector<int>> non_strict_3cc::LocalSearch::InitLocalImprovements
   return cache;
 }
 
-non_strict_3cc::LocalSearch::FullLocalSearchCandidate
-non_strict_3cc::LocalSearch::FindCandidate(
-    const IGraph &graph, const std::vector<std::vector<int>> &cache,
-    const IClustPtr &cur_clustering) {
+non_strict_3cc::LocalSearch::FullLocalSearchCandidate non_strict_3cc::LocalSearch::FindCandidate(
+    const IGraph& graph, const std::vector<std::vector<int>>& cache, const IClustPtr& cur_clustering) {
   int local_improvement = INT_MIN;
   unsigned candidate = UINT_MAX;
   ClusterLabels label = NON_CLUSTERED;
@@ -101,10 +89,10 @@ non_strict_3cc::LocalSearch::FindCandidate(
   return {candidate, local_improvement, label};
 }
 
-void non_strict_3cc::LocalSearch::UpdateLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    std::vector<std::vector<int>> &cache, const unsigned vertex,
-    const ClusterLabels old_label, const ClusterLabels new_label) {
+void non_strict_3cc::LocalSearch::UpdateLocalImprovements(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                          std::vector<std::vector<int>>& cache, const unsigned vertex,
+                                                          const ClusterLabels old_label,
+                                                          const ClusterLabels new_label) {
   const unsigned old_idx = GetIdxByLabel(old_label);
   const unsigned new_idx = GetIdxByLabel(new_label);
   const unsigned third_idx = 3 - old_idx - new_idx;
@@ -129,9 +117,9 @@ void non_strict_3cc::LocalSearch::UpdateLocalImprovements(
   cache[vertex] = ComputeLocalImprovement(graph, cur_clustering, vertex);
 }
 
-std::vector<int> non_strict_3cc::LocalSearch::ComputeLocalImprovement(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    const unsigned vertex) {
+std::vector<int> non_strict_3cc::LocalSearch::ComputeLocalImprovement(const IGraph& graph,
+                                                                      const IClustPtr& cur_clustering,
+                                                                      const unsigned vertex) {
   const auto vertex_label = cur_clustering->GetLabel(vertex);
   std::vector local_improvements(3, 0);
   for (unsigned i = 0; i < graph.Size(); ++i) {
@@ -151,21 +139,18 @@ std::vector<int> non_strict_3cc::LocalSearch::ComputeLocalImprovement(
   return local_improvements;
 }
 
-IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    const ClusterLabels first_label, const ClusterLabels second_label) {
+IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                           const ClusterLabels first_label,
+                                                           const ClusterLabels second_label) {
   auto result = cur_clustering->GetCopy();
-  auto local_improvement_list =
-      InitLocalImprovements(graph, cur_clustering, first_label, second_label);
+  auto local_improvement_list = InitLocalImprovements(graph, cur_clustering, first_label, second_label);
   while (true) {
-    const auto candidate = FindCandidate(graph, local_improvement_list, result,
-                                         first_label, second_label);
+    const auto candidate = FindCandidate(graph, local_improvement_list, result, first_label, second_label);
     if (candidate.local_improvement <= 0) {
       break;
     }
     local_improvement_list =
-        UpdateLocalImprovements(graph, result, local_improvement_list,
-                                candidate.vertex, first_label, second_label);
+        UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, first_label, second_label);
     if (result->GetLabel(candidate.vertex) == first_label) {
       result->SetupLabelForVertex(candidate.vertex, second_label);
     } else {
@@ -175,8 +160,7 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(
   return result;
 }
 
-IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(
-    const IGraph &graph, const IClustPtr &cur_clustering) {
+IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering) {
   auto result = cur_clustering->GetCopy();
   auto cache = InitLocalImprovements(graph, result);
 
@@ -186,21 +170,17 @@ IClustPtr non_strict_3cc::LocalSearch::ComputeLocalOptimum(
 
     const auto old_label = result->GetLabel(candidate.vertex);
     result->SetupLabelForVertex(candidate.vertex, candidate.label);
-    UpdateLocalImprovements(graph, result, cache, candidate.vertex,
-                            old_label, candidate.label);
+    UpdateLocalImprovements(graph, result, cache, candidate.vertex, old_label, candidate.label);
   }
   return result;
 }
 
-bool non_strict_3cc::LocalSearch::IsSkipLabelForVertex(
-    const ClusterLabels label, const unsigned idx) {
-  return (label == FIRST_CLUSTER && idx == 0) ||
-         (label == SECOND_CLUSTER && idx == 1) ||
+bool non_strict_3cc::LocalSearch::IsSkipLabelForVertex(const ClusterLabels label, const unsigned idx) {
+  return (label == FIRST_CLUSTER && idx == 0) || (label == SECOND_CLUSTER && idx == 1) ||
          (label == THIRD_CLUSTER && idx == 2);
 }
 
-unsigned non_strict_3cc::LocalSearch::GetIdxByLabel(
-    const ClusterLabels labels) {
+unsigned non_strict_3cc::LocalSearch::GetIdxByLabel(const ClusterLabels labels) {
   switch (labels) {
     case FIRST_CLUSTER:
       return 0;

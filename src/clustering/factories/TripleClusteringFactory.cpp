@@ -2,7 +2,6 @@
 
 #include "../../../include/clustering/TripleClusteringVector.hpp"
 
-IClustPtr TripleClusteringFactory::CreateClustering(
-    const unsigned int size) const {
+IClustPtr TripleClusteringFactory::CreateClustering(const unsigned int size) const {
   return std::make_shared<TripleClusteringVector>(size);
 }

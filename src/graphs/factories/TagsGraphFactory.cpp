@@ -1,30 +1,28 @@
 #include "../../../include/graphs/factories/TagsGraphFactory.hpp"
 
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
-
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 #include <set>
 #include <utility>
 
 #include "../../../include/graphs/AdjacencyMatrixGraph.hpp"
 
-TagsGraphFactory::TagsGraphFactory(const std::string &path,
-                                   std::string distribution)
+TagsGraphFactory::TagsGraphFactory(const std::string& path, std::string distribution)
     : distribution_(std::move(distribution)) {
   std::ifstream ifs{path};
   rapidjson::IStreamWrapper isw{ifs};
   rapidjson::Document doc{};
   doc.ParseStream(isw);
 
-  for (auto &[name, value] : doc.GetObject()) {
+  for (auto& [name, value] : doc.GetObject()) {
     const std::string key = name.GetString();
     keys_.emplace_back(key);
     std::vector<std::string> values;
     if (value.IsArray()) {
-      for (auto &elem : value.GetArray()) {
+      for (auto& elem : value.GetArray()) {
         if (elem.IsString()) {
           values.emplace_back(elem.GetString());
         }
@@ -35,8 +33,8 @@ TagsGraphFactory::TagsGraphFactory(const std::string &path,
 }
 
 IGraphPtr TagsGraphFactory::CreateGraph(const unsigned int size) {
-  std::vector<std::vector<bool> > adjacency_matrix(size);
-  for (auto &row : adjacency_matrix) {
+  std::vector<std::vector<bool>> adjacency_matrix(size);
+  for (auto& row : adjacency_matrix) {
     row = std::vector<bool>(size);
   }
   std::vector<unsigned> ids;
@@ -77,37 +75,30 @@ IGraphPtr TagsGraphFactory::CreateGraph(const unsigned int size) {
   return std::make_shared<AdjacencyMatrixGraph>(adjacency_matrix);
 }
 
-double TagsGraphFactory::Chance(const std::vector<std::string> &vec1,
-                                const std::vector<std::string> &vec2) const {
+double TagsGraphFactory::Chance(const std::vector<std::string>& vec1, const std::vector<std::string>& vec2) const {
   std::set set_1(vec1.begin(), vec1.end());
   std::set set_2(vec2.begin(), vec2.end());
 
   std::set<std::string> intersection_set;
-  std::ranges::set_intersection(
-      set_1, set_2, std::inserter(intersection_set, intersection_set.begin()));
+  std::ranges::set_intersection(set_1, set_2, std::inserter(intersection_set, intersection_set.begin()));
 
   std::set<std::string> union_set;
-  std::ranges::set_union(set_1, set_2,
-                         std::inserter(union_set, union_set.begin()));
+  std::ranges::set_union(set_1, set_2, std::inserter(union_set, union_set.begin()));
 
   if (distribution_.find("jaccard") != std::string::npos) {
-    return static_cast<double>(intersection_set.size()) /
-           static_cast<double>(union_set.size());
+    return static_cast<double>(intersection_set.size()) / static_cast<double>(union_set.size());
   }
   if (distribution_.find("cosine") != std::string::npos) {
     return static_cast<double>(intersection_set.size()) /
-           sqrt(static_cast<double>(set_1.size()) *
-                static_cast<double>(set_2.size()));
+           sqrt(static_cast<double>(set_1.size()) * static_cast<double>(set_2.size()));
   }
   if (distribution_.find("dice") != std::string::npos) {
     return 2.0 * static_cast<double>(intersection_set.size()) /
-           (static_cast<double>(set_1.size()) +
-            static_cast<double>(set_2.size()));
+           (static_cast<double>(set_1.size()) + static_cast<double>(set_2.size()));
   }
   if (distribution_.find("overlap") != std::string::npos) {
     return static_cast<double>(intersection_set.size()) /
-           std::min(static_cast<double>(set_1.size()),
-                    static_cast<double>(set_2.size()));
+           std::min(static_cast<double>(set_1.size()), static_cast<double>(set_2.size()));
   }
   throw std::logic_error("Unknown method" + distribution_);
 }

@@ -11,14 +11,11 @@ class NeighborhoodOfPreClusteringVertices {
  public:
   NeighborhoodOfPreClusteringVertices() = delete;
 
-  NeighborhoodOfPreClusteringVertices(
-      const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices(const NeighborhoodOfPreClusteringVertices&&) = delete;
 
-  NeighborhoodOfPreClusteringVertices &operator=(
-      const NeighborhoodOfPreClusteringVertices &) = delete;
+  NeighborhoodOfPreClusteringVertices& operator=(const NeighborhoodOfPreClusteringVertices&) = delete;
 
-  NeighborhoodOfPreClusteringVertices &operator=(
-      const NeighborhoodOfPreClusteringVertices &&) = delete;
+  NeighborhoodOfPreClusteringVertices& operator=(const NeighborhoodOfPreClusteringVertices&&) = delete;
 
  private:
   /**
@@ -26,15 +23,12 @@ class NeighborhoodOfPreClusteringVertices {
    */
   IClustFactoryPtr clustering_factory_;
 
-  static bool IsJoinedWithSet(const std::vector<unsigned> &set, unsigned vertex,
-                              const IGraph &graph);
+  static bool IsJoinedWithSet(const std::vector<unsigned>& set, unsigned vertex, const IGraph& graph);
 
-  static bool IsVertexInSet(unsigned vertex,
-                            const std::vector<unsigned> &vertices_set);
+  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned>& vertices_set);
 
  public:
-  explicit NeighborhoodOfPreClusteringVertices(
-      IClustFactoryPtr clustering_factory);
+  explicit NeighborhoodOfPreClusteringVertices(IClustFactoryPtr clustering_factory);
 
   /**
    * Calc best clustering.
@@ -43,8 +37,8 @@ class NeighborhoodOfPreClusteringVertices {
    * @param second_cluster_vertices
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph, const std::vector<unsigned> &first_cluster_vertices,
-      const std::vector<unsigned> &second_cluster_vertices) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph,
+                                                        const std::vector<unsigned>& first_cluster_vertices,
+                                                        const std::vector<unsigned>& second_cluster_vertices) const;
 };
 }  // namespace set_semi_supervised_2cc

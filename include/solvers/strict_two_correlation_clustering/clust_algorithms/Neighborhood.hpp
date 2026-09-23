@@ -8,9 +8,9 @@ namespace strict_2cc {
 class Neighborhood {
  public:
   Neighborhood() = delete;
-  Neighborhood(const Neighborhood &&) = delete;
-  Neighborhood &operator=(const Neighborhood &) = delete;
-  Neighborhood &operator=(const Neighborhood &&) = delete;
+  Neighborhood(const Neighborhood&&) = delete;
+  Neighborhood& operator=(const Neighborhood&) = delete;
+  Neighborhood& operator=(const Neighborhood&&) = delete;
 
  private:
   /**
@@ -26,20 +26,17 @@ class Neighborhood {
    */
   NeighborSplitter neighbor_splitter_;
 
-  void BestNeighborhoodClusteringThreadWorker(
-      const IGraph &graph, unsigned threadId,
-      IClustPtr &local_best_clustering) const;
+  void BestNeighborhoodClusteringThreadWorker(const IGraph& graph, unsigned threadId,
+                                              IClustPtr& local_best_clustering) const;
 
  public:
-  Neighborhood(unsigned num_threads,
-               const IClustFactoryPtr &clustering_factory);
+  Neighborhood(unsigned num_threads, const IClustFactoryPtr& clustering_factory);
   /**
    * Calc best clustering.
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 };
 
 }  // namespace strict_2cc

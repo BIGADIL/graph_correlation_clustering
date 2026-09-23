@@ -36,8 +36,7 @@ class CudaNeighborhood {
    * @return best clustering and per-vertex distances. Ties between vertices
    * are broken towards the smallest vertex index.
    */
-  static Result Run(const IGraph &graph, const IClustFactoryPtr &factory,
-                    bool with_local_search);
+  static Result Run(const IGraph& graph, const IClustFactoryPtr& factory, bool with_local_search);
 
   /**
    * @return @code true, if at least one CUDA device is usable.

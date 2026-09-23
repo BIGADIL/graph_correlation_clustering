@@ -19,8 +19,7 @@ using gcc_cuda::Label;
  * +1 if the pair is a disagreement (flipping either vertex fixes it),
  * -1 if the pair agrees (flipping either vertex breaks it).
  */
-__device__ __forceinline__ int PairTerm(const uint8_t joined, const Label li,
-                                        const Label lj) {
+__device__ __forceinline__ int PairTerm(const uint8_t joined, const Label li, const Label lj) {
   return ((li == lj) != (joined != 0)) ? 1 : -1;
 }
 
@@ -32,9 +31,8 @@ __device__ __forceinline__ int PairTerm(const uint8_t joined, const Label li,
  * Thread i reads adj[j][i] for all j; for a fixed j the threads of the block
  * read a contiguous part of row j, so the access is coalesced.
  */
-__device__ inline unsigned ComputeImprovements(
-    const uint8_t *__restrict__ adj, const unsigned n,
-    const Label *__restrict__ s_labels, int *__restrict__ impr) {
+__device__ inline unsigned ComputeImprovements(const uint8_t* __restrict__ adj, const unsigned n,
+                                               const Label* __restrict__ s_labels, int* __restrict__ impr) {
   long long total = 0;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     const Label li = s_labels[i];
@@ -63,9 +61,8 @@ __device__ inline unsigned ComputeImprovements(
  * least n entries). Writes impr[i] and returns the distance; `impr` may alias
  * `g`.
  */
-__device__ inline unsigned ImprovementsFromGemm(const unsigned n,
-                                                const Label *__restrict__ s_labels,
-                                                const int *g, int *impr) {
+__device__ inline unsigned ImprovementsFromGemm(const unsigned n, const Label* __restrict__ s_labels, const int* g,
+                                                int* impr) {
   long long total = 0;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     const int gi = g[i];
@@ -79,9 +76,8 @@ __device__ inline unsigned ImprovementsFromGemm(const unsigned n,
 }
 
 /** Write the +-1 label column used by the GEMM (padding stays untouched). */
-__device__ inline void WriteSignedLabels(const unsigned n,
-                                         const Label *__restrict__ s_labels,
-                                         int8_t *__restrict__ s_column) {
+__device__ inline void WriteSignedLabels(const unsigned n, const Label* __restrict__ s_labels,
+                                         int8_t* __restrict__ s_column) {
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     s_column[i] = s_labels[i] == 0 ? 1 : -1;
   }
@@ -98,11 +94,8 @@ __device__ inline void WriteSignedLabels(const unsigned n,
  * the loop continues on, so leaving it out of the scan does not change the
  * result. Ties go to the smallest vertex, as in the CPU scan.
  */
-__device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
-                                            const unsigned n,
-                                            Label *__restrict__ s_labels,
-                                            int *__restrict__ impr,
-                                            unsigned distance) {
+__device__ inline unsigned LocalSearchBlock(const uint8_t* __restrict__ adj, const unsigned n,
+                                            Label* __restrict__ s_labels, int* __restrict__ impr, unsigned distance) {
   int best = INT_MIN;
   unsigned candidate = UINT_MAX;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
@@ -123,7 +116,7 @@ __device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
     // Update improvements with labels *before* the flip, as the CPU does,
     // and scan the new values for the next candidate in the same pass.
     const Label lv = s_labels[v];
-    const uint8_t *row = adj + static_cast<size_t>(v) * n;
+    const uint8_t* row = adj + static_cast<size_t>(v) * n;
     best = INT_MIN;
     candidate = UINT_MAX;
     for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
@@ -154,10 +147,9 @@ __device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
  * (NeighborSplitter::SplitGraphByVertex): v and its neighbors go to the first
  * cluster, everything else to the second.
  */
-__device__ inline void SplitByVertex(const uint8_t *__restrict__ adj,
-                                     const unsigned n, const unsigned v,
-                                     Label *__restrict__ s_labels) {
-  const uint8_t *row = adj + static_cast<size_t>(v) * n;
+__device__ inline void SplitByVertex(const uint8_t* __restrict__ adj, const unsigned n, const unsigned v,
+                                     Label* __restrict__ s_labels) {
+  const uint8_t* row = adj + static_cast<size_t>(v) * n;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     s_labels[i] = (i == v || row[i] != 0) ? 0 : 1;
   }

@@ -6,6 +6,6 @@
  * Factory creates triple clustering.
  */
 class TripleClusteringFactory final : public IClusteringFactory {
-public:
-    [[nodiscard]] IClustPtr CreateClustering(unsigned size) const override;
+ public:
+  [[nodiscard]] IClustPtr CreateClustering(unsigned size) const override;
 };

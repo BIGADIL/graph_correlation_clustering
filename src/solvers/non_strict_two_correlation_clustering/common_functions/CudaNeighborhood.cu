@@ -1,5 +1,3 @@
-#include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/CudaNeighborhood.hpp"
-
 #include <algorithm>
 #include <climits>
 #include <cstdint>
@@ -9,6 +7,7 @@
 
 #include "../../../../include/common/CudaCommon.cuh"
 #include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/CudaLocalSearch.cuh"
+#include "../../../../include/solvers/non_strict_two_correlation_clustering/common_functions/CudaNeighborhood.hpp"
 
 namespace {
 
@@ -32,25 +31,20 @@ constexpr size_t kChunkBudgetBytes = size_t{1} << 30;
  * B * (B + I) yields (B s) for every split at once.
  */
 template <bool kLocalSearch>
-__global__ void NeighborhoodKernel(const uint8_t *__restrict__ adj,
-                                   const unsigned n, const unsigned n_pad,
-                                   const unsigned first_vertex,
-                                   int *__restrict__ gmat,
-                                   Label *__restrict__ out_labels,
-                                   unsigned *__restrict__ out_dist) {
+__global__ void NeighborhoodKernel(const uint8_t* __restrict__ adj, const unsigned n, const unsigned n_pad,
+                                   const unsigned first_vertex, int* __restrict__ gmat, Label* __restrict__ out_labels,
+                                   unsigned* __restrict__ out_dist) {
   extern __shared__ Label s_labels[];
   const unsigned v = first_vertex + blockIdx.x;
-  int *impr = gmat + static_cast<size_t>(blockIdx.x) * n_pad;
+  int* impr = gmat + static_cast<size_t>(blockIdx.x) * n_pad;
 
   non_strict_2cc::cuda::SplitByVertex(adj, n, v, s_labels);
-  unsigned distance =
-      non_strict_2cc::cuda::ImprovementsFromGemm(n, s_labels, impr, impr);
+  unsigned distance = non_strict_2cc::cuda::ImprovementsFromGemm(n, s_labels, impr, impr);
   if constexpr (kLocalSearch) {
-    distance =
-        non_strict_2cc::cuda::LocalSearchBlock(adj, n, s_labels, impr, distance);
+    distance = non_strict_2cc::cuda::LocalSearchBlock(adj, n, s_labels, impr, distance);
   }
 
-  Label *labels = out_labels + static_cast<size_t>(blockIdx.x) * n;
+  Label* labels = out_labels + static_cast<size_t>(blockIdx.x) * n;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     labels[i] = s_labels[i];
   }
@@ -61,23 +55,19 @@ __global__ void NeighborhoodKernel(const uint8_t *__restrict__ adj,
 
 }  // namespace
 
-bool non_strict_2cc::CudaNeighborhood::IsAvailable() {
-  return gcc_cuda::HasCudaDevice();
-}
+bool non_strict_2cc::CudaNeighborhood::IsAvailable() { return gcc_cuda::HasCudaDevice(); }
 
-non_strict_2cc::CudaNeighborhood::Result non_strict_2cc::CudaNeighborhood::Run(
-    const IGraph &graph, const IClustFactoryPtr &factory,
-    const bool with_local_search) {
+non_strict_2cc::CudaNeighborhood::Result non_strict_2cc::CudaNeighborhood::Run(const IGraph& graph,
+                                                                               const IClustFactoryPtr& factory,
+                                                                               const bool with_local_search) {
   const unsigned n = graph.Size();
   gcc_cuda::CheckGraphSize(n, kMaxVertices, kName);
   const unsigned n_pad = gcc_cuda::PadTo4(n);
   const unsigned threads = gcc_cuda::ThreadsForSize(n);
   const size_t labels_bytes = static_cast<size_t>(n) * sizeof(Label);
 
-  const size_t per_vertex =
-      static_cast<size_t>(n_pad) * sizeof(int) + static_cast<size_t>(n);
-  const unsigned chunk = static_cast<unsigned>(
-      std::clamp<size_t>(kChunkBudgetBytes / per_vertex, 1, n));
+  const size_t per_vertex = static_cast<size_t>(n_pad) * sizeof(int) + static_cast<size_t>(n);
+  const unsigned chunk = static_cast<unsigned>(std::clamp<size_t>(kChunkBudgetBytes / per_vertex, 1, n));
 
   DevArray<uint8_t> d_adj(static_cast<size_t>(n) * n);
   d_adj.Upload(gcc_cuda::FlattenGraph(graph));
@@ -102,17 +92,14 @@ non_strict_2cc::CudaNeighborhood::Result non_strict_2cc::CudaNeighborhood::Run(
   std::vector<unsigned> h_dist;
   for (unsigned first = 0; first < n; first += chunk) {
     const unsigned count = std::min(chunk, n - first);
-    gcc_cuda::GemmInt8(cublas, n_pad, count, n_pad, d_bmat.Get(),
-                       d_smat.Get() + static_cast<size_t>(first) * n_pad,
+    gcc_cuda::GemmInt8(cublas, n_pad, count, n_pad, d_bmat.Get(), d_smat.Get() + static_cast<size_t>(first) * n_pad,
                        d_gmat.Get());
     if (with_local_search) {
-      NeighborhoodKernel<true><<<count, threads, labels_bytes>>>(
-          d_adj.Get(), n, n_pad, first, d_gmat.Get(), d_labels.Get(),
-          d_dist.Get());
+      NeighborhoodKernel<true>
+          <<<count, threads, labels_bytes>>>(d_adj.Get(), n, n_pad, first, d_gmat.Get(), d_labels.Get(), d_dist.Get());
     } else {
-      NeighborhoodKernel<false><<<count, threads, labels_bytes>>>(
-          d_adj.Get(), n, n_pad, first, d_gmat.Get(), d_labels.Get(),
-          d_dist.Get());
+      NeighborhoodKernel<false>
+          <<<count, threads, labels_bytes>>>(d_adj.Get(), n, n_pad, first, d_gmat.Get(), d_labels.Get(), d_dist.Get());
     }
     GCC_CUDA_CHECK(cudaGetLastError());
     d_dist.Download(h_dist);
@@ -127,9 +114,8 @@ non_strict_2cc::CudaNeighborhood::Result non_strict_2cc::CudaNeighborhood::Run(
       }
     }
     if (best_slot != UINT_MAX) {
-      GCC_CUDA_CHECK(cudaMemcpy(
-          d_best.Get(), d_labels.Get() + static_cast<size_t>(best_slot) * n,
-          labels_bytes, cudaMemcpyDeviceToDevice));
+      GCC_CUDA_CHECK(cudaMemcpy(d_best.Get(), d_labels.Get() + static_cast<size_t>(best_slot) * n, labels_bytes,
+                                cudaMemcpyDeviceToDevice));
     }
   }
 
@@ -137,8 +123,7 @@ non_strict_2cc::CudaNeighborhood::Result non_strict_2cc::CudaNeighborhood::Run(
   d_best.Download(h_best);
   result.clustering = factory->CreateClustering(n);
   for (unsigned i = 0; i < n; ++i) {
-    result.clustering->SetupLabelForVertex(
-        i, h_best[i] == 0 ? FIRST_CLUSTER : SECOND_CLUSTER);
+    result.clustering->SetupLabelForVertex(i, h_best[i] == 0 ? FIRST_CLUSTER : SECOND_CLUSTER);
   }
   return result;
 }

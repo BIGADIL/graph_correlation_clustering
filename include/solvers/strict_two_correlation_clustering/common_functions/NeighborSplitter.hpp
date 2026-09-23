@@ -24,9 +24,7 @@ class NeighborSplitter {
    * @param vertex source vertex.
    * @return clustering based on vertex neighborhood.
    */
-  [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph &graph,
-                                             unsigned vertex,
-                                             unsigned opposite_vertex) const;
+  [[nodiscard]] IClustPtr SplitGraphByVertex(const IGraph& graph, unsigned vertex, unsigned opposite_vertex) const;
 };
 
 }  // namespace strict_2cc

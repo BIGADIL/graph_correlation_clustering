@@ -38,26 +38,23 @@ class ExperimentParameters {
   const unsigned num_graphs_;
 
  public:
-  ExperimentParameters(std::vector<unsigned> graph_size_vector,
-                       std::vector<double> density_vector,
-                       std::vector<std::string> distribution_vector,
-                       std::vector<std::string> algorithms_vector,
-                       std::vector<double> parts, unsigned num_threads,
-                       unsigned num_graphs);
+  ExperimentParameters(std::vector<unsigned> graph_size_vector, std::vector<double> density_vector,
+                       std::vector<std::string> distribution_vector, std::vector<std::string> algorithms_vector,
+                       std::vector<double> parts, unsigned num_threads, unsigned num_graphs);
 
-  [[nodiscard]] const std::vector<unsigned int> &GetGraphSize() const;
+  [[nodiscard]] const std::vector<unsigned int>& GetGraphSize() const;
 
-  [[nodiscard]] const std::vector<double> &GetDensity() const;
+  [[nodiscard]] const std::vector<double>& GetDensity() const;
 
-  [[nodiscard]] const std::vector<std::string> &GetDistribution() const;
+  [[nodiscard]] const std::vector<std::string>& GetDistribution() const;
 
-  [[nodiscard]] const std::vector<std::string> &GetAlgorithms() const;
+  [[nodiscard]] const std::vector<std::string>& GetAlgorithms() const;
 
   [[nodiscard]] unsigned int GetNumThreads() const;
 
   [[nodiscard]] unsigned int GetNumGraphs() const;
 
-  [[nodiscard]] const std::vector<double> &GetParts() const;
+  [[nodiscard]] const std::vector<double>& GetParts() const;
 
-  static ExperimentParameters ReadFromConfig(const std::string &path);
+  static ExperimentParameters ReadFromConfig(const std::string& path);
 };

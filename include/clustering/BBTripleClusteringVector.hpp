@@ -40,17 +40,15 @@ class BBTripleClusteringVector final : public TripleClusteringVector {
  public:
   BBTripleClusteringVector() = delete;
 
-  BBTripleClusteringVector(const BBTripleClusteringVector &&) = delete;
+  BBTripleClusteringVector(const BBTripleClusteringVector&&) = delete;
 
-  BBTripleClusteringVector &operator=(const BBTripleClusteringVector &&) =
-      delete;
+  BBTripleClusteringVector& operator=(const BBTripleClusteringVector&&) = delete;
 
-  BBTripleClusteringVector(const BBTripleClusteringVector &) = default;
+  BBTripleClusteringVector(const BBTripleClusteringVector&) = default;
 
-  BBTripleClusteringVector &operator=(const BBTripleClusteringVector &) =
-      default;
+  BBTripleClusteringVector& operator=(const BBTripleClusteringVector&) = default;
 
-  BBTripleClusteringVector(unsigned size, const IGraphPtr &graph);
+  BBTripleClusteringVector(unsigned size, const IGraphPtr& graph);
 
   void SetupLabelForVertex(unsigned vertex, ClusterLabels label) override;
 

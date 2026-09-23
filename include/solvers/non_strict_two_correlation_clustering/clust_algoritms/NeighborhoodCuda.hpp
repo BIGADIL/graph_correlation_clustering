@@ -18,11 +18,11 @@ class NeighborhoodCuda {
  public:
   NeighborhoodCuda() = delete;
 
-  NeighborhoodCuda(const NeighborhoodCuda &&) = delete;
+  NeighborhoodCuda(const NeighborhoodCuda&&) = delete;
 
-  NeighborhoodCuda &operator=(const NeighborhoodCuda &) = delete;
+  NeighborhoodCuda& operator=(const NeighborhoodCuda&) = delete;
 
-  NeighborhoodCuda &operator=(const NeighborhoodCuda &&) = delete;
+  NeighborhoodCuda& operator=(const NeighborhoodCuda&&) = delete;
 
   explicit NeighborhoodCuda(IClustFactoryPtr clustering_factory);
 
@@ -31,8 +31,7 @@ class NeighborhoodCuda {
    * @param graph source graph.
    * @return best clustering.
    */
-  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(
-      const IGraph &graph) const;
+  [[nodiscard]] IClustPtr getBestNeighborhoodClustering(const IGraph& graph) const;
 
   /**
    * Calc best clustering together with its distance (computed on the GPU, no
@@ -40,6 +39,6 @@ class NeighborhoodCuda {
    * @param graph source graph.
    * @return best solution.
    */
-  [[nodiscard]] Solution getBestSolution(const IGraph &graph) const;
+  [[nodiscard]] Solution getBestSolution(const IGraph& graph) const;
 };
 }  // namespace non_strict_2cc

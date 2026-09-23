@@ -25,7 +25,7 @@ class BranchAndBounds {
    * Branch out the range of feasible solutions.
    * @param clustering current vector of labels.
    */
-  void Branch(BBBinaryClusteringVector &clustering);
+  void Branch(BBBinaryClusteringVector& clustering);
 
  public:
   explicit BranchAndBounds() = default;
@@ -35,8 +35,7 @@ class BranchAndBounds {
    * @param initial_clustering initial clustering.
    * @return optimal solution for source graph.
    */
-  std::shared_ptr<IClustering> GetBestClustering(
-      const IGraphPtr &graph, const IClustPtr &initial_clustering);
+  std::shared_ptr<IClustering> GetBestClustering(const IGraphPtr& graph, const IClustPtr& initial_clustering);
 };
 
 }  // namespace strict_2cc

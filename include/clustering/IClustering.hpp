@@ -24,8 +24,7 @@ class IClustering {
    * @param graph source graph.
    * @return distance to specific graph.
    */
-  [[nodiscard]] virtual unsigned GetDistanceToGraph(
-      const IGraph &graph) const = 0;
+  [[nodiscard]] virtual unsigned GetDistanceToGraph(const IGraph& graph) const = 0;
 
   /**
    * Get copy of this clustering.
@@ -72,8 +71,7 @@ class IClustering {
    * @param label source label.
    * @return number of vertices of specific label.
    */
-  [[nodiscard]] virtual unsigned GetNumVerticesByLabel(
-      ClusterLabels label) const = 0;
+  [[nodiscard]] virtual unsigned GetNumVerticesByLabel(ClusterLabels label) const = 0;
 
   /**
    * Sent object to json-string.
@@ -90,14 +88,11 @@ struct Solution {
   unsigned distance;
   IClustPtr clustering;
 
-  Solution(const unsigned distance, IClustPtr clustering)
-      : distance(distance), clustering(std::move(clustering)) {}
+  Solution(const unsigned distance, IClustPtr clustering) : distance(distance), clustering(std::move(clustering)) {}
 
-  bool operator<(const Solution &other) const {
-    return distance < other.distance;
-  }
+  bool operator<(const Solution& other) const { return distance < other.distance; }
 
-  bool operator==(const Solution &other) const {
+  bool operator==(const Solution& other) const {
     if (distance != other.distance) {
       return false;
     }
@@ -105,9 +100,7 @@ struct Solution {
     for (unsigned i = 0; i < len; i++) {
       for (unsigned j = i + 1; j < len; j++) {
         const auto eq1 = clustering->GetLabel(i) == clustering->GetLabel(j);
-        if (const auto eq2 =
-                other.clustering->GetLabel(i) == other.clustering->GetLabel(j);
-            eq1 != eq2) {
+        if (const auto eq2 = other.clustering->GetLabel(i) == other.clustering->GetLabel(j); eq1 != eq2) {
           return false;
         }
       }
@@ -115,7 +108,5 @@ struct Solution {
     return true;
   }
 
-  [[nodiscard]] Solution getCopy() const {
-    return {distance, clustering->GetCopy()};
-  }
+  [[nodiscard]] Solution getCopy() const { return {distance, clustering->GetCopy()}; }
 };

@@ -14,12 +14,9 @@ class LocalSearch {
    * @param vertex vertex to toss.
    * @return local improvement of tossing vertex from one cluster to another.
    */
-  static int ComputeLocalImprovement(const IGraph &graph,
-                                     const IClustPtr &cur_clustering,
-                                     unsigned vertex);
+  static int ComputeLocalImprovement(const IGraph& graph, const IClustPtr& cur_clustering, unsigned vertex);
 
-  static bool IsVertexInSet(unsigned vertex,
-                            const std::vector<unsigned> &vertices_set);
+  static bool IsVertexInSet(unsigned vertex, const std::vector<unsigned>& vertices_set);
 
  public:
   /**
@@ -31,9 +28,8 @@ class LocalSearch {
    * @param second_cluster_vertices
    * @return local optimal clustering.
    */
-  static IClustPtr ComputeLocalOptimum(
-      const IGraph &graph, const IClustPtr &cur_clustering,
-      const std::vector<unsigned> &first_cluster_vertices,
-      const std::vector<unsigned> &second_cluster_vertices);
+  static IClustPtr ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering,
+                                       const std::vector<unsigned>& first_cluster_vertices,
+                                       const std::vector<unsigned>& second_cluster_vertices);
 };
 }  // namespace set_semi_supervised_2cc

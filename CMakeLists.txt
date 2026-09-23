@@ -311,3 +311,15 @@ if (GCC_HAS_CUDA)
 endif ()
 target_compile_features(Genetic_2 PUBLIC cxx_std_20)
 add_dependencies(Genetic_2 rapidjson)
+
+find_program(CLANG_FORMAT clang-format)
+if(CLANG_FORMAT)
+    file(GLOB_RECURSE GCC_FORMAT_SOURCES CONFIGURE_DEPENDS
+            ${CMAKE_SOURCE_DIR}/*.cpp ${CMAKE_SOURCE_DIR}/include/*.hpp
+            ${CMAKE_SOURCE_DIR}/include/*.cuh ${CMAKE_SOURCE_DIR}/src/*.cpp
+            ${CMAKE_SOURCE_DIR}/src/*.cu)
+    list(FILTER GCC_FORMAT_SOURCES EXCLUDE REGEX "cmake-build|vendor")
+    add_custom_target(format COMMAND ${CLANG_FORMAT} -i ${GCC_FORMAT_SOURCES})
+    add_custom_target(format-check
+            COMMAND ${CLANG_FORMAT} --dry-run --Werror ${GCC_FORMAT_SOURCES})
+endif()

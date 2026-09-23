@@ -2,31 +2,27 @@
 
 #include <climits>
 
-IClustPtr semi_supervised_2cc::LocalSearch::ComputeLocalOptimum(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    const unsigned first_cluster_vertex, const unsigned second_cluster_vertex) {
+IClustPtr semi_supervised_2cc::LocalSearch::ComputeLocalOptimum(const IGraph& graph, const IClustPtr& cur_clustering,
+                                                                const unsigned first_cluster_vertex,
+                                                                const unsigned second_cluster_vertex) {
   auto result = cur_clustering->GetCopy();
-  const auto exclude_vertices =
-      ExcludeVertices(first_cluster_vertex, second_cluster_vertex);
-  auto local_improvement_list =
-      InitLocalImprovements(graph, cur_clustering, exclude_vertices);
+  const auto exclude_vertices = ExcludeVertices(first_cluster_vertex, second_cluster_vertex);
+  auto local_improvement_list = InitLocalImprovements(graph, cur_clustering, exclude_vertices);
   while (true) {
-    const auto candidate =
-        FindCandidate(graph, local_improvement_list, exclude_vertices);
+    const auto candidate = FindCandidate(graph, local_improvement_list, exclude_vertices);
     if (candidate.local_improvement <= 0) {
       break;
     }
     local_improvement_list =
-        UpdateLocalImprovements(graph, result, local_improvement_list,
-                                candidate.vertex, exclude_vertices);
+        UpdateLocalImprovements(graph, result, local_improvement_list, candidate.vertex, exclude_vertices);
     result = UpdateClustering(result, candidate.vertex);
   }
   return result;
 }
 
-std::vector<int> semi_supervised_2cc::LocalSearch::InitLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    const ExcludeVertices exclude_vertices) {
+std::vector<int> semi_supervised_2cc::LocalSearch::InitLocalImprovements(const IGraph& graph,
+                                                                         const IClustPtr& cur_clustering,
+                                                                         const ExcludeVertices exclude_vertices) {
   std::vector<int> local_improvement_list(graph.Size());
   for (unsigned i = 0; i < graph.Size(); i++) {
     if (exclude_vertices.contain(i)) {
@@ -47,10 +43,8 @@ std::vector<int> semi_supervised_2cc::LocalSearch::InitLocalImprovements(
   return local_improvement_list;
 }
 
-semi_supervised_2cc::LocalSearch::LocalSearchCandidate
-semi_supervised_2cc::LocalSearch::FindCandidate(
-    const IGraph &graph, const std::vector<int> &local_improvement_list,
-    const ExcludeVertices exclude_vertices) {
+semi_supervised_2cc::LocalSearch::LocalSearchCandidate semi_supervised_2cc::LocalSearch::FindCandidate(
+    const IGraph& graph, const std::vector<int>& local_improvement_list, const ExcludeVertices exclude_vertices) {
   int local_improvement = INT_MIN;
   unsigned candidate = UINT_MAX;
   for (unsigned i = 0; i < graph.Size(); ++i) {
@@ -65,19 +59,18 @@ semi_supervised_2cc::LocalSearch::FindCandidate(
   return {candidate, local_improvement};
 }
 
-std::vector<int> semi_supervised_2cc::LocalSearch::UpdateLocalImprovements(
-    const IGraph &graph, const IClustPtr &cur_clustering,
-    std::vector<int> &local_improvement_list, const unsigned int vertex,
-    const ExcludeVertices exclude_vertices) {
+std::vector<int> semi_supervised_2cc::LocalSearch::UpdateLocalImprovements(const IGraph& graph,
+                                                                           const IClustPtr& cur_clustering,
+                                                                           std::vector<int>& local_improvement_list,
+                                                                           const unsigned int vertex,
+                                                                           const ExcludeVertices exclude_vertices) {
   local_improvement_list[vertex] = 0;
   for (unsigned i = 0; i < graph.Size(); ++i) {
     if (i == vertex || exclude_vertices.contain(i)) {
       continue;
     }
-    if ((graph.IsJoined(i, vertex) &&
-         cur_clustering->IsSameClustered(i, vertex)) ||
-        (!graph.IsJoined(i, vertex) &&
-         !cur_clustering->IsSameClustered(i, vertex))) {
+    if ((graph.IsJoined(i, vertex) && cur_clustering->IsSameClustered(i, vertex)) ||
+        (!graph.IsJoined(i, vertex) && !cur_clustering->IsSameClustered(i, vertex))) {
       local_improvement_list[i] += 2;
       local_improvement_list[vertex] += 1;
     } else {
@@ -88,8 +81,7 @@ std::vector<int> semi_supervised_2cc::LocalSearch::UpdateLocalImprovements(
   return local_improvement_list;
 }
 
-IClustPtr semi_supervised_2cc::LocalSearch::UpdateClustering(
-    IClustPtr &cur_clustering, const unsigned int vertex) {
+IClustPtr semi_supervised_2cc::LocalSearch::UpdateClustering(IClustPtr& cur_clustering, const unsigned int vertex) {
   if (cur_clustering->GetLabel(vertex) == FIRST_CLUSTER) {
     cur_clustering->SetupLabelForVertex(vertex, SECOND_CLUSTER);
   } else {

@@ -26,10 +26,8 @@ constexpr unsigned kNumLabels = 3;
  * distance of the clustering to the graph. O(n^2) work split by vertex;
  * thread i reads column i, so for a fixed j the block reads row j contiguously.
  */
-__device__ inline unsigned ComputeGains(const uint8_t *__restrict__ adj,
-                                        const unsigned n,
-                                        const Label *__restrict__ s_labels,
-                                        int *__restrict__ gains) {
+__device__ inline unsigned ComputeGains(const uint8_t* __restrict__ adj, const unsigned n,
+                                        const Label* __restrict__ s_labels, int* __restrict__ gains) {
   long long disagreements = 0;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     const Label li = s_labels[i];
@@ -45,8 +43,7 @@ __device__ inline unsigned ComputeGains(const uint8_t *__restrict__ adj,
       dis += ((lj == li) != joined) ? 1 : 0;
     }
     for (unsigned m = 0; m < kNumLabels; ++m) {
-      gains[i * kNumLabels + m] =
-          m == static_cast<unsigned>(li) ? 0 : a[m] - a[li];
+      gains[i * kNumLabels + m] = m == static_cast<unsigned>(li) ? 0 : a[m] - a[li];
     }
     disagreements += dis;
   }
@@ -55,9 +52,8 @@ __device__ inline unsigned ComputeGains(const uint8_t *__restrict__ adj,
 }
 
 /** Distance of the labels in shared memory to the graph, O(n^2) per block. */
-__device__ inline unsigned ComputeDistance(const uint8_t *__restrict__ adj,
-                                           const unsigned n,
-                                           const Label *__restrict__ s_labels) {
+__device__ inline unsigned ComputeDistance(const uint8_t* __restrict__ adj, const unsigned n,
+                                           const Label* __restrict__ s_labels) {
   long long disagreements = 0;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     const Label li = s_labels[i];
@@ -86,12 +82,9 @@ __device__ inline unsigned ComputeDistance(const uint8_t *__restrict__ adj,
  * Label counts are reduced over the block here. `gains` may be nullptr when
  * only the distance is needed.
  */
-__device__ inline unsigned GainsFromGemm(const unsigned n,
-                                         const Label *__restrict__ s_labels,
-                                         const int *__restrict__ g,
-                                         const unsigned ld,
-                                         const unsigned long long num_edges,
-                                         int *__restrict__ gains) {
+__device__ inline unsigned GainsFromGemm(const unsigned n, const Label* __restrict__ s_labels,
+                                         const int* __restrict__ g, const unsigned ld,
+                                         const unsigned long long num_edges, int* __restrict__ gains) {
   long long count[kNumLabels] = {0, 0, 0};
   long long twice_intra = 0;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
@@ -128,9 +121,7 @@ __device__ inline unsigned GainsFromGemm(const unsigned n,
  * Best move of vertex i given its three gains: the largest gain over the two
  * labels other than li; ties go to the smaller label, as in the CPU scan.
  */
-__device__ __forceinline__ void BestMoveOf(const int *__restrict__ g,
-                                           const Label li, int &best,
-                                           Label &label) {
+__device__ __forceinline__ void BestMoveOf(const int* __restrict__ g, const Label li, int& best, Label& label) {
   best = INT_MIN;
   label = 0;
   for (unsigned m = 0; m < kNumLabels; ++m) {
@@ -151,14 +142,12 @@ __device__ __forceinline__ void BestMoveOf(const int *__restrict__ g,
  * best move among its vertices (candidate = i * 3 + m) for the next local
  * search step. Must be followed by a block barrier and MoveVertexFinalize.
  */
-__device__ inline void MoveVertexUpdateOthers(
-    const uint8_t *__restrict__ adj, const unsigned n,
-    const Label *__restrict__ s_labels, int *__restrict__ gains,
-    const unsigned v, const Label new_label, int &best, unsigned &candidate) {
+__device__ inline void MoveVertexUpdateOthers(const uint8_t* __restrict__ adj, const unsigned n,
+                                              const Label* __restrict__ s_labels, int* __restrict__ gains,
+                                              const unsigned v, const Label new_label, int& best, unsigned& candidate) {
   const Label old_label = s_labels[v];
-  const Label third_label =
-      static_cast<Label>(kNumLabels - old_label - new_label);
-  const uint8_t *row = adj + static_cast<size_t>(v) * n;
+  const Label third_label = static_cast<Label>(kNumLabels - old_label - new_label);
+  const uint8_t* row = adj + static_cast<size_t>(v) * n;
   best = INT_MIN;
   candidate = UINT_MAX;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
@@ -167,7 +156,7 @@ __device__ inline void MoveVertexUpdateOthers(
     }
     const int sign = row[i] != 0 ? 1 : -1;
     const Label li = s_labels[i];
-    int *g = gains + i * kNumLabels;
+    int* g = gains + i * kNumLabels;
     if (li == old_label) {
       g[new_label] += 2 * sign;
       g[third_label] += sign;
@@ -194,16 +183,12 @@ __device__ inline void MoveVertexUpdateOthers(
  * follow from the gains before it. The caller must place a block barrier
  * before the labels or gains of v are read again.
  */
-__device__ inline void MoveVertexFinalize(Label *__restrict__ s_labels,
-                                          int *__restrict__ gains,
-                                          const unsigned v,
-                                          const Label new_label,
-                                          const int gain) {
+__device__ inline void MoveVertexFinalize(Label* __restrict__ s_labels, int* __restrict__ gains, const unsigned v,
+                                          const Label new_label, const int gain) {
   if (threadIdx.x == 0) {
     const Label old_label = s_labels[v];
-    const Label third_label =
-        static_cast<Label>(kNumLabels - old_label - new_label);
-    int *g = gains + v * kNumLabels;
+    const Label third_label = static_cast<Label>(kNumLabels - old_label - new_label);
+    int* g = gains + v * kNumLabels;
     g[old_label] = -gain;
     g[third_label] -= gain;
     g[new_label] = 0;
@@ -222,11 +207,8 @@ __device__ inline void MoveVertexFinalize(Label *__restrict__ s_labels,
  * vertices, then labels, in ascending order and keeps the first maximum,
  * i.e. the smallest (i * 3 + m) among the maxima; BlockArgMax does the same.
  */
-__device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
-                                            const unsigned n,
-                                            Label *__restrict__ s_labels,
-                                            int *__restrict__ gains,
-                                            unsigned distance) {
+__device__ inline unsigned LocalSearchBlock(const uint8_t* __restrict__ adj, const unsigned n,
+                                            Label* __restrict__ s_labels, int* __restrict__ gains, unsigned distance) {
   int best = INT_MIN;
   unsigned candidate = UINT_MAX;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
@@ -247,8 +229,7 @@ __device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
     }
     const unsigned v = idx / kNumLabels;
     const Label new_label = static_cast<Label>(idx % kNumLabels);
-    MoveVertexUpdateOthers(adj, n, s_labels, gains, v, new_label, best,
-                           candidate);
+    MoveVertexUpdateOthers(adj, n, s_labels, gains, v, new_label, best, candidate);
     __syncthreads();
     MoveVertexFinalize(s_labels, gains, v, new_label, g_best);
     distance -= static_cast<unsigned>(g_best);
@@ -263,13 +244,10 @@ __device__ inline unsigned LocalSearchBlock(const uint8_t *__restrict__ adj,
  * and its neighbors go to the first cluster, second and its remaining
  * neighbors to the second, everything else to the third.
  */
-__device__ inline void SplitByTwoVertices(const uint8_t *__restrict__ adj,
-                                          const unsigned n,
-                                          const unsigned first,
-                                          const unsigned second,
-                                          Label *__restrict__ s_labels) {
-  const uint8_t *row1 = adj + static_cast<size_t>(first) * n;
-  const uint8_t *row2 = adj + static_cast<size_t>(second) * n;
+__device__ inline void SplitByTwoVertices(const uint8_t* __restrict__ adj, const unsigned n, const unsigned first,
+                                          const unsigned second, Label* __restrict__ s_labels) {
+  const uint8_t* row1 = adj + static_cast<size_t>(first) * n;
+  const uint8_t* row2 = adj + static_cast<size_t>(second) * n;
   for (unsigned i = threadIdx.x; i < n; i += blockDim.x) {
     // `second` stays in the second cluster even if it is joined to `first`.
     Label label;
