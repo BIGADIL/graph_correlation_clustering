@@ -380,7 +380,7 @@ grep "objective function value" strict_2cc/n-100-p-0.5/*.json
 
 ## License
 
-This project is provided for research and educational purposes.
+This project is licensed under the MIT License, see [LICENSE](LICENSE).
 
 ## Contributing
 
